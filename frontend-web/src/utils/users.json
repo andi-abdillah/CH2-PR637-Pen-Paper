@@ -1,0 +1,74 @@
+[
+  {
+    "userID": 3001,
+    "username": "John Smith",
+    "email": "john.smith@gmail.com",
+    "password": "password",
+    "descriptions": "Passionate writer exploring the realms of fantasy and adventure.",
+    "joined_at": "September 1, 2023"
+  },
+  {
+    "userID": 3002,
+    "username": "Jane Doe",
+    "email": "jane.doe@gmail.com",
+    "password": "password",
+    "descriptions": "Tech enthusiast with a knack for unraveling complex coding challenges.",
+    "joined_at": "September 2, 2023"
+  },
+  {
+    "userID": 3003,
+    "username": "Emily Archer",
+    "email": "emily.archer@gmail.com",
+    "password": "password",
+    "descriptions": "Lover of art and poetry, weaving emotions into every word written.",
+    "joined_at": "September 3, 2023"
+  },
+  {
+    "userID": 3004,
+    "username": "David Brown",
+    "email": "david.brown@gmail.com",
+    "password": "password",
+    "descriptions": "Adventurous spirit exploring the wonders of the natural world.",
+    "joined_at": "September 4, 2023"
+  },
+  {
+    "userID": 3005,
+    "username": "Eva Williams",
+    "email": "eva.williams@gmail.com",
+    "password": "password",
+    "descriptions": "Advocate for social change, using words to inspire and ignite conversations.",
+    "joined_at": "September 5, 2023"
+  },
+  {
+    "userID": 3006,
+    "username": "Alice Johnson",
+    "email": "alice.johnson@gmail.com",
+    "password": "password",
+    "descriptions": "Curious mind delving into the mysteries of science and discovery.",
+    "joined_at": "September 6, 2023"
+  },
+  {
+    "userID": 3007,
+    "username": "Bob Anderson",
+    "email": "bob.anderson@gmail.com",
+    "password": "password",
+    "descriptions": "Champion of positivity, spreading joy through uplifting tales.",
+    "joined_at": "September 7, 2023"
+  },
+  {
+    "userID": 3008,
+    "username": "Olivia Turner",
+    "email": "olivia.turner@gmail.com",
+    "password": "password",
+    "descriptions": "Explorer of new horizons, finding inspiration in the beauty of the unknown.",
+    "joined_at": "September 8, 2023"
+  },
+  {
+    "userID": 3009,
+    "username": "Michael Reed",
+    "email": "michael.reed@gmail.com",
+    "password": "password",
+    "descriptions": "",
+    "joined_at": "September 9, 2023"
+  }
+]
