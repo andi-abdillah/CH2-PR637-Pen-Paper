@@ -45,8 +45,6 @@ const Explore = () => {
     }
   }, [searchQuery, selectedTab, navigate]);
 
-  // console.log(searchQuery);
-
   return (
     <>
       <HelmetProvider>
@@ -82,7 +80,7 @@ const Explore = () => {
             name="search"
             type="text"
             defaultValue={searchQuery}
-            className="pl-12 capitalize"
+            className="pl-12"
             placeholder={`Search ${selectedTab}`}
             onChange={handleChange}
           />

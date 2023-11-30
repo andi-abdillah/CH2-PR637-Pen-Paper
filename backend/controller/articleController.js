@@ -197,6 +197,62 @@ const searchArticlesHandler = async (request, h) => {
   }
 };
 
+const getArticlesByUserIdHandler = async (request, h) => {
+  const { userId } = request.params;
+
+  try {
+    const articles = await Article.findAll({
+      where: { userId },
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username"],
+        },
+      ],
+    });
+
+    if (!articles || articles.length === 0) {
+      return h
+        .response({
+          status: "success",
+          data: {
+            articles: [],
+          },
+        })
+        .code(200);
+    }
+
+    const listArticles = articles.map((article) => ({
+      articleId: article.articleId,
+      userId: article.userId,
+      username: article.user.username,
+      title: article.title,
+      content: article.content,
+      createdAt: article.createdAt,
+      updatedAt: article.updatedAt,
+    }));
+
+    return h
+      .response({
+        status: "success",
+        data: {
+          articles: listArticles,
+        },
+      })
+      .code(200);
+  } catch (error) {
+    console.error(error);
+    return h
+      .response({
+        status: "error",
+        message: "Terjadi kesalahan pada server",
+      })
+      .code(500);
+  }
+};
+
 const getArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
 
@@ -338,6 +394,7 @@ module.exports = {
   addArticleHandler,
   getAllArticlesHandler,
   searchArticlesHandler,
+  getArticlesByUserIdHandler,
   getArticleByIdHandler,
   editArticleByIdHandler,
   deleteArticleByIdHandler,

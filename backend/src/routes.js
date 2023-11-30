@@ -11,6 +11,7 @@ const {
   addArticleHandler,
   getAllArticlesHandler,
   searchArticlesHandler,
+  getArticlesByUserIdHandler,
   getArticleByIdHandler,
   editArticleByIdHandler,
   deleteArticleByIdHandler,
@@ -33,6 +34,11 @@ const routes = [
     method: "GET",
     path: "/users/search",
     handler: searchUsersHandler,
+  },
+  {
+    method: "GET",
+    path: "/articles/user/{userId}",
+    handler: getArticlesByUserIdHandler,
   },
   {
     method: "POST",

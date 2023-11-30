@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import BackButton from "../../components/BackButton";
 import Card from "../../components/Card";
-import users from "../../utils/users.json";
-import articles from "../../utils/articles.json";
+import Loading from "../../components/Loading";
+import { dateFormater } from "../../utils/dateFormater";
+import axios from "axios";
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -14,21 +15,37 @@ const UserProfile = () => {
 
   const [userArticles, setUserArticles] = useState([]);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const foundUser = users.find((user) => user.userID === parseInt(id));
+    const fetchData = async () => {
+      try {
+        const foundUser = await axios.get(`http://localhost:9000/users/${id}`);
+        const user1 = foundUser.data.data.user;
 
-    if (foundUser) {
-      setUser(foundUser);
+        const foundArticles = await axios.get(
+          `http://localhost:9000/articles/user/${id}`
+        );
 
-      const foundArticles = articles.filter(
-        (article) => article.userID === foundUser.userID
-      );
+        const articles = foundArticles.data.data.articles;
+        console.log(user1);
+        console.log(articles);
 
-      if (foundArticles) {
-        setUserArticles(foundArticles);
+        setUserArticles(articles);
+        setUser(user1);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchData();
   }, [id]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   if (!user) {
     return (
@@ -60,7 +77,9 @@ const UserProfile = () => {
 
         <div className="text-lg px-3 xs:px-8 py-8 font-semibold">
           <h2>{user.username}</h2>
-          <h2 className="text-primary">Joined since {user.joined_at}</h2>
+          <h2 className="text-primary">
+            Joined since {dateFormater(user.createdAt)}
+          </h2>
         </div>
 
         <Divider />
