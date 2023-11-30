@@ -1,5 +1,5 @@
 const { nanoid } = require("nanoid");
-const { User } = require("../models");
+const { User, Article, sequelize } = require("../models"); // Pastikan untuk mengimpor objek instance Sequelize (disebut sebagai sequelize)
 
 const generateId = () => `user-${nanoid(20)}`;
 
@@ -15,20 +15,24 @@ const addUserHandler = async (request, h) => {
     updatedAt = new Date(),
   } = request.payload;
 
-  try {
-    await User.create({
-      userId,
-      username,
-      email,
-      password,
-      descriptions,
-      createdAt,
-      updatedAt,
-    });
+  const t = await sequelize.transaction(); // Memulai transaksi
 
-    const createdUser = await User.findByPk(userId);
+  try {
+    const createdUser = await User.create(
+      {
+        userId,
+        username,
+        email,
+        password,
+        descriptions,
+        createdAt,
+        updatedAt,
+      },
+      { transaction: t }
+    );
 
     if (createdUser) {
+      await t.commit(); // Commit transaksi jika berhasil
       return h
         .response({
           status: "success",
@@ -40,6 +44,7 @@ const addUserHandler = async (request, h) => {
         .code(201);
     }
 
+    await t.rollback(); // Rollback transaksi jika gagal
     return h
       .response({
         status: "error",
@@ -48,6 +53,7 @@ const addUserHandler = async (request, h) => {
       .code(500);
   } catch (error) {
     console.error(error);
+    await t.rollback(); // Rollback transaksi jika terjadi kesalahan
     return h
       .response({
         status: "error",
@@ -76,7 +82,6 @@ const getAllUsersHandler = async (request, h) => {
       userId: user.userId,
       username: user.username,
       email: user.email,
-      password: user.password,
       descriptions: user.descriptions,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -114,7 +119,6 @@ const getUserByIdHandler = async (request, h) => {
             userId: targetUser.userId,
             username: targetUser.username,
             email: targetUser.email,
-            password: targetUser.password,
             descriptions: targetUser.descriptions,
             createdAt: targetUser.createdAt,
             updatedAt: targetUser.updatedAt,
@@ -146,6 +150,8 @@ const editUserByIdHandler = async (request, h) => {
       .code(400);
   }
 
+  const t = await sequelize.transaction(); // Memulai transaksi
+
   try {
     const [, updatedRowCount] = await User.update(
       {
@@ -155,10 +161,11 @@ const editUserByIdHandler = async (request, h) => {
         descriptions,
         updatedAt: new Date(),
       },
-      { where: { userId }, returning: true }
+      { where: { userId }, returning: true, transaction: t }
     );
 
     if (updatedRowCount > 0) {
+      await t.commit(); // Commit transaksi jika berhasil
       return h
         .response({
           status: "success",
@@ -167,6 +174,7 @@ const editUserByIdHandler = async (request, h) => {
         .code(200);
     }
 
+    await t.rollback(); // Rollback transaksi jika gagal
     return h
       .response({
         status: "fail",
@@ -175,6 +183,7 @@ const editUserByIdHandler = async (request, h) => {
       .code(404);
   } catch (error) {
     console.error(error);
+    await t.rollback(); // Rollback transaksi jika terjadi kesalahan
     return h
       .response({
         status: "error",
@@ -187,18 +196,23 @@ const editUserByIdHandler = async (request, h) => {
 const deleteUserByIdHandler = async (request, h) => {
   const { userId } = request.params;
 
-  try {
-    const deletedRowCount = await User.destroy({ where: { userId } });
+  const t = await sequelize.transaction(); // Memulai transaksi
 
-    if (deletedRowCount > 0) {
+  try {
+    const deletedUserRowCount = await User.destroy({ where: { userId }, transaction: t });
+    const deletedArticleRowCount = await Article.destroy({ where: { userId }, transaction: t });
+
+    if (deletedUserRowCount > 0) {
+      await t.commit(); // Commit transaksi jika berhasil
       return h
         .response({
           status: "success",
-          message: "Pengguna berhasil dihapus",
+          message: "Pengguna dan artikel terkait berhasil dihapus",
         })
         .code(200);
     }
 
+    await t.rollback(); // Rollback transaksi jika tidak ada yang dihapus
     return h
       .response({
         status: "fail",
@@ -207,6 +221,7 @@ const deleteUserByIdHandler = async (request, h) => {
       .code(404);
   } catch (error) {
     console.error(error);
+    await t.rollback(); // Rollback transaksi jika terjadi kesalahan
     return h
       .response({
         status: "error",

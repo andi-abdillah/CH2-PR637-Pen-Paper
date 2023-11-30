@@ -13,7 +13,7 @@ import axios from "axios";
 const EditStory = () => {
   const { id } = useParams();
 
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
 
   const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ const EditStory = () => {
 
         const foundArticle = response.data.data.article;
 
-        if (foundArticle.userId !== loggedInUser.userId || !foundArticle)
+        if (foundArticle.userId !== authenticatedUser.userId || !foundArticle)
           navigate("/dashboard/your-stories");
 
         setFormData({
@@ -58,7 +58,7 @@ const EditStory = () => {
     };
 
     fetchData();
-  }, [id, loggedInUser.userId, navigate]);
+  }, [id, authenticatedUser.userId, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

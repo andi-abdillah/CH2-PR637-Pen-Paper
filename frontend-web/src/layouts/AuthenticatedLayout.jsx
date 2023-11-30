@@ -5,15 +5,15 @@ import { useEffect } from "react";
 
 const AuthenticatedLayout = () => {
   const navigate = useNavigate();
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
 
   useEffect(() => {
-    if (!loggedInUser) {
+    if (!authenticatedUser) {
       navigate("/sign-in");
     }
-  }, [loggedInUser, navigate]);
+  }, [authenticatedUser, navigate]);
 
-  if (!loggedInUser) {
+  if (!authenticatedUser) {
     return null;
   }
 

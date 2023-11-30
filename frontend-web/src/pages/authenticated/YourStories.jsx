@@ -5,8 +5,8 @@ import { useAuth } from "../../auth/AuthContext";
 import { dateFormater } from "../../utils/dateFormater";
 
 const YourStories = () => {
-  const { loggedInUser } = useAuth();
-  const user = loggedInUser;
+  const { authenticatedUser } = useAuth();
+  const user = authenticatedUser;
 
   return (
     <div>

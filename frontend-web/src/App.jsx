@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout";
 import GuestLayout from "./layouts/GuestLayout";
 import Home from "./pages/authenticated/Home";
@@ -17,6 +17,8 @@ import { AuthProvider } from "./auth/AuthContext";
 import WelcomePage from "./pages/guest/WelcomePage";
 import UserDescriptions from "./pages/authenticated/UserDescriptions";
 import CreateUserDescriptions from "./pages/authenticated/CreateUserDescriptions";
+import ExploreTopics from "./pages/authenticated/ExploreTopics";
+import ExploreAccount from "./pages/authenticated/ExploreAccount";
 
 function App() {
   return (
@@ -36,7 +38,12 @@ function App() {
             <Route path="create" element={<CreateStory />} />
             <Route path=":id/edit" element={<EditStory />} />
           </Route>
-          <Route path="explore" element={<Explore />} />
+          <Route path="explore" element={<Explore />}>
+            <Route index element={<Navigate to="topics" />} />
+            <Route path="topics" element={<ExploreTopics />} />
+            <Route path="account" element={<ExploreAccount />} />
+          </Route>
+
           <Route path="story-details/:id" element={<StoryDetails />} />
           <Route path="user-profile/:id" element={<UserProfile />} />
         </Route>

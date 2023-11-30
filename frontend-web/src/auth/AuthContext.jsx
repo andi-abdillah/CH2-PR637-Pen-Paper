@@ -6,23 +6,23 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  const [loggedInUser, setLoggedInUser] = useState(
-    JSON.parse(localStorage.getItem("loggedInUser")) || null
+  const [authenticatedUser, setAuthenticatedUser] = useState(
+    JSON.parse(localStorage.getItem("authenticatedUser")) || null
   );
 
   const login = (user) => {
-    setLoggedInUser(user);
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
+    setAuthenticatedUser(user);
+    localStorage.setItem("authenticatedUser", JSON.stringify(user));
   };
 
   const logout = () => {
-    setLoggedInUser(null);
-    localStorage.removeItem("loggedInUser");
+    setAuthenticatedUser(null);
+    localStorage.removeItem("authenticatedUser");
     navigate("/");
   };
 
   return (
-    <AuthContext.Provider value={{ loggedInUser, login, logout }}>
+    <AuthContext.Provider value={{ authenticatedUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

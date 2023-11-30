@@ -10,7 +10,7 @@ import DeleteAlert from "../../components/DeleteAlert";
 
 const StoryDetails = () => {
   const { id } = useParams();
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
   const [isMyArticle, setIsMyArticle] = useState(false);
   const [user, setUser] = useState({});
   const [article, setArticle] = useState(null);
@@ -32,7 +32,7 @@ const StoryDetails = () => {
         setArticle(articleResponse.data.data.article);
         setUser(userResponse.data.data.user);
 
-        if (user.userId === loggedInUser.userId) {
+        if (user.userId === authenticatedUser.userId) {
           setIsMyArticle(true);
         }
       } catch (error) {
@@ -41,7 +41,7 @@ const StoryDetails = () => {
     };
 
     fetchData();
-  }, [id, loggedInUser.userId, user.userId]);
+  }, [id, authenticatedUser.userId, user.userId]);
 
   const openAlert = () => {
     setAlertOpen(true);
@@ -108,7 +108,7 @@ const StoryDetails = () => {
         />
 
         <div className="flex flex-col gap-6 max-w-2xl xs:mx-8 mt-8 text-lg font-semibold">
-          {user.userId !== loggedInUser.userId && (
+          {user.userId !== authenticatedUser.userId && (
             <Link
               to={`/dashboard/user-profile/${user.userId}`}
               className="text-black text-2xl w-max"

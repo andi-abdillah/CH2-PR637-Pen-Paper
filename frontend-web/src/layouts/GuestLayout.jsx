@@ -4,15 +4,15 @@ import { useAuth } from "../auth/AuthContext";
 
 const GuestLayout = () => {
   const navigate = useNavigate();
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
 
   useEffect(() => {
-    if (loggedInUser) {
+    if (authenticatedUser) {
       navigate("/dashboard");
     }
-  }, [loggedInUser, navigate]);
+  }, [authenticatedUser, navigate]);
 
-  if (loggedInUser) {
+  if (authenticatedUser) {
     return null;
   }
 

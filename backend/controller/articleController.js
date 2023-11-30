@@ -1,6 +1,6 @@
 const { nanoid } = require("nanoid");
-const { Article } = require("../models");
-const { User } = require("../models");
+const { Op } = require("sequelize");
+const { Article, User, sequelize } = require("../models");
 
 const generateId = () => `article-${nanoid(20)}`;
 
@@ -15,17 +15,33 @@ const addArticleHandler = async (request, h) => {
     updatedAt = new Date(),
   } = request.payload;
 
+  const t = await sequelize.transaction(); // Mulai transaksi
+
   try {
-    await Article.create({
-      articleId,
-      userId,
-      title,
-      content,
-      createdAt,
-      updatedAt,
+    await Article.create(
+      {
+        articleId,
+        userId,
+        title,
+        content,
+        createdAt,
+        updatedAt,
+      },
+      { transaction: t }
+    );
+
+    const createdArticle = await Article.findByPk(articleId, {
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username"],
+        },
+      ],
+      transaction: t,
     });
 
-    const createdArticle = await Article.findByPk(articleId);
+    await t.commit();
 
     if (createdArticle) {
       return h
@@ -33,7 +49,13 @@ const addArticleHandler = async (request, h) => {
           status: "success",
           message: "Artikel berhasil ditambahkan",
           data: {
-            articleId,
+            articleId: createdArticle.articleId,
+            userId: createdArticle.userId,
+            username: createdArticle.user.username,
+            title: createdArticle.title,
+            content: createdArticle.content,
+            createdAt: createdArticle.createdAt,
+            updatedAt: createdArticle.updatedAt,
           },
         })
         .code(201);
@@ -46,6 +68,8 @@ const addArticleHandler = async (request, h) => {
       })
       .code(500);
   } catch (error) {
+    await t.rollback();
+
     console.error(error);
     return h
       .response({
@@ -110,13 +134,13 @@ const getAllArticlesHandler = async (request, h) => {
 
 const searchArticlesHandler = async (request, h) => {
   try {
-    const { search } = request.query;
+    const { query } = request.query;
 
-    const searchCondition = search
+    const searchCondition = query
       ? {
           [Op.or]: [
-            { title: { [Op.iLike]: `%${search}%` } },
-            { content: { [Op.iLike]: `%${search}%` } },
+            { title: { [Op.like]: `%${query}%` } },
+            { content: { [Op.like]: `%${query}%` } },
           ],
         }
       : {};
@@ -174,44 +198,59 @@ const searchArticlesHandler = async (request, h) => {
 
 const getArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
-  const targetArticle = await Article.findByPk(articleId, {
-    include: [
-      {
-        model: User,
-        as: "user",
-        attributes: ["username"],
-      },
-    ],
-  });
 
-  if (targetArticle) {
+  try {
+    const targetArticle = await Article.findByPk(articleId, {
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username"],
+        },
+      ],
+    });
+
+    if (targetArticle) {
+      return h
+        .response({
+          status: "success",
+          data: {
+            article: {
+              articleId: targetArticle.articleId,
+              userId: targetArticle.userId,
+              username: targetArticle.user.username,
+              title: targetArticle.title,
+              content: targetArticle.content,
+              createdAt: targetArticle.createdAt,
+              updatedAt: targetArticle.updatedAt,
+            },
+          },
+        })
+        .code(200);
+    }
+
     return h
       .response({
-        status: "success",
-        data: {
-          article: {
-            articleId: targetArticle.articleId,
-            userId: targetArticle.userId,
-            username: targetArticle.user.username,
-            title: targetArticle.title,
-            content: targetArticle.content,
-          },
-        },
+        status: "fail",
+        message: "Artikel tidak ditemukan",
       })
-      .code(200);
+      .code(404);
+  } catch (error) {
+    console.error(error);
+    return h
+      .response({
+        status: "error",
+        message: "Terjadi kesalahan pada server",
+      })
+      .code(500);
   }
-
-  return h
-    .response({
-      status: "fail",
-      message: "Artikel tidak ditemukan",
-    })
-    .code(404);
 };
 
 const editArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
   const { title, content } = request.payload;
+
+  const t = await sequelize.transaction(); // Mulai transaksi
 
   try {
     const [, updatedRowCount] = await Article.update(
@@ -220,8 +259,10 @@ const editArticleByIdHandler = async (request, h) => {
         content,
         updatedAt: new Date(),
       },
-      { where: { articleId }, returning: true }
+      { where: { articleId }, returning: true, transaction: t }
     );
+
+    await t.commit();
 
     if (updatedRowCount > 0) {
       return h
@@ -239,6 +280,8 @@ const editArticleByIdHandler = async (request, h) => {
       })
       .code(404);
   } catch (error) {
+    await t.rollback();
+
     console.error(error);
     return h
       .response({
@@ -252,8 +295,15 @@ const editArticleByIdHandler = async (request, h) => {
 const deleteArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
 
+  const t = await sequelize.transaction(); // Mulai transaksi
+
   try {
-    const deletedRowCount = await Article.destroy({ where: { articleId } });
+    const deletedRowCount = await Article.destroy({
+      where: { articleId },
+      transaction: t,
+    });
+
+    await t.commit();
 
     if (deletedRowCount > 0) {
       return h
@@ -271,6 +321,8 @@ const deleteArticleByIdHandler = async (request, h) => {
       })
       .code(404);
   } catch (error) {
+    await t.rollback();
+
     console.error(error);
     return h
       .response({

@@ -5,7 +5,7 @@ import { useAuth } from "../auth/AuthContext";
 const Card = ({ articleId, userId, username, title, content, createdAt }) => {
   const maxContentLength = 200;
 
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
 
   const slicedContent =
     content.length > maxContentLength
@@ -15,7 +15,7 @@ const Card = ({ articleId, userId, username, title, content, createdAt }) => {
   return (
     <div className="card max-w-[525px] w-full text-black mb-10 bg-neutral-50 rounded-3xl drop-shadow-card">
       <div className="card-body">
-        {userId !== loggedInUser.userId && (
+        {userId !== authenticatedUser.userId && (
           <Link
             to={`/dashboard/user-profile/${userId}`}
             className="text-lg w-max"

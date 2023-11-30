@@ -4,14 +4,14 @@ import Icon from "../../components/Icon";
 import PrimaryButton from "../../components/PrimaryButton";
 
 const UserDescriptions = () => {
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
 
   const navigate = useNavigate();
 
   return (
     <>
-      {loggedInUser.descriptions ? (
-        <p className="md:text-xl font-semibold">{loggedInUser.descriptions}</p>
+      {authenticatedUser.descriptions ? (
+        <p className="md:text-xl font-semibold">{authenticatedUser.descriptions}</p>
       ) : (
         <PrimaryButton onClick={() => navigate("descriptions/create")}>
           Add descriptions<Icon>description</Icon>

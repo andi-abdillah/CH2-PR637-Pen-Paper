@@ -8,19 +8,19 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useAuth } from "../../auth/AuthContext";
 
 const CreateUserDescriptions = () => {
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
 
   const [isProcessing, setIsProcessing] = useState(false);
 
   const navigate = useNavigate();
 
-  console.log(loggedInUser.descriptions);
+  console.log(authenticatedUser.descriptions);
 
   useEffect(() => {
-    if (loggedInUser.descriptions) {
+    if (authenticatedUser.descriptions) {
       navigate("/dashboard/my-profile");
     }
-  }, [loggedInUser.descriptions, navigate]);
+  }, [authenticatedUser.descriptions, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

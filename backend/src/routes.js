@@ -29,11 +29,6 @@ const routes = [
     handler: getAllUsersHandler,
   },
   {
-    method: "GET",
-    path: "/articles/search",
-    handler: searchArticlesHandler,
-  },
-  {
     method: "POST",
     path: "/users",
     handler: addUserHandler,
@@ -60,6 +55,11 @@ const routes = [
     method: "GET",
     path: "/articles",
     handler: getAllArticlesHandler,
+  },
+  {
+    method: "GET",
+    path: "/articles/search",
+    handler: searchArticlesHandler,
   },
   {
     method: "POST",

@@ -5,8 +5,8 @@ import { Outlet } from "react-router-dom";
 import { dateFormater } from "../../utils/dateFormater";
 
 const MyProfile = () => {
-  const { loggedInUser } = useAuth();
-  const user = loggedInUser;
+  const { authenticatedUser } = useAuth();
+  const user = authenticatedUser;
 
   return (
     <div>

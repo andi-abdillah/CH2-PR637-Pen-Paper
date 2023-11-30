@@ -11,8 +11,8 @@ import axios from "axios";
 import { useAuth } from "../../auth/AuthContext";
 
 const CreateStory = () => {
-  const { loggedInUser } = useAuth();
-  const userId = loggedInUser.userId;
+  const { authenticatedUser } = useAuth();
+  const userId = authenticatedUser.userId;
 
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();

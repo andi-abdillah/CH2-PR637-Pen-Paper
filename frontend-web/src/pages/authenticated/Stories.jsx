@@ -7,9 +7,9 @@ import { useAuth } from "../../auth/AuthContext";
 import axios from "axios";
 
 const Stories = () => {
-  const { loggedInUser } = useAuth();
+  const { authenticatedUser } = useAuth();
 
-  const user = loggedInUser;
+  const user = authenticatedUser;
 
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ const Stories = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/articles`);
+        const response = await axios.get("http://localhost:9000/articles");
         const allArticles = response.data.data.articles;
 
         const filteredArticles = allArticles.filter(
