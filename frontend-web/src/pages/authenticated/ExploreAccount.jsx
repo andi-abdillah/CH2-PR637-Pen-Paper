@@ -1,18 +1,58 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PrimaryButton from "../../components/PrimaryButton";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useAuth } from "../../auth/AuthContext";
+import axios from "axios";
 
 const ExploreAccount = () => {
-  // if (usersList?.length === 0) {
-  //   return (
-  //     <p>
-  //       We couldn't find any accounts matching "<b>{search}</b>".
-  //     </p>
-  //   );
-  // }
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(null);
+  const [usersList, setUsersList] = useState([]);
+
+  const { authenticatedUser } = useAuth();
+
+  useEffect(() => {
+    if (searchQuery) {
+      const fetchData = async () => {
+        try {
+          const foundUsers = await axios.get(
+            `http://localhost:9000/users/search?query=${searchQuery}`
+          );
+
+          const users = foundUsers.data.data.users;
+
+          const filteredUsers = users.filter(
+            (user) => user.userId !== authenticatedUser.userId
+          );
+
+          setUsersList(filteredUsers);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    } else {
+      setUsersList([]);
+    }
+  }, [searchQuery, authenticatedUser.userId]);
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("query"));
+  }, [searchParams]);
+
+  if (usersList?.length === 0 && searchQuery) {
+    return (
+      <p>
+        We couldn't find any accounts matching "<b>{searchQuery}</b>".
+      </p>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3">
-      Explore Account
-      {/* {usersList?.map((user, index) => (
+      {usersList?.map((user, index) => (
         <Link
           to={`/dashboard/user-profile/${user.userId}`}
           key={index}
@@ -20,7 +60,7 @@ const ExploreAccount = () => {
         >
           <PrimaryButton>{user.username}</PrimaryButton>
         </Link>
-      ))} */}
+      ))}
     </div>
   );
 };

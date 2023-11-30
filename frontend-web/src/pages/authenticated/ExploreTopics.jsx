@@ -3,6 +3,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import Icon from "../../components/Icon";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
 import axios from "axios";
 
 const ExploreTopics = () => {
@@ -10,6 +11,8 @@ const ExploreTopics = () => {
   const [searchQuery, setSearchQuery] = useState(null);
   const [filteredItems, setFilteredItems] = useState([]);
   const [visibleItems, setVisibleItems] = useState(4);
+
+  const { authenticatedUser } = useAuth();
 
   const handleLoadMore = () => {
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 4);
@@ -24,7 +27,12 @@ const ExploreTopics = () => {
           );
 
           const articles = foundArticles.data.data.articles;
-          setFilteredItems(articles);
+
+          const filteredArticles = articles.filter(
+            (article) => article.userId !== authenticatedUser.userId
+          );
+
+          setFilteredItems(filteredArticles);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -34,7 +42,7 @@ const ExploreTopics = () => {
     } else {
       setFilteredItems([]);
     }
-  }, [searchQuery]);
+  }, [searchQuery, authenticatedUser.userId]);
 
   useEffect(() => {
     setSearchQuery(searchParams.get("query"));

@@ -15,7 +15,7 @@ const addArticleHandler = async (request, h) => {
     updatedAt = new Date(),
   } = request.payload;
 
-  const t = await sequelize.transaction(); // Mulai transaksi
+  const t = await sequelize.transaction();
 
   try {
     await Article.create(
@@ -83,6 +83,7 @@ const addArticleHandler = async (request, h) => {
 const getAllArticlesHandler = async (request, h) => {
   try {
     const articles = await Article.findAll({
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: User,
@@ -250,7 +251,7 @@ const editArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
   const { title, content } = request.payload;
 
-  const t = await sequelize.transaction(); // Mulai transaksi
+  const t = await sequelize.transaction();
 
   try {
     const [, updatedRowCount] = await Article.update(
@@ -295,7 +296,7 @@ const editArticleByIdHandler = async (request, h) => {
 const deleteArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
 
-  const t = await sequelize.transaction(); // Mulai transaksi
+  const t = await sequelize.transaction();
 
   try {
     const deletedRowCount = await Article.destroy({

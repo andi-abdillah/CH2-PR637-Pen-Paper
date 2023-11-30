@@ -1,6 +1,7 @@
 const {
   addUserHandler,
   getAllUsersHandler,
+  searchUsersHandler,
   getUserByIdHandler,
   editUserByIdHandler,
   deleteUserByIdHandler,
@@ -27,6 +28,11 @@ const routes = [
     method: "GET",
     path: "/users",
     handler: getAllUsersHandler,
+  },
+  {
+    method: "GET",
+    path: "/users/search",
+    handler: searchUsersHandler,
   },
   {
     method: "POST",

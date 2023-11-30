@@ -7,14 +7,18 @@ import Icon from "../../components/Icon";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import BackButton from "../../components/BackButton";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../../auth/AuthContext";
+import axios from "axios";
+import Alert from "../../components/Alert";
 
 const CreateStory = () => {
   const { authenticatedUser } = useAuth();
   const userId = authenticatedUser.userId;
 
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const [alert, setAlert] = useState(null);
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -23,16 +27,21 @@ const CreateStory = () => {
     content: "",
   });
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    const trimmedValue =
-      name === "title" || name === "content" ? value.trim() : value;
 
     setFormData((prevData) => ({
       ...prevData,
-      [name]: trimmedValue,
+      [name]: value.trim(),
     }));
+  };
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert(null);
   };
 
   const handleSubmit = async (e) => {
@@ -41,7 +50,7 @@ const CreateStory = () => {
     setIsProcessing(true);
 
     if (!formData.title || !formData.content) {
-      console.error("Title and content cannot be empty");
+      showAlert("Title and content cannot be empty", "error");
       setIsProcessing(false);
       return;
     }
@@ -57,11 +66,10 @@ const CreateStory = () => {
       navigate("/dashboard/your-stories");
     } catch (error) {
       console.error("Error publishing story:", error);
+      showAlert("Error publishing story. Please try again later.", "error");
       setIsProcessing(false);
     }
   };
-
-  console.log(formData);
 
   return (
     <>
@@ -72,6 +80,14 @@ const CreateStory = () => {
       </HelmetProvider>
 
       <BackButton />
+
+      {alert && (
+        <Alert
+          type={alert.type}
+          onClose={handleCloseAlert}
+          message={alert.message}
+        />
+      )}
 
       <h2 className="mx-2 my-6 text-2xl text-primary font-semibold">
         Create a story
@@ -89,7 +105,7 @@ const CreateStory = () => {
             placeholder="Add title"
             className="border-0 my-3 font-semibold"
             defaultValue={formData.title}
-            onChange={handleChange}
+            onChange={handleInputChange}
             isFocused
             required
           />
@@ -102,7 +118,7 @@ const CreateStory = () => {
             placeholder="Write here"
             className="border-0 mt-3"
             defaultValue={formData.content}
-            onChange={handleChange}
+            onChange={handleInputChange}
             cols="30"
             rows="20"
             required

@@ -4,6 +4,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import axios from "axios";
+import Alert from "../../components/Alert";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const Login = () => {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -27,13 +29,30 @@ const Login = () => {
     fetchUsers();
   }, []);
 
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert(null);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value.trim(),
+    }));
   };
 
   const handleLogin = (e) => {
     e.preventDefault();
+
+    if (!formData.email || !formData.password) {
+      showAlert("Email and password are required", "error");
+      return;
+    }
 
     const user = users.find((userData) => userData.email === formData.email);
 
@@ -41,7 +60,7 @@ const Login = () => {
       login(user);
       navigate("/dashboard");
     } else {
-      alert("Invalid email or password");
+      showAlert("Invalid email or password. Please try again.", "error");
     }
   };
 
@@ -52,6 +71,14 @@ const Login = () => {
           <title>Sign In</title>
         </Helmet>
       </HelmetProvider>
+
+      {alert && (
+        <Alert
+          type={alert.type}
+          onClose={handleCloseAlert}
+          message={alert.message}
+        />
+      )}
 
       <div className="flex justify-center w-screen min-h-screen bg-primary">
         <div className="mx-6 my-auto lg:my-24 p-8 md:p-20 bg-neutral-50 rounded-3xl drop-shadow-card">
