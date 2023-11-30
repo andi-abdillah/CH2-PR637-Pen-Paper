@@ -1,11 +1,11 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import articles from "../../utils/articles.json";
 import Card from "../../components/Card";
 import Icon from "../../components/Icon";
 import PrimaryButton from "../../components/PrimaryButton";
 import Banner from "../../assets/banner.jpeg";
-import { useAuth } from "../../auth/AuthContext";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
   const topics = [
@@ -15,11 +15,20 @@ const Home = () => {
     "Politics",
   ];
 
-  const { loggedInUser } = useAuth();
+  const [articles, setArticles] = useState([]);
 
-  const filteredArticles = articles
-    .filter((article) => article.userID !== loggedInUser.userID)
-    .slice(0, 7);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:9000/articles");
+        setArticles(response.data.data.articles);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -58,7 +67,7 @@ const Home = () => {
           <h2 className="mb-6 text-center xs:text-start text-xl text-primary font-semibold">
             Might for you
           </h2>
-          {filteredArticles?.map((article, index) => (
+          {articles?.map((article, index) => (
             <Card key={index} {...article} />
           ))}
         </div>

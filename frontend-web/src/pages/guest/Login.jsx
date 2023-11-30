@@ -1,18 +1,31 @@
 import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../auth/AuthContext";
-import users from "../../utils/users.json";
+import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:9000/users");
+        setUsers(response.data.data.users);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

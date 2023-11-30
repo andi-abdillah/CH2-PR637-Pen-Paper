@@ -1,23 +1,38 @@
 import { useNavigate } from "react-router-dom";
 import PrimaryButton from "../../components/PrimaryButton";
-import articles from "../../utils/articles.json";
 import Card from "../../components/Card";
 import Icon from "../../components/Icon";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
+import axios from "axios";
 
 const Stories = () => {
   const { loggedInUser } = useAuth();
 
+  const user = loggedInUser;
+
   const navigate = useNavigate();
-  const [myArticles, setMyArticles] = useState([]);
+
+  const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    const foundArticles = articles.filter(
-      (article) => article.userID === loggedInUser.userID
-    );
-    setMyArticles(foundArticles);
-  }, [loggedInUser.userID]);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9000/articles`);
+        const allArticles = response.data.data.articles;
+
+        const filteredArticles = allArticles.filter(
+          (article) => article.userId === user.userId
+        );
+
+        setArticles(filteredArticles);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchData();
+  }, [user.userId]);
 
   return (
     <>
@@ -26,7 +41,7 @@ const Stories = () => {
       </PrimaryButton>
 
       <div className="flex flex-wrap justify-between mt-8">
-        {myArticles.map((article, index) => (
+        {articles.map((article, index) => (
           <Card key={index} {...article} />
         ))}
       </div>

@@ -5,15 +5,14 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { debounce, shuffle } from "lodash";
 import PrimaryButton from "../../components/PrimaryButton";
-import articlesData from "../../utils/articles.json";
-import usersData from "../../utils/users.json";
 import ExploreTopics from "./ExploreTopics";
 import ExploreAccount from "./ExploreAccount";
 import { useAuth } from "../../auth/AuthContext";
+import axios from "axios";
 
 const Explore = () => {
   const [searchParams] = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get("search"));
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search"));
   const [filteredItems, setFilteredItems] = useState([]);
   const [visibleItems, setVisibleItems] = useState(4);
   const [selectedTab, setSelectedTab] = useState("topics");
@@ -22,35 +21,64 @@ const Explore = () => {
   const { loggedInUser } = useAuth();
 
   useEffect(() => {
-    const filterItems = () => {
-      if (selectedTab === "topics") {
-        const filteredArticles = articlesData
-          .filter((article) => article.userID !== loggedInUser.userID)
-          .filter((article) =>
-            search
-              ? article.title.toLowerCase().includes(search.toLowerCase()) ||
-                article.content.toLowerCase().includes(search.toLowerCase())
-              : true
-          );
-        setFilteredItems(shuffle(filteredArticles));
-      } else {
-        if (search) {
-          const filteredUsers = usersData
-            .filter((user) => user.usersetSearchID !== loggedInUser.userID)
-            .filter((user) =>
-              search
-                ? user.username.toLowerCase().includes(search.toLowerCase())
-                : true
-            );
-          setUsersList(filteredUsers);
+    const fetchData = async () => {
+      try {
+        const usersResponse = await axios.get("http://localhost:9000/users");
+        const usersData = usersResponse.data.data.users;
+
+        const articlesResponse = await axios.get(
+          "http://localhost:9000/articles"
+        );
+        const articlesData = articlesResponse.data.data.articles;
+
+        if (selectedTab === "topics") {
+          const filteredArticles =
+            articlesData && articlesData.length
+              ? articlesData
+                  .filter((article) => article.userId !== loggedInUser.userId)
+                  .filter((article) =>
+                    searchQuery
+                      ? article.title
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                        article.content
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+                      : true
+                  )
+              : [];
+          setFilteredItems(shuffle(filteredArticles));
+        } else {
+          if (searchQuery) {
+            const filteredUsers =
+              usersData && usersData.length
+                ? usersData
+                    .filter(
+                      (user) => user.usersetSearchID !== loggedInUser.userId
+                    )
+                    .filter((user) =>
+                      searchQuery
+                        ? user.username
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase())
+                        : true
+                    )
+                : [];
+            setUsersList(filteredUsers);
+          }
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
-    filterItems();
-  }, [search, selectedTab, loggedInUser.userID]);
+    fetchData();
+  }, [searchQuery, selectedTab, loggedInUser.userId]);
 
-  const debouncedSearch = debounce((value) => setSearch(value), 1000);
+  const debouncedSearch = debounce(
+    (value) => setSearchQuery(value.trim()),
+    1000
+  );
 
   const handleChange = (e) => debouncedSearch(e.target.value);
 
@@ -95,7 +123,7 @@ const Explore = () => {
             id="search"
             name="search"
             type="text"
-            defaultValue={search}
+            defaultValue={searchQuery}
             className="pl-12 capitalize"
             placeholder={`Search ` + selectedTab}
             onChange={handleChange}
@@ -123,11 +151,11 @@ const Explore = () => {
               filteredItems={filteredItems}
               visibleItems={visibleItems}
               handleLoadMore={handleLoadMore}
-              search={search}
+              search={searchQuery}
             />
           )}
-          {selectedTab === "account" && search && (
-            <ExploreAccount usersList={usersList} search={search} />
+          {selectedTab === "account" && searchQuery && (
+            <ExploreAccount usersList={usersList} search={searchQuery} />
           )}
         </div>
       </div>

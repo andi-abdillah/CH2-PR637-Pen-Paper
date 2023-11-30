@@ -1,13 +1,12 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Outlet } from "react-router-dom";
 import Divider from "../../components/Divider";
-import users from "../../utils/users.json";
 import { useAuth } from "../../auth/AuthContext";
+import { dateFormater } from "../../utils/dateFormater";
 
 const YourStories = () => {
   const { loggedInUser } = useAuth();
-
-  const user = users.find((user) => user.userID === loggedInUser.userID);
+  const user = loggedInUser;
 
   return (
     <div>
@@ -22,7 +21,9 @@ const YourStories = () => {
         <Divider />
         <div className="text-lg px-3 xs:px-8 py-8 font-semibold">
           <h2>{user.username}</h2>
-          <h2 className="text-primary">Joined since {user.joined_at}</h2>
+          <h2 className="text-primary">
+            Joined since {dateFormater(user.createdAt)}
+          </h2>
         </div>
         <Divider />
 

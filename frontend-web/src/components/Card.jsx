@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
-import users from "../utils/users.json";
+import { dateFormater } from "../utils/dateFormater";
 import { useAuth } from "../auth/AuthContext";
 
-const Card = ({ id, userID, title, content, date }) => {
-  const { loggedInUser } = useAuth();
-
+const Card = ({ articleId, userId, username, title, content, createdAt }) => {
   const maxContentLength = 200;
 
-  const user = users.find((user) => user.userID === userID);
+  const { loggedInUser } = useAuth();
 
   const slicedContent =
     content.length > maxContentLength
@@ -15,23 +13,26 @@ const Card = ({ id, userID, title, content, date }) => {
       : content;
 
   return (
-    <div className="card max-w-[525px] text-black mb-10 bg-neutral-50 rounded-3xl drop-shadow-card">
+    <div className="card max-w-[525px] w-full text-black mb-10 bg-neutral-50 rounded-3xl drop-shadow-card">
       <div className="card-body">
-        {user.userID !== loggedInUser.userID && (
+        {userId !== loggedInUser.userId && (
           <Link
-            to={`/dashboard/user-profile/${user.userID}`}
+            to={`/dashboard/user-profile/${userId}`}
             className="text-lg w-max"
           >
-            {user.username}
+            {username}
           </Link>
         )}
+
         <h1 className="card-title text-3xl">{title}</h1>
+
         <p>
-          <b>{slicedContent}</b> - {date}
+          <b>{slicedContent}</b> - {dateFormater(createdAt)}
         </p>
+
         <div className="card-actions">
           <Link
-            to={`/dashboard/story-details/${id}`}
+            to={`/dashboard/story-details/${articleId}`}
             className="flex items-center text-lg text-primary font-semibold transition duration-100 ease-in-out hover:scale-[1.05]"
           >
             Read

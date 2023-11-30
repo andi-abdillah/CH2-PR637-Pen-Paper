@@ -1,28 +1,47 @@
+import React, { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext";
+import axios from "axios";
 import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import articles from "../../utils/articles.json";
-import users from "../../utils/users.json";
-import { useAuth } from "../../auth/AuthContext";
 import Icon from "../../components/Icon";
 import DeleteAlert from "../../components/DeleteAlert";
 
 const StoryDetails = () => {
   const { id } = useParams();
-
   const { loggedInUser } = useAuth();
-
   const [isMyArticle, setIsMyArticle] = useState(false);
-
   const [user, setUser] = useState({});
-
   const [article, setArticle] = useState(null);
-
   const navigate = useNavigate();
-
   const [alertOpen, setAlertOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const articleResponse = await axios.get(
+          `http://localhost:9000/articles/${id}`
+        );
+        const userId = articleResponse.data.data.article.userId;
+
+        const userResponse = await axios.get(
+          `http://localhost:9000/users/${userId}`
+        );
+
+        setArticle(articleResponse.data.data.article);
+        setUser(userResponse.data.data.user);
+
+        if (user.userId === loggedInUser.userId) {
+          setIsMyArticle(true);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [id, loggedInUser.userId, user.userId]);
 
   const openAlert = () => {
     setAlertOpen(true);
@@ -31,24 +50,6 @@ const StoryDetails = () => {
   const closeAlert = () => {
     setAlertOpen(false);
   };
-
-  useEffect(() => {
-    const foundArticle = articles.find(
-      (article) => article.id === parseInt(id)
-    );
-
-    if (foundArticle) {
-      setArticle(foundArticle);
-      const findUser = users.find(
-        (user) => user.userID === foundArticle.userID
-      );
-      setUser(findUser);
-
-      if (findUser.userID === loggedInUser.userID) {
-        setIsMyArticle(true);
-      }
-    }
-  }, [id, loggedInUser.userID]);
 
   if (!article) {
     return (
@@ -60,10 +61,6 @@ const StoryDetails = () => {
       </div>
     );
   }
-
-  const handleEditStory = () => {
-    navigate(`/dashboard/your-stories/${id}/edit`);
-  };
 
   return (
     <>
@@ -89,7 +86,9 @@ const StoryDetails = () => {
                 className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max"
               >
                 <li className="mx-5 mb-2 cursor-pointer">
-                  <span onClick={handleEditStory}>Edit story</span>
+                  <Link to={`/dashboard/your-stories/${id}/edit`}>
+                    Edit story
+                  </Link>
                 </li>
                 <Divider />
                 <li className="mx-5 mt-2 text-red-500 cursor-pointer">
@@ -105,12 +104,13 @@ const StoryDetails = () => {
           isOpen={alertOpen}
           onClose={closeAlert}
           navigate={navigate}
+          articleId={article.articleId}
         />
 
         <div className="flex flex-col gap-6 max-w-2xl xs:mx-8 mt-8 text-lg font-semibold">
-          {user.userID !== loggedInUser.userID && (
+          {user.userId !== loggedInUser.userId && (
             <Link
-              to={`/dashboard/user-profile/${user.userID}`}
+              to={`/dashboard/user-profile/${user.userId}`}
               className="text-black text-2xl w-max"
             >
               {user.username}

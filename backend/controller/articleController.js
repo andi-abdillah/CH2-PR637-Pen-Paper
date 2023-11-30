@@ -1,5 +1,6 @@
 const { nanoid } = require("nanoid");
 const { Article } = require("../models");
+const { User } = require("../models");
 
 const generateId = () => `article-${nanoid(20)}`;
 
@@ -57,7 +58,15 @@ const addArticleHandler = async (request, h) => {
 
 const getAllArticlesHandler = async (request, h) => {
   try {
-    const articles = await Article.findAll();
+    const articles = await Article.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username"],
+        },
+      ],
+    });
 
     if (!articles || articles.length === 0) {
       return h
@@ -73,6 +82,71 @@ const getAllArticlesHandler = async (request, h) => {
     const listArticles = articles.map((article) => ({
       articleId: article.articleId,
       userId: article.userId,
+      username: article.user.username,
+      title: article.title,
+      content: article.content,
+      createdAt: article.createdAt,
+      updatedAt: article.updatedAt,
+    }));
+
+    return h
+      .response({
+        status: "success",
+        data: {
+          articles: listArticles,
+        },
+      })
+      .code(200);
+  } catch (error) {
+    console.error(error);
+    return h
+      .response({
+        status: "error",
+        message: "Terjadi kesalahan pada server",
+      })
+      .code(500);
+  }
+};
+
+const searchArticlesHandler = async (request, h) => {
+  try {
+    const { search } = request.query;
+
+    const searchCondition = search
+      ? {
+          [Op.or]: [
+            { title: { [Op.iLike]: `%${search}%` } },
+            { content: { [Op.iLike]: `%${search}%` } },
+          ],
+        }
+      : {};
+
+    const articles = await Article.findAll({
+      where: searchCondition,
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["username"],
+        },
+      ],
+    });
+
+    if (!articles || articles.length === 0) {
+      return h
+        .response({
+          status: "success",
+          data: {
+            articles: [],
+          },
+        })
+        .code(200);
+    }
+
+    const listArticles = articles.map((article) => ({
+      articleId: article.articleId,
+      userId: article.userId,
+      username: article.user.username,
       title: article.title,
       content: article.content,
       createdAt: article.createdAt,
@@ -100,7 +174,15 @@ const getAllArticlesHandler = async (request, h) => {
 
 const getArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
-  const targetArticle = await Article.findByPk(articleId);
+  const targetArticle = await Article.findByPk(articleId, {
+    include: [
+      {
+        model: User,
+        as: "user",
+        attributes: ["username"],
+      },
+    ],
+  });
 
   if (targetArticle) {
     return h
@@ -110,6 +192,7 @@ const getArticleByIdHandler = async (request, h) => {
           article: {
             articleId: targetArticle.articleId,
             userId: targetArticle.userId,
+            username: targetArticle.user.username,
             title: targetArticle.title,
             content: targetArticle.content,
           },
@@ -201,6 +284,7 @@ const deleteArticleByIdHandler = async (request, h) => {
 module.exports = {
   addArticleHandler,
   getAllArticlesHandler,
+  searchArticlesHandler,
   getArticleByIdHandler,
   editArticleByIdHandler,
   deleteArticleByIdHandler,

@@ -13,7 +13,7 @@ const ExploreAccount = ({ usersList, search }) => {
     <div className="flex flex-col gap-3">
       {usersList?.map((user, index) => (
         <Link
-          to={`/dashboard/user-profile/${user.userID}`}
+          to={`/dashboard/user-profile/${user.userId}`}
           key={index}
           className="w-max"
         >

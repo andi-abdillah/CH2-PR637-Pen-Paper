@@ -9,6 +9,7 @@ const {
 const {
   addArticleHandler,
   getAllArticlesHandler,
+  searchArticlesHandler,
   getArticleByIdHandler,
   editArticleByIdHandler,
   deleteArticleByIdHandler,
@@ -26,6 +27,11 @@ const routes = [
     method: "GET",
     path: "/users",
     handler: getAllUsersHandler,
+  },
+  {
+    method: "GET",
+    path: "/articles/search",
+    handler: searchArticlesHandler,
   },
   {
     method: "POST",

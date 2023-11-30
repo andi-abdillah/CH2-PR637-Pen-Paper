@@ -7,22 +7,61 @@ import Icon from "../../components/Icon";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import BackButton from "../../components/BackButton";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../auth/AuthContext";
 
 const CreateStory = () => {
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { loggedInUser } = useAuth();
+  const userId = loggedInUser.userId;
 
+  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    userId: userId,
+    title: "",
+    content: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    const trimmedValue =
+      name === "title" || name === "content" ? value.trim() : value;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: trimmedValue,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setIsProcessing(true);
 
-    setTimeout(() => {
+    if (!formData.title || !formData.content) {
+      console.error("Title and content cannot be empty");
+      setIsProcessing(false);
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:9000/articles", {
+        userId: formData.userId,
+        title: formData.title,
+        content: formData.content,
+      });
+
       setIsProcessing(false);
       navigate("/dashboard/your-stories");
-    }, 2000);
+    } catch (error) {
+      console.error("Error publishing story:", error);
+      setIsProcessing(false);
+    }
   };
+
+  console.log(formData);
 
   return (
     <>
@@ -49,6 +88,8 @@ const CreateStory = () => {
             name="title"
             placeholder="Add title"
             className="border-0 my-3 font-semibold"
+            defaultValue={formData.title}
+            onChange={handleChange}
             isFocused
             required
           />
@@ -60,6 +101,8 @@ const CreateStory = () => {
             name="content"
             placeholder="Write here"
             className="border-0 mt-3"
+            defaultValue={formData.content}
+            onChange={handleChange}
             cols="30"
             rows="20"
             required
