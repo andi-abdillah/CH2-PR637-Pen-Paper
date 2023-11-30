@@ -11,7 +11,9 @@ const UserDescriptions = () => {
   return (
     <>
       {authenticatedUser.descriptions ? (
-        <p className="md:text-xl font-semibold">{authenticatedUser.descriptions}</p>
+        <p className="md:text-xl font-semibold">
+          {authenticatedUser.descriptions}
+        </p>
       ) : (
         <PrimaryButton onClick={() => navigate("descriptions/create")}>
           Add descriptions<Icon>description</Icon>
