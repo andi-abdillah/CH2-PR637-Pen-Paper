@@ -21,18 +21,15 @@ const UserProfile = () => {
     const fetchData = async () => {
       try {
         const foundUser = await axios.get(`http://localhost:9000/users/${id}`);
-        const user1 = foundUser.data.data.user;
+        const userData = foundUser.data.data.user;
 
         const foundArticles = await axios.get(
           `http://localhost:9000/articles/user/${id}`
         );
-
         const articles = foundArticles.data.data.articles;
-        console.log(user1);
-        console.log(articles);
 
         setUserArticles(articles);
-        setUser(user1);
+        setUser(userData);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
