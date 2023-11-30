@@ -13,6 +13,7 @@ import Alert from "../../components/Alert";
 
 const CreateStory = () => {
   const { authenticatedUser } = useAuth();
+
   const userId = authenticatedUser.userId;
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -22,7 +23,7 @@ const CreateStory = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    userId: userId,
+    userId,
     title: "",
     content: "",
   });
