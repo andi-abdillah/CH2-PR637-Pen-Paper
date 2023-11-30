@@ -1,8 +1,59 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useState } from "react";
+import Alert from "../../components/Alert";
+import axios from "axios";
 
 const Register = () => {
+  const [alert, setAlert] = useState(null);
+
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert(null);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value.trim(),
+    }));
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!formData.username || !formData.email || !formData.password) {
+        showAlert("Username, email, and password are required", "error");
+        return;
+      }
+
+      await axios.post("http://localhost:9000/users", formData);
+
+      showAlert("Account created successfully", "success");
+      setTimeout(() => {
+        navigate("/sign-in");
+      }, 2000);
+    } catch (error) {
+      console.error("Error creating account:", error);
+      showAlert("Failed to create account", "error");
+    }
+  };
+
   return (
     <>
       <HelmetProvider>
@@ -11,18 +62,31 @@ const Register = () => {
         </Helmet>
       </HelmetProvider>
 
+      {alert && (
+        <Alert
+          type={alert.type}
+          onClose={handleCloseAlert}
+          message={alert.message}
+        />
+      )}
+
       <div className="flex justify-center w-screen min-h-screen bg-primary">
         <div className="mx-6 my-auto lg:my-24 p-8 md:p-20 bg-neutral-50 rounded-3xl drop-shadow-card">
           <h1 className="max-w-md text-primary text-4xl sm:text-5xl md:text-6xl">
             <Link to="/">Join the community.</Link>
           </h1>
           <div className="w-full sm:max-w-xs mx-auto mt-16">
-            <form action="" className="flex flex-col gap-4">
+            <form
+              action=""
+              onSubmit={handleRegister}
+              className="flex flex-col gap-4"
+            >
               <TextInput
-                id="name"
-                name="name"
+                id="username"
+                name="username"
                 type="text"
-                defaultValue=""
+                defaultValue={formData.username}
+                onChange={handleInputChange}
                 placeholder="Full Name"
                 className="text-center"
                 required
@@ -32,7 +96,8 @@ const Register = () => {
                 id="email"
                 name="email"
                 type="email"
-                defaultValue=""
+                defaultValue={formData.email}
+                onChange={handleInputChange}
                 placeholder="Email"
                 className="text-center"
                 required
@@ -41,7 +106,8 @@ const Register = () => {
                 id="password"
                 name="password"
                 type="password"
-                defaultValue=""
+                defaultValue={formData.password}
+                onChange={handleInputChange}
                 placeholder="Password"
                 className="text-center"
                 required
