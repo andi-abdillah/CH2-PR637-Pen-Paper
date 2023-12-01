@@ -6,7 +6,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import Icon from "../../components/Icon";
 import axios from "axios";
 
-const EditUserProfile = ({ username, email }) => {
+const EditUserProfile = ({ userId, username, email }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -20,7 +20,7 @@ const EditUserProfile = ({ username, email }) => {
       username,
       email,
     });
-  }, [username, email]);
+  }, [username, email, isSuccess]);
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -38,6 +38,28 @@ const EditUserProfile = ({ username, email }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
+
+    try {
+      if (!formData.username || !formData.email) {
+        showAlert("Username and email are required", "error");
+        setIsProcessing(false);
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:9000/users/${userId}/profile`,
+        formData
+      );
+      setIsProcessing(false);
+      setIsSuccess(true);
+    } catch (error) {
+      console.error("Error saving username and email:", error);
+      showAlert(
+        "Error saving username and email. Please try again later.",
+        "error"
+      );
+      setIsProcessing(false);
+    }
   };
 
   return (

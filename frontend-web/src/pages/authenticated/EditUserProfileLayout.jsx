@@ -47,7 +47,11 @@ const EditUserProfileLayout = () => {
 
           <h3>Update your account's profile information and email address.</h3>
 
-          <EditUserProfile username={user.username} email={user.email} />
+          <EditUserProfile
+            userId={user.userId}
+            username={user.username}
+            email={user.email}
+          />
         </div>
         <div className="px-6 border-[1.2px] border-gray-400 rounded-2xl">
           <h2 className="mt-4 mb-1 md:text-xl text-primary font-semibold">
@@ -58,7 +62,7 @@ const EditUserProfileLayout = () => {
             Ensure your account is using a long, random password to stay secure.
           </h2>
 
-          <EditUserPassword />
+          <EditUserPassword userId={user.userId} />
         </div>
         <div className="px-6 border-[1.2px] border-gray-400 rounded-2xl">
           <h2 className="mt-4 mb-1 md:text-xl text-primary font-semibold">
@@ -69,7 +73,10 @@ const EditUserProfileLayout = () => {
             meaningful and informative details for a better user experience.
           </h3>
 
-          <EditUserDescriptions descriptions={user.descriptions} />
+          <EditUserDescriptions
+            userId={user.userId}
+            descriptions={user.descriptions}
+          />
         </div>
       </div>
     </>

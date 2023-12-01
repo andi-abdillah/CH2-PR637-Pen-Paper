@@ -6,7 +6,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import Icon from "../../components/Icon";
 import axios from "axios";
 
-const EditUserPassword = () => {
+const EditUserPassword = ({ userId }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);

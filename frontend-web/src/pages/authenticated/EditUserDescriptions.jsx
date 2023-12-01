@@ -6,7 +6,7 @@ import TextArea from "../../components/TextArea";
 import Alert from "../../components/Alert";
 import axios from "axios";
 
-const EditUserDescriptions = ({ descriptions }) => {
+const EditUserDescriptions = ({ userId, descriptions }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
