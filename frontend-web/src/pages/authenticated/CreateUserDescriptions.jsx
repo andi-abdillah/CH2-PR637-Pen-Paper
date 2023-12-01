@@ -11,15 +11,10 @@ import axios from "axios";
 
 const CreateUserDescriptions = () => {
   const { authenticatedUser } = useAuth();
-
   const [user, setUser] = useState({});
-
   const [isProcessing, setIsProcessing] = useState(false);
-
   const [alert, setAlert] = useState(null);
-
   const [formData, setFormData] = useState({});
-
   const navigate = useNavigate();
 
   const showAlert = (message, type) => {
@@ -32,11 +27,7 @@ const CreateUserDescriptions = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value.trim(),
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value.trim() }));
   };
 
   useEffect(() => {
@@ -61,18 +52,10 @@ const CreateUserDescriptions = () => {
     if (user.descriptions) {
       navigate("/dashboard/my-profile");
     }
-  }, [
-    authenticatedUser.userId,
-    navigate,
-    user.username,
-    user.email,
-    user.password,
-    user.descriptions,
-  ]);
+  }, [authenticatedUser.userId, navigate, user.descriptions]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setIsProcessing(true);
 
     try {
@@ -81,14 +64,15 @@ const CreateUserDescriptions = () => {
         setIsProcessing(false);
         return;
       }
+
       await axios.put(`http://localhost:9000/users/${user.userId}`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,
         descriptions: formData.descriptions,
       });
-      localStorage.setItem("authenticatedUser", JSON.stringify(formData));
 
+      localStorage.setItem("authenticatedUser", JSON.stringify(formData));
       setIsProcessing(false);
       navigate("/dashboard/my-profile");
     } catch (error) {
@@ -100,8 +84,6 @@ const CreateUserDescriptions = () => {
       setIsProcessing(false);
     }
   };
-
-  console.log(formData);
 
   return (
     <>

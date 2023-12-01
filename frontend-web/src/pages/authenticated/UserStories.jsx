@@ -4,9 +4,10 @@ import Card from "../../components/Card";
 import Icon from "../../components/Icon";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/AuthContext";
+import Loading from "../../components/Loading";
 import axios from "axios";
 
-const Stories = () => {
+const UserStories = () => {
   const { authenticatedUser } = useAuth();
 
   const user = authenticatedUser;
@@ -14,6 +15,8 @@ const Stories = () => {
   const navigate = useNavigate();
 
   const [articles, setArticles] = useState([]);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,11 +31,17 @@ const Stories = () => {
         setArticles(filteredArticles);
       } catch (error) {
         console.error("Error fetching user:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [user.userId]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -49,4 +58,4 @@ const Stories = () => {
   );
 };
 
-export default Stories;
+export default UserStories;

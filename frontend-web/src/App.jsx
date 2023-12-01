@@ -8,17 +8,17 @@ import YourStories from "./pages/authenticated/YourStories";
 import PageNotFound from "./pages/PageNotFound";
 import Login from "./pages/guest/Login";
 import Register from "./pages/guest/Register";
-import Stories from "./pages/authenticated/Stories";
+import UserStories from "./pages/authenticated/UserStories";
 import CreateStory from "./pages/authenticated/CreateStory";
 import EditStory from "./pages/authenticated/EditStory";
 import StoryDetails from "./pages/authenticated/StoryDetails";
-import UserProfile from "./pages/authenticated/UserProfile";
+import OtherUserProfile from "./pages/authenticated/OtherUserProfile";
 import { AuthProvider } from "./auth/AuthContext";
 import WelcomePage from "./pages/guest/WelcomePage";
 import UserDescriptions from "./pages/authenticated/UserDescriptions";
-import CreateUserDescriptions from "./pages/authenticated/CreateUserDescriptions";
 import ExploreTopics from "./pages/authenticated/ExploreTopics";
 import ExploreAccount from "./pages/authenticated/ExploreAccount";
+import EditUserProfileLayout from "./pages/authenticated/EditUserProfileLayout";
 
 function App() {
   return (
@@ -28,16 +28,15 @@ function App() {
           <Route index element={<Home />} />
           <Route path="my-profile" element={<MyProfile />}>
             <Route index element={<UserDescriptions />} />
-            <Route
-              path="descriptions/create"
-              element={<CreateUserDescriptions />}
-            />
+            <Route path="edit" element={<EditUserProfileLayout />} />
           </Route>
+
           <Route path="your-stories" element={<YourStories />}>
-            <Route index element={<Stories />} />
+            <Route index element={<UserStories />} />
             <Route path="create" element={<CreateStory />} />
             <Route path=":id/edit" element={<EditStory />} />
           </Route>
+
           <Route path="explore" element={<Explore />}>
             <Route index element={<Navigate to="topics" />} />
             <Route path="topics" element={<ExploreTopics />} />
@@ -45,7 +44,7 @@ function App() {
           </Route>
 
           <Route path="story-details/:id" element={<StoryDetails />} />
-          <Route path="user-profile/:id" element={<UserProfile />} />
+          <Route path="user-profile/:id" element={<OtherUserProfile />} />
         </Route>
         <Route path="/" element={<GuestLayout />}>
           <Route index element={<WelcomePage />} />

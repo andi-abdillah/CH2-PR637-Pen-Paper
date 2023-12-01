@@ -8,7 +8,7 @@ import Loading from "../../components/Loading";
 import { dateFormater } from "../../utils/dateFormater";
 import axios from "axios";
 
-const UserProfile = () => {
+const OtherUserProfile = () => {
   const { id } = useParams();
 
   const [user, setUser] = useState(null);
@@ -97,4 +97,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default OtherUserProfile;

@@ -6,7 +6,7 @@ import axios from "axios";
 import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";
 import Icon from "../../components/Icon";
-import DeleteAlert from "../../components/DeleteAlert";
+import StoryDeleteAlert from "../../components/StoryDeleteAlert";
 
 const StoryDetails = () => {
   const { id } = useParams();
@@ -100,7 +100,7 @@ const StoryDetails = () => {
         </div>
         <Divider />
 
-        <DeleteAlert
+        <StoryDeleteAlert
           isOpen={alertOpen}
           onClose={closeAlert}
           navigate={navigate}

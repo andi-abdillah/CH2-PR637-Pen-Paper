@@ -2,7 +2,7 @@ import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import axios from "axios";
 
-const DeleteAlert = ({ isOpen, onClose, navigate, articleId }) => {
+const StoryDeleteAlert = ({ isOpen, onClose, navigate, articleId }) => {
   if (!isOpen) {
     return null;
   }
@@ -34,4 +34,4 @@ const DeleteAlert = ({ isOpen, onClose, navigate, articleId }) => {
   );
 };
 
-export default DeleteAlert;
+export default StoryDeleteAlert;
