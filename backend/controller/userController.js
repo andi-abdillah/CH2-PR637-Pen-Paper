@@ -195,16 +195,16 @@ const getUserByIdHandler = async (request, h) => {
     .code(404);
 };
 
-const editUserByIdHandler = async (request, h) => {
+const editUserProfileHandler = async (request, h) => {
   const { userId } = request.params;
-  const { username, email, password, descriptions } = request.payload;
+  const { username, email } = request.payload;
 
-  if (!username || !email || !password) {
+  if (!username || !email) {
     return h
       .response({
         status: "fail",
         message:
-          "Gagal memperbarui pengguna. Mohon isi semua kolom yang diperlukan",
+          "Gagal memperbarui profil pengguna. Mohon isi semua kolom yang diperlukan",
       })
       .code(400);
   }
@@ -216,7 +216,115 @@ const editUserByIdHandler = async (request, h) => {
       {
         username,
         email,
-        password,
+        updatedAt: new Date(),
+      },
+      { where: { userId }, returning: true, transaction: t }
+    );
+
+    if (updatedRowCount > 0) {
+      await t.commit();
+      return h
+        .response({
+          status: "success",
+          message: "Profil pengguna berhasil diperbarui",
+        })
+        .code(200);
+    }
+
+    await t.rollback();
+    return h
+      .response({
+        status: "fail",
+        message: "Gagal memperbarui profil pengguna. Id tidak ditemukan",
+      })
+      .code(404);
+  } catch (error) {
+    console.error(error);
+    await t.rollback();
+    return h
+      .response({
+        status: "error",
+        message: "Terjadi kesalahan pada server",
+      })
+      .code(500);
+  }
+};
+
+const editUserPasswordHandler = async (request, h) => {
+  const { userId } = request.params;
+  const { currentPassword, newPassword, confirmPassword } = request.payload;
+
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return h
+      .response({
+        status: "fail",
+        message:
+          "Gagal memperbarui kata sandi pengguna. Mohon isi semua kolom yang diperlukan",
+      })
+      .code(400);
+  }
+
+  if (newPassword !== confirmPassword) {
+    return h
+      .response({
+        status: "fail",
+        message:
+          "Gagal memperbarui kata sandi pengguna. Kata sandi tidak sesuai",
+      })
+      .code(400);
+  }
+
+  const t = await sequelize.transaction();
+
+  try {
+    const targetUser = await User.findByPk(userId);
+
+    if (!targetUser) {
+      await t.rollback();
+      return h
+        .response({
+          status: "fail",
+          message: "Gagal memperbarui kata sandi pengguna. Id tidak ditemukan",
+        })
+        .code(404);
+    }
+
+    await User.update(
+      {
+        password: newPassword,
+        updatedAt: new Date(),
+      },
+      { where: { userId }, transaction: t }
+    );
+
+    await t.commit();
+    return h
+      .response({
+        status: "success",
+        message: "Kata sandi pengguna berhasil diperbarui",
+      })
+      .code(200);
+  } catch (error) {
+    console.error(error);
+    await t.rollback();
+    return h
+      .response({
+        status: "error",
+        message: "Terjadi kesalahan pada server",
+      })
+      .code(500);
+  }
+};
+
+const editUserDescriptionsHandler = async (request, h) => {
+  const { userId } = request.params;
+  const { descriptions } = request.payload;
+
+  const t = await sequelize.transaction();
+
+  try {
+    const [, updatedRowCount] = await User.update(
+      {
         descriptions,
         updatedAt: new Date(),
       },
@@ -228,7 +336,7 @@ const editUserByIdHandler = async (request, h) => {
       return h
         .response({
           status: "success",
-          message: "Pengguna berhasil diperbarui",
+          message: "Deskripsi pengguna berhasil diperbarui",
         })
         .code(200);
     }
@@ -237,7 +345,7 @@ const editUserByIdHandler = async (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "Gagal memperbarui pengguna. Id tidak ditemukan",
+        message: "Gagal memperbarui deskripsi pengguna. Id tidak ditemukan",
       })
       .code(404);
   } catch (error) {
@@ -302,6 +410,8 @@ module.exports = {
   getAllUsersHandler,
   searchUsersHandler,
   getUserByIdHandler,
-  editUserByIdHandler,
+  editUserProfileHandler,
+  editUserPasswordHandler,
+  editUserDescriptionsHandler,
   deleteUserByIdHandler,
 };

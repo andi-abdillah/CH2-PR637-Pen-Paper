@@ -6,13 +6,19 @@ import TextArea from "../../components/TextArea";
 import Alert from "../../components/Alert";
 import axios from "axios";
 
-const EditUserDescriptions = () => {
+const EditUserDescriptions = ({ descriptions }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     descriptions: "",
   });
+
+  useEffect(() => {
+    setFormData({
+      descriptions,
+    });
+  }, [descriptions]);
 
   const showAlert = (message, type) => {
     setAlert({ message, type });

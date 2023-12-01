@@ -3,7 +3,9 @@ const {
   getAllUsersHandler,
   searchUsersHandler,
   getUserByIdHandler,
-  editUserByIdHandler,
+  editUserProfileHandler,
+  editUserPasswordHandler,
+  editUserDescriptionsHandler,
   deleteUserByIdHandler,
 } = require("./../controller/userController");
 
@@ -52,8 +54,18 @@ const routes = [
   },
   {
     method: "PUT",
-    path: "/users/{userId}",
-    handler: editUserByIdHandler,
+    path: "/users/{userId}/profile",
+    handler: editUserProfileHandler,
+  },
+  {
+    method: "PUT",
+    path: "/users/{userId}/password",
+    handler: editUserPasswordHandler,
+  },
+  {
+    method: "PUT",
+    path: "/users/{userId}/descriptions",
+    handler: editUserDescriptionsHandler,
   },
   {
     method: "DELETE",

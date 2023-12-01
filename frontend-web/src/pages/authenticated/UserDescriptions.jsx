@@ -44,7 +44,7 @@ const UserDescriptions = () => {
       {user.descriptions ? (
         <>
           <SecondaryButton onClick={() => navigate("edit")}>
-            Edit Profile<Icon>manage_accounts</Icon>
+            Manage Profile<Icon>manage_accounts</Icon>
           </SecondaryButton>
 
           <p className="md:text-xl font-semibold mt-8">{user.descriptions}</p>

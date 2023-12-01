@@ -3,10 +3,30 @@ import Divider from "../../components/Divider";
 import { useAuth } from "../../auth/AuthContext";
 import { Outlet } from "react-router-dom";
 import { dateFormater } from "../../utils/dateFormater";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const MyProfile = () => {
   const { authenticatedUser } = useAuth();
-  const user = authenticatedUser;
+
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const foundUser = await axios.get(
+          `http://localhost:9000/users/${authenticatedUser.userId}`
+        );
+
+        const userData = foundUser.data.data.user;
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchData();
+  }, [authenticatedUser.userId]);
 
   return (
     <div>

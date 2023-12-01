@@ -3,13 +3,31 @@ import { useAuth } from "../../auth/AuthContext";
 import EditUserDescriptions from "./EditUserDescriptions";
 import EditUserPassword from "./EditUserPassword";
 import EditUserProfile from "./EditUserProfile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackButton from "../../components/BackButton";
+import axios from "axios";
 
 const EditUserProfileLayout = () => {
   const { authenticatedUser } = useAuth();
 
   const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const foundUser = await axios.get(
+          `http://localhost:9000/users/${authenticatedUser.userId}`
+        );
+
+        const userData = foundUser.data.data.user;
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchData();
+  }, [authenticatedUser.userId]);
 
   return (
     <>
@@ -29,7 +47,7 @@ const EditUserProfileLayout = () => {
 
           <h3>Update your account's profile information and email address.</h3>
 
-          <EditUserProfile />
+          <EditUserProfile username={user.username} email={user.email} />
         </div>
         <div className="px-6 border-[1.2px] border-gray-400 rounded-2xl">
           <h2 className="mt-4 mb-1 md:text-xl text-primary font-semibold">
@@ -51,7 +69,7 @@ const EditUserProfileLayout = () => {
             meaningful and informative details for a better user experience.
           </h3>
 
-          <EditUserDescriptions />
+          <EditUserDescriptions descriptions={user.descriptions} />
         </div>
       </div>
     </>

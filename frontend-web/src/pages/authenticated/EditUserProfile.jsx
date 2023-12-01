@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "../../components/Alert";
 import InputLabel from "../../components/InputLabel";
 import TextInput from "../../components/TextInput";
@@ -6,7 +6,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import Icon from "../../components/Icon";
 import axios from "axios";
 
-const EditUserProfile = () => {
+const EditUserProfile = ({ username, email }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -14,6 +14,13 @@ const EditUserProfile = () => {
     username: "",
     email: "",
   });
+
+  useEffect(() => {
+    setFormData({
+      username,
+      email,
+    });
+  }, [username, email]);
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -32,6 +39,7 @@ const EditUserProfile = () => {
     e.preventDefault();
     setIsProcessing(true);
   };
+
   return (
     <>
       {alert && (
@@ -51,7 +59,7 @@ const EditUserProfile = () => {
           id="username"
           name="username"
           type="username"
-          defaultValue={formData.currentPassword}
+          defaultValue={formData.username}
           onChange={handleInputChange}
           placeholder="Username"
           autoComplete="username"
@@ -63,7 +71,7 @@ const EditUserProfile = () => {
           id="email"
           name="email"
           type="email"
-          defaultValue={formData.newPassword}
+          defaultValue={formData.email}
           onChange={handleInputChange}
           placeholder="Email"
           autoComplete="email"
