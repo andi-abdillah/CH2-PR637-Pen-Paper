@@ -1,28 +1,29 @@
-import { useEffect, useState } from "react";
-import TextInput from "../../components/TextInput";
-import Divider from "../../components/Divider";
-import TextArea from "../../components/TextArea";
-import PrimaryButton from "../../components/PrimaryButton";
-import Icon from "../../components/Icon";
+import { useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import BackButton from "../../components/BackButton";
-import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
-import Alert from "../../components/Alert";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../auth/AuthContext";
+import BackButton from "../../../components/BackButton";
+import Alert from "../../../components/Alert";
+import TextInput from "../../../components/TextInput";
+import Divider from "../../../components/Divider";
+import TextArea from "../../../components/TextArea";
+import PrimaryButton from "../../../components/PrimaryButton";
+import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditStory = () => {
-  const { id } = useParams();
-
+const CreateStory = () => {
   const { authenticatedUser } = useAuth();
 
-  const navigate = useNavigate();
+  const userId = authenticatedUser.userId;
 
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [alert, setAlert] = useState(null);
 
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
+    userId,
     title: "",
     content: "",
   });
@@ -44,30 +45,6 @@ const EditStory = () => {
     setAlert(null);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:9000/articles/${id}`
-        );
-
-        const foundArticle = response.data.data.article;
-
-        if (foundArticle.userId !== authenticatedUser.userId || !foundArticle)
-          navigate("/dashboard/your-stories");
-
-        setFormData({
-          title: foundArticle.title,
-          content: foundArticle.content,
-        });
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      }
-    };
-
-    fetchData();
-  }, [id, authenticatedUser.userId, navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -80,7 +57,8 @@ const EditStory = () => {
     }
 
     try {
-      await axios.put(`http://localhost:9000/articles/${id}`, {
+      await axios.post("http://localhost:9000/articles", {
+        userId: formData.userId,
         title: formData.title,
         content: formData.content,
       });
@@ -98,7 +76,7 @@ const EditStory = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Edit Story</title>
+          <title>Create A Story</title>
         </Helmet>
       </HelmetProvider>
 
@@ -113,7 +91,7 @@ const EditStory = () => {
       )}
 
       <h2 className="mx-2 my-6 text-2xl text-primary font-semibold">
-        Edit Story
+        Create a story
       </h2>
 
       <div className="px-6 py-2 border-[1.2px] border-gray-400 rounded-2xl">
@@ -126,9 +104,10 @@ const EditStory = () => {
             id="title"
             name="title"
             placeholder="Add title"
+            className="border-0 my-3 font-semibold"
             defaultValue={formData.title}
             onChange={handleInputChange}
-            className="border-0 my-3 font-semibold"
+            isFocused
             required
           />
 
@@ -138,11 +117,11 @@ const EditStory = () => {
             id="content"
             name="content"
             placeholder="Write here"
+            className="border-0 mt-3"
             defaultValue={formData.content}
             onChange={handleInputChange}
-            className="border-0 mt-3"
             cols="30"
-            rows="20"
+            rows="15"
             required
           ></TextArea>
 
@@ -169,4 +148,4 @@ const EditStory = () => {
   );
 };
 
-export default EditStory;
+export default CreateStory;

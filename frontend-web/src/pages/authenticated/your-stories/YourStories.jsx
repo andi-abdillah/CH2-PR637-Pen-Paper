@@ -1,14 +1,13 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import Divider from "../../components/Divider";
-import { useAuth } from "../../auth/AuthContext";
 import { Outlet } from "react-router-dom";
-import { dateFormater } from "../../utils/dateFormater";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../auth/AuthContext";
+import Divider from "../../../components/Divider";
 import axios from "axios";
+import ProfileHeader from "../../../components/ProfileHeader";
 
-const MyProfile = () => {
+const YourStories = () => {
   const { authenticatedUser } = useAuth();
-
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -32,23 +31,15 @@ const MyProfile = () => {
     <div>
       <HelmetProvider>
         <Helmet>
-          <title>Profile</title>
+          <title>Your Stories</title>
         </Helmet>
       </HelmetProvider>
 
       <div>
-        <h1 className="text-3xl xs:text-5xl mb-8">Profile</h1>
-
+        <h1 className="text-3xl xs:text-5xl mb-8">Your Stories</h1>
         <Divider />
 
-        <div className="text-lg px-3 xs:px-8 py-8 font-semibold">
-          <h2 className="capitalize">{user.username}</h2>
-          <h2 className="text-primary">
-            Joined since {dateFormater(user.createdAt)}
-          </h2>
-        </div>
-
-        <Divider />
+        <ProfileHeader {...user} />
 
         <div className="mt-8">
           <Outlet />
@@ -58,4 +49,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default YourStories;

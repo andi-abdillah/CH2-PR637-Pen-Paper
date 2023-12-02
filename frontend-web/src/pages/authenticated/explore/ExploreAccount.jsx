@@ -1,14 +1,16 @@
 import { Link, useSearchParams } from "react-router-dom";
-import PrimaryButton from "../../components/PrimaryButton";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useAuth } from "../../auth/AuthContext";
+import { useAuth } from "../../../auth/AuthContext";
+import PrimaryButton from "../../../components/PrimaryButton";
+import Loading from "../../../components/Loading";
 import axios from "axios";
 
 const ExploreAccount = () => {
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(null);
   const [usersList, setUsersList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { authenticatedUser } = useAuth();
 
@@ -29,6 +31,8 @@ const ExploreAccount = () => {
           setUsersList(filteredUsers);
         } catch (error) {
           console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -41,6 +45,10 @@ const ExploreAccount = () => {
   useEffect(() => {
     setSearchQuery(searchParams.get("query"));
   }, [searchParams]);
+
+  if (loading && searchQuery) {
+    return <Loading />;
+  }
 
   if (usersList?.length === 0 && searchQuery) {
     return (

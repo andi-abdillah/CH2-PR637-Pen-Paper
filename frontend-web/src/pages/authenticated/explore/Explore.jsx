@@ -7,9 +7,9 @@ import {
 } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
-import TextInput from "../../components/TextInput";
-import Divider from "../../components/Divider";
-import PrimaryButton from "../../components/PrimaryButton";
+import Divider from "../../../components/Divider";
+import TextInput from "../../../components/TextInput";
+import PrimaryButton from "../../../components/PrimaryButton";
 
 const Explore = () => {
   const [searchParams] = useSearchParams();

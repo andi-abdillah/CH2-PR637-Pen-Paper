@@ -1,24 +1,26 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./auth/AuthContext";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout";
 import GuestLayout from "./layouts/GuestLayout";
+
 import Home from "./pages/authenticated/Home";
-import Explore from "./pages/authenticated/Explore";
-import MyProfile from "./pages/authenticated/MyProfile";
-import YourStories from "./pages/authenticated/YourStories";
 import PageNotFound from "./pages/PageNotFound";
 import Login from "./pages/guest/Login";
 import Register from "./pages/guest/Register";
-import UserStories from "./pages/authenticated/UserStories";
-import CreateStory from "./pages/authenticated/CreateStory";
-import EditStory from "./pages/authenticated/EditStory";
 import StoryDetails from "./pages/authenticated/StoryDetails";
 import OtherUserProfile from "./pages/authenticated/OtherUserProfile";
-import { AuthProvider } from "./auth/AuthContext";
 import WelcomePage from "./pages/guest/WelcomePage";
-import UserDescriptions from "./pages/authenticated/UserDescriptions";
-import ExploreTopics from "./pages/authenticated/ExploreTopics";
-import ExploreAccount from "./pages/authenticated/ExploreAccount";
-import EditUserProfileLayout from "./pages/authenticated/EditUserProfileLayout";
+
+import MyProfile from "./pages/authenticated/my-profile/MyProfile";
+import UserDescriptions from "./pages/authenticated/my-profile/UserDescriptions";
+import EditUserProfileLayout from "./pages/authenticated/my-profile/EditUserProfileLayout";
+import YourStories from "./pages/authenticated/your-stories/YourStories";
+import UserStories from "./pages/authenticated/your-stories/UserStories";
+import CreateStory from "./pages/authenticated/your-stories/CreateStory";
+import EditStory from "./pages/authenticated/your-stories/EditStory";
+import Explore from "./pages/authenticated/explore/Explore";
+import ExploreTopics from "./pages/authenticated/explore/ExploreTopics";
+import ExploreAccount from "./pages/authenticated/explore/ExploreAccount";
 
 function App() {
   return (

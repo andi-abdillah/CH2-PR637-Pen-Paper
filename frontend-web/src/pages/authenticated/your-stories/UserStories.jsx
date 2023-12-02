@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import PrimaryButton from "../../components/PrimaryButton";
-import Card from "../../components/Card";
-import Icon from "../../components/Icon";
 import { useEffect, useState } from "react";
-import { useAuth } from "../../auth/AuthContext";
-import Loading from "../../components/Loading";
+import { useAuth } from "../../../auth/AuthContext";
+import Loading from "../../../components/Loading";
+import PrimaryButton from "../../../components/PrimaryButton";
+import Icon from "../../../components/Icon";
+import Card from "../../../components/Card";
 import axios from "axios";
 
 const UserStories = () => {

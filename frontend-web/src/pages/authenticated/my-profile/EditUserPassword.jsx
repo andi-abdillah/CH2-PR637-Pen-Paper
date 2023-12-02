@@ -1,15 +1,14 @@
 import { useState } from "react";
-import Alert from "../../components/Alert";
-import InputLabel from "../../components/InputLabel";
-import TextInput from "../../components/TextInput";
-import PrimaryButton from "../../components/PrimaryButton";
-import Icon from "../../components/Icon";
+import InputLabel from "../../../components/InputLabel";
+import Alert from "../../../components/Alert";
+import TextInput from "../../../components/TextInput";
+import PrimaryButton from "../../../components/PrimaryButton";
+import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserPassword = ({ userId }) => {
+const EditUserPassword = ({ userData, setUserData }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState(null);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -32,7 +31,40 @@ const EditUserPassword = ({ userId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
+
+    try {
+      if (
+        !formData.currentPassword ||
+        !formData.newPassword ||
+        !formData.confirmPassword
+      ) {
+        showAlert(
+          "Current password, new password and confirm password are required",
+          "error"
+        );
+        setIsProcessing(false);
+        return;
+      }
+
+      await axios.put(
+        `http://localhost:9000/users/${userData.userId}/password`,
+        formData
+      );
+
+      setUserData((prevUser) => ({
+        ...prevUser,
+        password: formData.newPassword,
+        updateAt: new Date(),
+      }));
+
+      setIsProcessing(false);
+    } catch (error) {
+      console.error("Error saving new password:", error);
+      showAlert("Error saving new password. Please try again later.", "error");
+      setIsProcessing(false);
+    }
   };
+
   return (
     <>
       {alert && (
@@ -47,11 +79,11 @@ const EditUserPassword = ({ userId }) => {
         onSubmit={handleSubmit}
         className="flex flex-col text-sm xs:text-lg mt-3"
       >
-        <InputLabel htmlFor="current password" value="Current Password" />
+        <InputLabel htmlFor="currentPassword" value="Current Password" />
         <TextInput
-          id="current password"
-          name="current password"
-          type="current password"
+          id="currentPassword"
+          name="currentPassword"
+          type="text"
           defaultValue={formData.currentPassword}
           onChange={handleInputChange}
           placeholder="Current Password"
@@ -59,11 +91,11 @@ const EditUserPassword = ({ userId }) => {
           required
         />
 
-        <InputLabel htmlFor="new password" value="New Password" />
+        <InputLabel htmlFor="newPassword" value="New Password" />
         <TextInput
-          id="new password"
-          name="new password"
-          type="new password"
+          id="newPassword"
+          name="newPassword"
+          type="text"
           defaultValue={formData.newPassword}
           onChange={handleInputChange}
           placeholder="New Password"
@@ -71,14 +103,14 @@ const EditUserPassword = ({ userId }) => {
           required
         />
 
-        <InputLabel htmlFor="password" value="Password" />
+        <InputLabel htmlFor="confirmPassword" value="Password" />
         <TextInput
-          id="password"
-          name="password"
-          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          type="text"
           defaultValue={formData.password}
           onChange={handleInputChange}
-          placeholder="Password"
+          placeholder="Confirm Password"
           autoComplete="new-password"
           required
         />

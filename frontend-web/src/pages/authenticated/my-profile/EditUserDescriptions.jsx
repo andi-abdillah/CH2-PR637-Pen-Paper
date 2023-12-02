@@ -1,26 +1,23 @@
-import { useEffect, useState } from "react";
-import Alert from "../../components/Alert";
-import InputLabel from "../../components/InputLabel";
-import TextInput from "../../components/TextInput";
-import PrimaryButton from "../../components/PrimaryButton";
-import Icon from "../../components/Icon";
+import React, { useEffect, useState } from "react";
+import InputLabel from "../../../components/InputLabel";
+import TextArea from "../../../components/TextArea";
+import Alert from "../../../components/Alert";
+import PrimaryButton from "../../../components/PrimaryButton";
+import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserProfile = ({ userId, username, email }) => {
+const EditUserDescriptions = ({ userData, setUserData }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState(null);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
+    descriptions: "",
   });
 
   useEffect(() => {
     setFormData({
-      username,
-      email,
+      descriptions: userData.descriptions,
     });
-  }, [username, email, isSuccess]);
+  }, [userData]);
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -40,24 +37,27 @@ const EditUserProfile = ({ userId, username, email }) => {
     setIsProcessing(true);
 
     try {
-      if (!formData.username || !formData.email) {
-        showAlert("Username and email are required", "error");
+      if (!formData.descriptions) {
+        showAlert("Descriptions required", "error");
         setIsProcessing(false);
         return;
       }
 
       await axios.put(
-        `http://localhost:9000/users/${userId}/profile`,
+        `http://localhost:9000/users/${userData.userId}/descriptions`,
         formData
       );
+
+      setUserData((prevUser) => ({
+        ...prevUser,
+        descriptions: formData.descriptions,
+        updateAt: new Date(),
+      }));
+
       setIsProcessing(false);
-      setIsSuccess(true);
     } catch (error) {
-      console.error("Error saving username and email:", error);
-      showAlert(
-        "Error saving username and email. Please try again later.",
-        "error"
-      );
+      console.error("Error saving descriptions:", error);
+      showAlert("Error saving descriptions. Please try again later.", "error");
       setIsProcessing(false);
     }
   };
@@ -76,29 +76,18 @@ const EditUserProfile = ({ userId, username, email }) => {
         onSubmit={handleSubmit}
         className="flex flex-col text-sm xs:text-lg mt-3"
       >
-        <InputLabel htmlFor="username" value="Username" />
-        <TextInput
-          id="username"
-          name="username"
-          type="username"
-          defaultValue={formData.username}
+        <InputLabel htmlFor="descriptions" value="Descriptions" />
+        <TextArea
+          id="descriptions"
+          name="descriptions"
+          placeholder="Insert descriptions here"
+          className="border-0"
+          defaultValue={formData.descriptions}
           onChange={handleInputChange}
-          placeholder="Username"
-          autoComplete="username"
+          cols="30"
+          rows="10"
           required
-        />
-
-        <InputLabel htmlFor="email" value="Email" />
-        <TextInput
-          id="email"
-          name="email"
-          type="email"
-          defaultValue={formData.email}
-          onChange={handleInputChange}
-          placeholder="Email"
-          autoComplete="email"
-          required
-        />
+        ></TextArea>
 
         <PrimaryButton
           type="submit"
@@ -122,4 +111,4 @@ const EditUserProfile = ({ userId, username, email }) => {
   );
 };
 
-export default EditUserProfile;
+export default EditUserDescriptions;

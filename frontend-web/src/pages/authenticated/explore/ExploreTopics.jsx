@@ -1,9 +1,10 @@
-import Card from "../../components/Card";
-import PrimaryButton from "../../components/PrimaryButton";
-import Icon from "../../components/Icon";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
+import { useAuth } from "../../../auth/AuthContext";
+import Card from "../../../components/Card";
+import PrimaryButton from "../../../components/PrimaryButton";
+import Icon from "../../../components/Icon";
+import Loading from "../../../components/Loading";
 import axios from "axios";
 
 const ExploreTopics = () => {
@@ -11,6 +12,7 @@ const ExploreTopics = () => {
   const [searchQuery, setSearchQuery] = useState(null);
   const [filteredItems, setFilteredItems] = useState([]);
   const [visibleItems, setVisibleItems] = useState(4);
+  const [loading, setLoading] = useState(true);
 
   const { authenticatedUser } = useAuth();
 
@@ -35,6 +37,8 @@ const ExploreTopics = () => {
           setFilteredItems(filteredArticles);
         } catch (error) {
           console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -47,6 +51,10 @@ const ExploreTopics = () => {
   useEffect(() => {
     setSearchQuery(searchParams.get("query"));
   }, [searchParams]);
+
+  if (loading && searchQuery) {
+    return <Loading />;
+  }
 
   if (filteredItems?.length === 0 && searchQuery) {
     return (

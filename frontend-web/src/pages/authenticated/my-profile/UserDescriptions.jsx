@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
-import Icon from "../../components/Icon";
-import PrimaryButton from "../../components/PrimaryButton";
 import { useEffect, useState } from "react";
-import Loading from "../../components/Loading";
 import axios from "axios";
-import SecondaryButton from "../../components/SecondaryButton";
+import { useAuth } from "../../../auth/AuthContext";
+import Loading from "../../../components/Loading";
+import SecondaryButton from "../../../components/SecondaryButton";
+import Icon from "../../../components/Icon";
+import ProfileHeader from "../../../components/ProfileHeader";
 
 const UserDescriptions = () => {
   const { authenticatedUser } = useAuth();
@@ -41,19 +41,17 @@ const UserDescriptions = () => {
   }
   return (
     <>
-      {user.descriptions ? (
-        <>
-          <SecondaryButton onClick={() => navigate("edit")}>
-            Manage Profile<Icon>manage_accounts</Icon>
-          </SecondaryButton>
+      <ProfileHeader {...user} />
 
-          <p className="md:text-xl font-semibold mt-8">{user.descriptions}</p>
-        </>
-      ) : (
-        <PrimaryButton onClick={() => navigate("descriptions/create")}>
-          Add descriptions<Icon>description</Icon>
-        </PrimaryButton>
-      )}
+      <div className="mt-8">
+        <SecondaryButton onClick={() => navigate("edit")}>
+          Manage Profile<Icon>manage_accounts</Icon>
+        </SecondaryButton>
+
+        <p className="md:text-xl font-semibold mt-8">
+          {user.descriptions ? user.descriptions : "No descriptions yet"}
+        </p>
+      </div>
     </>
   );
 };
