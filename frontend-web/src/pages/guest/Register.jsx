@@ -1,19 +1,22 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "../../components/Alert";
 import axios from "axios";
 
 const Register = () => {
   const [alert, setAlert] = useState(null);
 
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
+  });
+
+  const [response, setResponse] = useState({
+    status: "",
+    message: "",
   });
 
   const showAlert = (message, type) => {
@@ -37,22 +40,33 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      if (!formData.username || !formData.email || !formData.password) {
-        showAlert("Username, email, and password are required", "error");
-        return;
-      }
+      const result = await axios.post("http://localhost:9000/users", formData);
+      const successMessage = result.data;
 
-      await axios.post("http://localhost:9000/users", formData);
+      setResponse({
+        status: successMessage.status,
+        message: successMessage.message,
+      });
 
-      showAlert("Account created successfully", "success");
-      setTimeout(() => {
-        navigate("/sign-in");
-      }, 2000);
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+      });
     } catch (error) {
-      console.error("Error creating account:", error);
-      showAlert("Failed to create account", "error");
+      const errorMessage = error.response.data;
+      setResponse({
+        status: errorMessage.status,
+        message: errorMessage.message,
+      });
     }
   };
+
+  useEffect(() => {
+    if (response.message && response.status) {
+      showAlert(response.message, response.status);
+    }
+  }, [response]);
 
   return (
     <>
@@ -85,7 +99,7 @@ const Register = () => {
                 id="username"
                 name="username"
                 type="text"
-                defaultValue={formData.username}
+                value={formData.username}
                 onChange={handleInputChange}
                 placeholder="Full Name"
                 className="text-center"
@@ -96,7 +110,7 @@ const Register = () => {
                 id="email"
                 name="email"
                 type="email"
-                defaultValue={formData.email}
+                value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Email"
                 className="text-center"
@@ -106,7 +120,7 @@ const Register = () => {
                 id="password"
                 name="password"
                 type="password"
-                defaultValue={formData.password}
+                value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Password"
                 className="text-center"

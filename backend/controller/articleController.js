@@ -64,7 +64,7 @@ const addArticleHandler = async (request, h) => {
     return h
       .response({
         status: "error",
-        message: "Artikel gagal ditambahkan",
+        message: "Artikel gagal ditambahkan, coba lagi nanti",
       })
       .code(500);
   } catch (error) {
