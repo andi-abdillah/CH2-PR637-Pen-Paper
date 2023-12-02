@@ -1,27 +1,17 @@
 import { useState } from "react";
 import InputLabel from "../../../components/InputLabel";
-import Alert from "../../../components/Alert";
 import TextInput from "../../../components/TextInput";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserPassword = ({ userData, setUserData }) => {
+const EditUserPassword = ({ userData, setUserData, setResponse }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [alert, setAlert] = useState(null);
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert(null);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -33,23 +23,17 @@ const EditUserPassword = ({ userData, setUserData }) => {
     setIsProcessing(true);
 
     try {
-      if (
-        !formData.currentPassword ||
-        !formData.newPassword ||
-        !formData.confirmPassword
-      ) {
-        showAlert(
-          "Current password, new password and confirm password are required",
-          "error"
-        );
-        setIsProcessing(false);
-        return;
-      }
-
-      await axios.put(
+      const result = await axios.put(
         `http://localhost:9000/users/${userData.userId}/password`,
         formData
       );
+      const successMessage = result.data;
+      console.log(successMessage);
+
+      setResponse({
+        status: successMessage.status,
+        message: successMessage.message,
+      });
 
       setUserData((prevUser) => ({
         ...prevUser,
@@ -60,21 +44,19 @@ const EditUserPassword = ({ userData, setUserData }) => {
       setIsProcessing(false);
     } catch (error) {
       console.error("Error saving new password:", error);
-      showAlert("Error saving new password. Please try again later.", "error");
+      const errorMessage = error.response.data;
+      setResponse({
+        status: errorMessage.status,
+        message: errorMessage.message,
+      });
       setIsProcessing(false);
     }
   };
 
+  console.log(formData);
+
   return (
     <>
-      {alert && (
-        <Alert
-          type={alert.type}
-          onClose={handleCloseAlert}
-          message={alert.message}
-        />
-      )}
-
       <form
         onSubmit={handleSubmit}
         className="flex flex-col text-sm xs:text-lg mt-3"
@@ -83,8 +65,8 @@ const EditUserPassword = ({ userData, setUserData }) => {
         <TextInput
           id="currentPassword"
           name="currentPassword"
-          type="text"
-          defaultValue={formData.currentPassword}
+          type="password"
+          value={formData.currentPassword}
           onChange={handleInputChange}
           placeholder="Current Password"
           autoComplete="current-password"
@@ -95,8 +77,8 @@ const EditUserPassword = ({ userData, setUserData }) => {
         <TextInput
           id="newPassword"
           name="newPassword"
-          type="text"
-          defaultValue={formData.newPassword}
+          type="password"
+          value={formData.newPassword}
           onChange={handleInputChange}
           placeholder="New Password"
           autoComplete="new-password"
@@ -107,8 +89,8 @@ const EditUserPassword = ({ userData, setUserData }) => {
         <TextInput
           id="confirmPassword"
           name="confirmPassword"
-          type="text"
-          defaultValue={formData.password}
+          type="password"
+          value={formData.confirmPassword}
           onChange={handleInputChange}
           placeholder="Confirm Password"
           autoComplete="new-password"

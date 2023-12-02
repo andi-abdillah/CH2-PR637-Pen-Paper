@@ -86,16 +86,12 @@ const Login = () => {
             <Link to="/">Join the community.</Link>
           </h1>
           <div className="w-full sm:max-w-xs mx-auto mt-16">
-            <form
-              action=""
-              onSubmit={handleLogin}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleLogin} className="flex flex-col gap-4">
               <TextInput
                 id="email"
                 name="email"
                 type="email"
-                defaultValue={formData.email}
+                value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Email"
                 className="text-center"
@@ -106,7 +102,7 @@ const Login = () => {
                 id="password"
                 name="password"
                 type="password"
-                defaultValue={formData.password}
+                value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Password"
                 className="text-center"
@@ -114,7 +110,7 @@ const Login = () => {
               />
               <button
                 type="submit"
-                className="text-primary text-lg font-semibold"
+                className="text-primary text-lg font-semibold mx-auto w-max"
               >
                 Sign In
               </button>

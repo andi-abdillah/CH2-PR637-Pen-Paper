@@ -7,64 +7,65 @@ const generateId = () => `user-${nanoid(20)}`;
 
 // Handler to add a new user
 const addUserHandler = async (request, h) => {
-  // Generate a unique user ID
-  const id = generateId();
-
-  // Destructure payload and provide default values
-  const {
-    userId = id,
-    username,
-    email,
-    password,
-    descriptions,
-    createdAt = new Date(),
-    updatedAt = new Date(),
-  } = request.payload;
-
-  // Validation checks for empty fields
-  if (!username || !email || !password) {
-    return h
-      .response({
-        status: "error",
-        message: "Username, email and password are required",
-      })
-      .code(400);
-  }
-
-  // Check if username is already taken
-  const existingUsername = await User.findOne({ where: { username } });
-  if (existingUsername) {
-    return h
-      .response({
-        status: "error",
-        message: "Username is already taken. Please choose a different one.",
-      })
-      .code(400);
-  }
-
-  // Check if email is already taken
-  const existingEmail = await User.findOne({ where: { email } });
-  if (existingEmail) {
-    return h
-      .response({
-        status: "error",
-        message: "Email is already registered. Please use a different email.",
-      })
-      .code(400);
-  }
-
-  // Password length validation
-  if (password.length < 8) {
-    return h
-      .response({
-        status: "error",
-        message: "Password must be at least 8 characters long.",
-      })
-      .code(400);
-  }
-
   const t = await sequelize.transaction();
+
   try {
+    // Generate a unique user ID
+    const id = generateId();
+
+    // Destructure payload and provide default values
+    const {
+      userId = id,
+      username,
+      email,
+      password,
+      descriptions,
+      createdAt = new Date(),
+      updatedAt = new Date(),
+    } = request.payload;
+
+    // Validation checks for empty fields
+    if (!username || !email || !password) {
+      return h
+        .response({
+          status: "fail",
+          message: "Username, email and password are required",
+        })
+        .code(400);
+    }
+
+    // Check if username is already taken
+    const existingUsername = await User.findOne({ where: { username } });
+    if (existingUsername) {
+      return h
+        .response({
+          status: "fail",
+          message: "Username is already taken. Please choose a different one.",
+        })
+        .code(400);
+    }
+
+    // Check if email is already taken
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail) {
+      return h
+        .response({
+          status: "fail",
+          message: "Email is already registered. Please use a different email.",
+        })
+        .code(400);
+    }
+
+    // Password length validation
+    if (password.length < 8) {
+      return h
+        .response({
+          status: "fail",
+          message: "Password must be at least 8 characters long.",
+        })
+        .code(400);
+    }
+
     // Create a new user
     const createdUser = await User.create(
       {
@@ -93,7 +94,7 @@ const addUserHandler = async (request, h) => {
     await t.rollback();
     return h
       .response({
-        status: "error",
+        status: "fail",
         message: "Failed to add user.",
       })
       .code(500);
@@ -132,6 +133,7 @@ const getAllUsersHandler = async (request, h) => {
       userId: user.userId,
       username: user.username,
       email: user.email,
+      password: user.password,
       descriptions: user.descriptions,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -184,6 +186,7 @@ const searchUsersHandler = async (request, h) => {
     const listUsers = users.map((user) => ({
       userId: user.userId,
       username: user.username,
+      password: user.password,
       email: user.email,
       descriptions: user.descriptions,
       createdAt: user.createdAt,
@@ -221,6 +224,7 @@ const getUserByIdHandler = async (request, h) => {
             userId: targetUser.userId,
             username: targetUser.username,
             email: targetUser.email,
+            password: targetUser.password,
             descriptions: targetUser.descriptions,
             createdAt: targetUser.createdAt,
             updatedAt: targetUser.updatedAt,
@@ -371,7 +375,7 @@ const editUserPasswordHandler = async (request, h) => {
     }
 
     // Validate if the current password matches the password in the database
-    const isPasswordValid = await targetUser.comparePassword(currentPassword);
+    const isPasswordValid = targetUser.password === currentPassword;
 
     if (!isPasswordValid) {
       await t.rollback();

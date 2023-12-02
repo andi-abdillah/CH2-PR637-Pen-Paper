@@ -90,11 +90,7 @@ const Register = () => {
             <Link to="/">Join the community.</Link>
           </h1>
           <div className="w-full sm:max-w-xs mx-auto mt-16">
-            <form
-              action=""
-              onSubmit={handleRegister}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleRegister} className="flex flex-col gap-4">
               <TextInput
                 id="username"
                 name="username"
@@ -128,7 +124,7 @@ const Register = () => {
               />
               <button
                 type="submit"
-                className="text-primary text-lg font-semibold"
+                className="text-primary text-lg font-semibold mx-auto w-max"
               >
                 Create Account
               </button>

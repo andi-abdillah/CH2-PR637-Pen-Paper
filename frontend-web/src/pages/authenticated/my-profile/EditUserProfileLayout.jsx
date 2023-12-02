@@ -5,24 +5,29 @@ import BackButton from "../../../components/BackButton";
 import EditUserDescriptions from "./EditUserDescriptions";
 import EditUserPassword from "./EditUserPassword";
 import EditUserProfile from "./EditUserProfile";
-import axios from "axios";
 import ProfileHeader from "../../../components/ProfileHeader";
+import Alert from "../../../components/Alert";
+import axios from "axios";
 
 const EditUserProfileLayout = () => {
   const { authenticatedUser } = useAuth();
 
   const [user, setUser] = useState({});
 
-  const [count, setCount] = useState(0);
+  const [alert, setAlert] = useState(null);
 
-  useEffect(() => {
-    let interval = setInterval(() => {
-      setCount((count) => count + 1);
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  const [response, setResponse] = useState({
+    status: "",
+    message: "",
+  });
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert(null);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +46,12 @@ const EditUserProfileLayout = () => {
     fetchData();
   }, [authenticatedUser.userId, user.updateAt]);
 
+  useEffect(() => {
+    if (response.message && response.status) {
+      showAlert(response.message, response.status);
+    }
+  }, [response]);
+
   return (
     <div className="max-w-4xl">
       <HelmetProvider>
@@ -49,9 +60,15 @@ const EditUserProfileLayout = () => {
         </Helmet>
       </HelmetProvider>
 
-      <ProfileHeader {...user} />
+      {alert && (
+        <Alert
+          type={alert.type}
+          onClose={handleCloseAlert}
+          message={alert.message}
+        />
+      )}
 
-      <p className="text-center font-bold">{count}</p>
+      <ProfileHeader {...user} />
 
       <BackButton />
 
@@ -66,6 +83,7 @@ const EditUserProfileLayout = () => {
           <EditUserProfile
             userData={user}
             setUserData={setUser}
+            setResponse={setResponse}
             key={user.updateAt}
           />
         </div>
@@ -81,6 +99,7 @@ const EditUserProfileLayout = () => {
           <EditUserPassword
             userData={user}
             setUserData={setUser}
+            setResponse={setResponse}
             key={user.updateAt}
           />
         </div>
@@ -94,7 +113,12 @@ const EditUserProfileLayout = () => {
             meaningful and informative details for a better user experience.
           </h3>
 
-          <EditUserDescriptions userData={user} setUserData={setUser} />
+          <EditUserDescriptions
+            userData={user}
+            setUserData={setUser}
+            setResponse={setResponse}
+            key={user.updateAt}
+          />
         </div>
       </div>
     </div>

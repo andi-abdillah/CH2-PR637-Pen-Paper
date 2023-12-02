@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import InputLabel from "../../../components/InputLabel";
 import TextArea from "../../../components/TextArea";
-import Alert from "../../../components/Alert";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserDescriptions = ({ userData, setUserData }) => {
+const EditUserDescriptions = ({ userData, setUserData, setResponse }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [alert, setAlert] = useState(null);
   const [formData, setFormData] = useState({
     descriptions: "",
   });
@@ -18,14 +16,6 @@ const EditUserDescriptions = ({ userData, setUserData }) => {
       descriptions: userData.descriptions,
     });
   }, [userData]);
-
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert(null);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,16 +27,17 @@ const EditUserDescriptions = ({ userData, setUserData }) => {
     setIsProcessing(true);
 
     try {
-      if (!formData.descriptions) {
-        showAlert("Descriptions required", "error");
-        setIsProcessing(false);
-        return;
-      }
-
-      await axios.put(
+      const result = await axios.put(
         `http://localhost:9000/users/${userData.userId}/descriptions`,
         formData
       );
+      const successMessage = result.data;
+      console.log(successMessage);
+
+      setResponse({
+        status: successMessage.status,
+        message: successMessage.message,
+      });
 
       setUserData((prevUser) => ({
         ...prevUser,
@@ -57,21 +48,17 @@ const EditUserDescriptions = ({ userData, setUserData }) => {
       setIsProcessing(false);
     } catch (error) {
       console.error("Error saving descriptions:", error);
-      showAlert("Error saving descriptions. Please try again later.", "error");
+      const errorMessage = error.response.data;
+      setResponse({
+        status: errorMessage.status,
+        message: errorMessage.message,
+      });
       setIsProcessing(false);
     }
   };
 
   return (
     <>
-      {alert && (
-        <Alert
-          type={alert.type}
-          onClose={handleCloseAlert}
-          message={alert.message}
-        />
-      )}
-
       <form
         onSubmit={handleSubmit}
         className="flex flex-col text-sm xs:text-lg mt-3"
