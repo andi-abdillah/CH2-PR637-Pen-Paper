@@ -1,31 +1,18 @@
 import { Link } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useEffect, useState } from "react";
-import Alert from "../../components/Alert";
+import { useState } from "react";
 import axios from "axios";
+import { useAlert } from "../../provider/AlertProvider";
 
 const Register = () => {
-  const [alert, setAlert] = useState(null);
+  const { setResponse } = useAlert();
 
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-
-  const [response, setResponse] = useState({
-    status: "",
-    message: "",
-  });
-
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert(null);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,12 +49,6 @@ const Register = () => {
     }
   };
 
-  useEffect(() => {
-    if (response.message && response.status) {
-      showAlert(response.message, response.status);
-    }
-  }, [response]);
-
   return (
     <>
       <HelmetProvider>
@@ -75,14 +56,6 @@ const Register = () => {
           <title>Register</title>
         </Helmet>
       </HelmetProvider>
-
-      {alert && (
-        <Alert
-          type={alert.type}
-          onClose={handleCloseAlert}
-          message={alert.message}
-        />
-      )}
 
       <div className="flex justify-center w-screen min-h-screen bg-primary">
         <div className="mx-6 my-auto lg:my-24 p-8 md:p-20 bg-neutral-50 rounded-3xl drop-shadow-card">
