@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../../auth/AuthContext";
+import { useAuth } from "../../../provider/AuthContext";
 import Loading from "../../../components/Loading";
 import SecondaryButton from "../../../components/SecondaryButton";
 import Icon from "../../../components/Icon";

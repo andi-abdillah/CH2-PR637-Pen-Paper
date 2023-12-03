@@ -19,7 +19,7 @@ const EditUserDescriptions = ({ userData, setUserData, setResponse }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value.trim() }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -32,7 +32,6 @@ const EditUserDescriptions = ({ userData, setUserData, setResponse }) => {
         formData
       );
       const successMessage = result.data;
-      console.log(successMessage);
 
       setResponse({
         status: successMessage.status,
@@ -69,11 +68,10 @@ const EditUserDescriptions = ({ userData, setUserData, setResponse }) => {
           name="descriptions"
           placeholder="Insert descriptions here"
           className="border-0"
-          defaultValue={formData.descriptions}
+          value={formData.descriptions}
           onChange={handleInputChange}
           cols="30"
           rows="10"
-          required
         ></TextArea>
 
         <PrimaryButton

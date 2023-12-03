@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../../auth/AuthContext";
+import { useAuth } from "../../../provider/AuthContext";
+import { useAlert } from "../../../provider/AlertProvider";
 import BackButton from "../../../components/BackButton";
-import Alert from "../../../components/Alert";
 import TextInput from "../../../components/TextInput";
 import Divider from "../../../components/Divider";
 import TextArea from "../../../components/TextArea";
@@ -16,11 +16,11 @@ const EditStory = () => {
 
   const { authenticatedUser } = useAuth();
 
+  const { setResponse } = useAlert();
+
   const navigate = useNavigate();
 
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const [alert, setAlert] = useState(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -34,14 +34,6 @@ const EditStory = () => {
       ...prevData,
       [name]: value.trim(),
     }));
-  };
-
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert(null);
   };
 
   useEffect(() => {
@@ -73,23 +65,28 @@ const EditStory = () => {
 
     setIsProcessing(true);
 
-    if (!formData.title || !formData.content) {
-      showAlert("Title and content cannot be empty", "error");
-      setIsProcessing(false);
-      return;
-    }
-
     try {
-      await axios.put(`http://localhost:9000/articles/${id}`, {
+      const result = await axios.put(`http://localhost:9000/articles/${id}`, {
         title: formData.title,
         content: formData.content,
+      });
+
+      const successMessage = result.data;
+
+      setResponse({
+        status: successMessage.status,
+        message: successMessage.message,
       });
 
       setIsProcessing(false);
       navigate("/dashboard/your-stories");
     } catch (error) {
       console.error("Error publishing story:", error);
-      showAlert("Error publishing story. Please try again later.", "error");
+      const errorMessage = error.response.data;
+      setResponse({
+        status: errorMessage.status,
+        message: errorMessage.message,
+      });
       setIsProcessing(false);
     }
   };
@@ -103,14 +100,6 @@ const EditStory = () => {
       </HelmetProvider>
 
       <BackButton />
-
-      {alert && (
-        <Alert
-          type={alert.type}
-          onClose={handleCloseAlert}
-          message={alert.message}
-        />
-      )}
 
       <h2 className="mx-2 my-6 text-2xl text-primary font-semibold">
         Edit Story

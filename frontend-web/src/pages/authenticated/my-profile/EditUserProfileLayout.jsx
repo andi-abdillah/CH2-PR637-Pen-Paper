@@ -1,33 +1,20 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useAuth } from "../../../auth/AuthContext";
+import { useAuth } from "../../../provider/AuthContext";
 import { useEffect, useState } from "react";
 import BackButton from "../../../components/BackButton";
 import EditUserDescriptions from "./EditUserDescriptions";
 import EditUserPassword from "./EditUserPassword";
 import EditUserProfile from "./EditUserProfile";
 import ProfileHeader from "../../../components/ProfileHeader";
-import Alert from "../../../components/Alert";
 import axios from "axios";
+import { useAlert } from "../../../provider/AlertProvider";
 
 const EditUserProfileLayout = () => {
   const { authenticatedUser } = useAuth();
 
+  const { setResponse } = useAlert();
+
   const [user, setUser] = useState({});
-
-  const [alert, setAlert] = useState(null);
-
-  const [response, setResponse] = useState({
-    status: "",
-    message: "",
-  });
-
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert(null);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,12 +33,6 @@ const EditUserProfileLayout = () => {
     fetchData();
   }, [authenticatedUser.userId, user.updateAt]);
 
-  useEffect(() => {
-    if (response.message && response.status) {
-      showAlert(response.message, response.status);
-    }
-  }, [response]);
-
   return (
     <div className="max-w-4xl">
       <HelmetProvider>
@@ -59,14 +40,6 @@ const EditUserProfileLayout = () => {
           <title>Update Profile</title>
         </Helmet>
       </HelmetProvider>
-
-      {alert && (
-        <Alert
-          type={alert.type}
-          onClose={handleCloseAlert}
-          message={alert.message}
-        />
-      )}
 
       <ProfileHeader {...user} />
 

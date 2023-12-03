@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useAuth } from "../../../auth/AuthContext";
+import { useAuth } from "../../../provider/AuthContext";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Loading from "../../../components/Loading";
 import axios from "axios";

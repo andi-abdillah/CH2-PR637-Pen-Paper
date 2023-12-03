@@ -28,7 +28,6 @@ const EditUserPassword = ({ userData, setUserData, setResponse }) => {
         formData
       );
       const successMessage = result.data;
-      console.log(successMessage);
 
       setResponse({
         status: successMessage.status,
@@ -52,8 +51,6 @@ const EditUserPassword = ({ userData, setUserData, setResponse }) => {
       setIsProcessing(false);
     }
   };
-
-  console.log(formData);
 
   return (
     <>

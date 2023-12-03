@@ -34,7 +34,6 @@ const EditUserProfile = ({ userData, setUserData, setResponse }) => {
         formData
       );
       const successMessage = result.data;
-      console.log(successMessage);
 
       setResponse({
         status: successMessage.status,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
+import { useAuth } from "../../provider/AuthContext";
 import axios from "axios";
 import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";

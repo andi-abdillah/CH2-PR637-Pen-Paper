@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./auth/AuthContext";
+import { AuthProvider } from "./provider/AuthContext";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout";
 import GuestLayout from "./layouts/GuestLayout";
 

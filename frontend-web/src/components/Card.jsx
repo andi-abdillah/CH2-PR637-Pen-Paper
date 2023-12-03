@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { dateFormater } from "../utils/dateFormater";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../provider/AuthContext";
 
 const Card = ({ articleId, userId, username, title, content, createdAt }) => {
   const maxContentLength = 200;

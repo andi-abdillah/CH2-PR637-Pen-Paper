@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useState, useEffect } from "react";
-import { useAuth } from "../../auth/AuthContext";
+import { useAuth } from "../../provider/AuthContext";
 import axios from "axios";
 import Alert from "../../components/Alert";
 

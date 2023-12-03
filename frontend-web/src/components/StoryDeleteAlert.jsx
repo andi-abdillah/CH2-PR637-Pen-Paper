@@ -1,21 +1,38 @@
+import { useAlert } from "../provider/AlertProvider";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import axios from "axios";
 
 const StoryDeleteAlert = ({ isOpen, onClose, navigate, articleId }) => {
+  const { setResponse } = useAlert();
+
   if (!isOpen) {
     return null;
   }
 
   const handleConfirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:9000/articles/${articleId}`);
+      const result = await axios.delete(
+        `http://localhost:9000/articles/${articleId}`
+      );
+
+      const successMessage = result.data;
+
+      setResponse({
+        status: successMessage.status,
+        message: successMessage.message,
+      });
 
       onClose();
 
       navigate("/dashboard/your-stories");
     } catch (error) {
       console.error("Error deleting article:", error);
+      const errorMessage = error.response.data;
+      setResponse({
+        status: errorMessage.status,
+        message: errorMessage.message,
+      });
     }
   };
 

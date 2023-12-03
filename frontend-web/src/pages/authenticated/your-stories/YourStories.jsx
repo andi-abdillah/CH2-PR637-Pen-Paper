@@ -1,7 +1,7 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useAuth } from "../../../auth/AuthContext";
+import { useAuth } from "../../../provider/AuthContext";
 import Divider from "../../../components/Divider";
 import axios from "axios";
 import ProfileHeader from "../../../components/ProfileHeader";

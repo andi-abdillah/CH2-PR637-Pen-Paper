@@ -463,7 +463,7 @@ const editUserDescriptionsHandler = async (request, h) => {
     // Update user descriptions
     const [, updatedRowCount] = await User.update(
       {
-        descriptions,
+        descriptions: descriptions.trim(),
         updatedAt: new Date(),
       },
       { where: { userId }, returning: true, transaction: t }

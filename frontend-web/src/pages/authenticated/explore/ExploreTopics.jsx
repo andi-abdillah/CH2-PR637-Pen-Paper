@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../../../auth/AuthContext";
+import { useAuth } from "../../../provider/AuthContext";
 import Card from "../../../components/Card";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
