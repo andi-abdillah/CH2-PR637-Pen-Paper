@@ -1,7 +1,7 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import Divider from "../../components/Divider";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";
 import Card from "../../components/Card";
 import Loading from "../../components/Loading";

@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../provider/AuthContext";
-import axios from "axios";
 import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";
 import Icon from "../../components/Icon";
 import StoryDeleteAlert from "../../components/StoryDeleteAlert";
+import Loading from "../../components/Loading";
+import axios from "axios";
 
 const StoryDetails = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ const StoryDetails = () => {
   const [article, setArticle] = useState(null);
   const navigate = useNavigate();
   const [alertOpen, setAlertOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +39,8 @@ const StoryDetails = () => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -50,6 +54,10 @@ const StoryDetails = () => {
   const closeAlert = () => {
     setAlertOpen(false);
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   if (!article) {
     return (

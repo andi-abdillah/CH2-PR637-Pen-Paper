@@ -1,13 +1,14 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useAuth } from "../../../provider/AuthContext";
 import { useEffect, useState } from "react";
+import { useAlert } from "../../../provider/AlertProvider";
 import BackButton from "../../../components/BackButton";
 import EditUserDescriptions from "./EditUserDescriptions";
 import EditUserPassword from "./EditUserPassword";
 import EditUserProfile from "./EditUserProfile";
 import ProfileHeader from "../../../components/ProfileHeader";
+import Loading from "../../../components/Loading";
 import axios from "axios";
-import { useAlert } from "../../../provider/AlertProvider";
 
 const EditUserProfileLayout = () => {
   const { authenticatedUser } = useAuth();
@@ -15,6 +16,8 @@ const EditUserProfileLayout = () => {
   const { setResponse } = useAlert();
 
   const [user, setUser] = useState({});
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,11 +30,17 @@ const EditUserProfileLayout = () => {
         setUser(userData);
       } catch (error) {
         console.error("Error fetching user:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [authenticatedUser.userId, user.updateAt]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <div className="max-w-4xl">

@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./provider/AuthContext";
+import { AlertProvider } from "./provider/AlertProvider";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout";
 import GuestLayout from "./layouts/GuestLayout";
 
@@ -25,36 +26,38 @@ import ExploreAccount from "./pages/authenticated/explore/ExploreAccount";
 function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path="/dashboard" element={<AuthenticatedLayout />}>
-          <Route index element={<Home />} />
-          <Route path="my-profile" element={<MyProfile />}>
-            <Route index element={<UserDescriptions />} />
-            <Route path="edit" element={<EditUserProfileLayout />} />
-          </Route>
+      <AlertProvider>
+        <Routes>
+          <Route path="/dashboard" element={<AuthenticatedLayout />}>
+            <Route index element={<Home />} />
+            <Route path="my-profile" element={<MyProfile />}>
+              <Route index element={<UserDescriptions />} />
+              <Route path="edit" element={<EditUserProfileLayout />} />
+            </Route>
 
-          <Route path="your-stories" element={<YourStories />}>
-            <Route index element={<UserStories />} />
-            <Route path="create" element={<CreateStory />} />
-            <Route path=":id/edit" element={<EditStory />} />
-          </Route>
+            <Route path="your-stories" element={<YourStories />}>
+              <Route index element={<UserStories />} />
+              <Route path="create" element={<CreateStory />} />
+              <Route path=":id/edit" element={<EditStory />} />
+            </Route>
 
-          <Route path="explore" element={<Explore />}>
-            <Route index element={<Navigate to="topics" />} />
-            <Route path="topics" element={<ExploreTopics />} />
-            <Route path="account" element={<ExploreAccount />} />
-          </Route>
+            <Route path="explore" element={<Explore />}>
+              <Route index element={<Navigate to="topics" />} />
+              <Route path="topics" element={<ExploreTopics />} />
+              <Route path="account" element={<ExploreAccount />} />
+            </Route>
 
-          <Route path="story-details/:id" element={<StoryDetails />} />
-          <Route path="user-profile/:id" element={<OtherUserProfile />} />
-        </Route>
-        <Route path="/" element={<GuestLayout />}>
-          <Route index element={<WelcomePage />} />
-          <Route path="sign-in" element={<Login />} />
-          <Route path="register" element={<Register />} />
-        </Route>
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
+            <Route path="story-details/:id" element={<StoryDetails />} />
+            <Route path="user-profile/:id" element={<OtherUserProfile />} />
+          </Route>
+          <Route path="/" element={<GuestLayout />}>
+            <Route index element={<WelcomePage />} />
+            <Route path="sign-in" element={<Login />} />
+            <Route path="register" element={<Register />} />
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </AlertProvider>
     </AuthProvider>
   );
 }

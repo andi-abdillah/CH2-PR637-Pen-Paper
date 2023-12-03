@@ -1,10 +1,11 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "../../components/Card";
 import Icon from "../../components/Icon";
 import PrimaryButton from "../../components/PrimaryButton";
 import Banner from "../../assets/banner.jpeg";
-import { useEffect, useState } from "react";
+import Loading from "../../components/Loading";
 import axios from "axios";
 
 const Home = () => {
@@ -15,6 +16,8 @@ const Home = () => {
     "Politics",
   ];
 
+  const [loading, setLoading] = useState(true);
+
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
@@ -24,6 +27,8 @@ const Home = () => {
         setArticles(response.data.data.articles);
       } catch (error) {
         console.error("Error fetching articles:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -72,51 +77,55 @@ const Home = () => {
           ))}
         </div>
 
-        <div className="fixed bottom-3 right-3 text-center dropdown dropdown-top dropdown-end z-[1] md:hidden">
-          <PrimaryButton
-            tabIndex={0}
-            className="bg-white focus:bg-primary focus:text-white btn-circle m-2 drop-shadow"
-          >
-            <Icon className="text-3xl">expand_circle_up</Icon>
-          </PrimaryButton>
-          <ul
-            tabIndex={0}
-            className="dropdown-content z-[1] mb-2 mx-3 p-4 drop-shadow-card bg-base-100 rounded-box w-60"
-          >
-            <h2 className="mb-6 text-primary font-semibold">
-              Discover by topics
-            </h2>
-            {topics?.map((topic, index) => (
-              <li
-                key={index}
-                className="mb-2 px-4 py-2 bg-neutral-50 rounded-3xl drop-shadow"
-              >
-                <Link>{topic}</Link>
-              </li>
-            ))}
-            <Link
-              to="explore"
-              className="flex justify-center items-center mt-8 text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
+        {!loading ? (
+          <div className="fixed bottom-3 right-3 text-center dropdown dropdown-top dropdown-end z-[1] md:hidden">
+            <PrimaryButton
+              tabIndex={0}
+              className="bg-white focus:bg-primary focus:text-white btn-circle m-2 drop-shadow"
             >
-              Browse more topics
-              <svg
-                className="w-3.5 h-3.5 ml-1"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 10"
+              <Icon className="text-3xl">expand_circle_up</Icon>
+            </PrimaryButton>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] mb-2 mx-3 p-4 drop-shadow-card bg-base-100 rounded-box w-60"
+            >
+              <h2 className="mb-6 text-primary font-semibold">
+                Discover by topics
+              </h2>
+              {topics?.map((topic, index) => (
+                <li
+                  key={index}
+                  className="mb-2 px-4 py-2 bg-neutral-50 rounded-3xl drop-shadow"
+                >
+                  <Link>{topic}</Link>
+                </li>
+              ))}
+              <Link
+                to="explore"
+                className="flex justify-center items-center mt-8 text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 5h12m0 0L9 1m4 4L9 9"
-                />
-              </svg>
-            </Link>
-          </ul>
-        </div>
+                Browse more topics
+                <svg
+                  className="w-3.5 h-3.5 ml-1"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
+                </svg>
+              </Link>
+            </ul>
+          </div>
+        ) : (
+          <Loading />
+        )}
 
         <div className="w-max hidden md:block">
           <h2 className="mb-6 text-xl text-primary font-semibold">

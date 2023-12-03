@@ -25,7 +25,7 @@ export const AlertProvider = ({ children }) => {
     }
   }, [response]);
 
-  console.log(response);
+  console.log(alert);
 
   return (
     <AlertContext.Provider value={{ setResponse }}>

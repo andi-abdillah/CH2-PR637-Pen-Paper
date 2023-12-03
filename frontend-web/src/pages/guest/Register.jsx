@@ -49,6 +49,8 @@ const Register = () => {
     }
   };
 
+  console.log(formData);
+
   return (
     <>
       <HelmetProvider>

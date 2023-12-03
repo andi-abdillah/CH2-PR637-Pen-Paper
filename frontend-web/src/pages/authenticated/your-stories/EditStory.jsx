@@ -9,6 +9,7 @@ import Divider from "../../../components/Divider";
 import TextArea from "../../../components/TextArea";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
+import Loading from "../../../components/Loading";
 import axios from "axios";
 
 const EditStory = () => {
@@ -19,6 +20,8 @@ const EditStory = () => {
   const { setResponse } = useAlert();
 
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -54,6 +57,8 @@ const EditStory = () => {
         });
       } catch (error) {
         console.error("Error fetching articles:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -90,6 +95,10 @@ const EditStory = () => {
       setIsProcessing(false);
     }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>

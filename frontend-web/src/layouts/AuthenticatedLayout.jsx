@@ -1,6 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
-import { AlertProvider } from "../provider/AlertProvider";
 import { useAuth } from "../provider/AuthContext";
 import { useEffect } from "react";
 
@@ -19,12 +18,12 @@ const AuthenticatedLayout = () => {
   }
 
   return (
-    <AlertProvider>
+    <>
       <Navbar />
       <div className="mx-6 my-12 md:mx-20">
         <Outlet />
       </div>
-    </AlertProvider>
+    </>
   );
 };
 
