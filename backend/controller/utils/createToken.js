@@ -11,7 +11,7 @@ const createToken = (user) =>
       userId: user.userId,
     },
     secretKey,
-    { expiresIn: "1h", algorithm: "HS256" }
+    { algorithm: "HS256" }
   );
 
 module.exports = createToken;

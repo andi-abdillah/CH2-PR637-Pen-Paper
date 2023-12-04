@@ -54,9 +54,6 @@ const routes = [
   {
     method: "GET",
     path: "/users",
-    config: {
-      auth: false,
-    },
     handler: getAllUsersHandler,
   },
   {

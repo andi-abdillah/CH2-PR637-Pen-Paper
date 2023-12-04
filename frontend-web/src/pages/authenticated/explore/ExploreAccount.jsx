@@ -7,25 +7,33 @@ import Loading from "../../../components/Loading";
 import axios from "axios";
 
 const ExploreAccount = () => {
-  const [searchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(null);
-  const [usersList, setUsersList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { token, user } = useAuth();
 
-  const { authenticatedUser } = useAuth();
+  const [searchParams] = useSearchParams();
+
+  const [searchQuery, setSearchQuery] = useState(null);
+
+  const [usersList, setUsersList] = useState([]);
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (searchQuery) {
       const fetchData = async () => {
         try {
           const foundUsers = await axios.get(
-            `http://localhost:9000/users/search?query=${searchQuery}`
+            `http://localhost:9000/users/search?query=${searchQuery}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
 
-          const users = foundUsers.data.data.users;
+          const usersData = foundUsers.data.data.users;
 
-          const filteredUsers = users.filter(
-            (user) => user.userId !== authenticatedUser.userId
+          const filteredUsers = usersData.filter(
+            (userData) => userData.userId !== user.userId
           );
 
           setUsersList(filteredUsers);
@@ -40,7 +48,7 @@ const ExploreAccount = () => {
     } else {
       setUsersList([]);
     }
-  }, [searchQuery, authenticatedUser.userId]);
+  }, [token, searchQuery, user.userId]);
 
   useEffect(() => {
     setSearchQuery(searchParams.get("query"));

@@ -25,7 +25,6 @@ const getAllUsersHandler = async (request, h) => {
       userId: user.userId,
       username: user.username,
       email: user.email,
-      password: user.password,
       descriptions: user.descriptions,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -78,7 +77,6 @@ const searchUsersHandler = async (request, h) => {
     const listUsers = users.map((user) => ({
       userId: user.userId,
       username: user.username,
-      password: user.password,
       email: user.email,
       descriptions: user.descriptions,
       createdAt: user.createdAt,
@@ -116,7 +114,6 @@ const getUserByIdHandler = async (request, h) => {
             userId: targetUser.userId,
             username: targetUser.username,
             email: targetUser.email,
-            password: targetUser.password,
             descriptions: targetUser.descriptions,
             createdAt: targetUser.createdAt,
             updatedAt: targetUser.updatedAt,
@@ -136,8 +133,19 @@ const getUserByIdHandler = async (request, h) => {
 
 // Handler to edit a user's profile
 const editUserProfileHandler = async (request, h) => {
-  const { userId } = request.params;
+  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
+  const { userId: paramUserId } = request.params;
   const { username, email } = request.payload;
+
+  // Check if the user is authorized to edit the profile
+  if (tokenUserId !== paramUserId) {
+    return h
+      .response({
+        status: "fail",
+        message: "Not authorized to edit this profile",
+      })
+      .code(403); // 403 Forbidden
+  }
 
   // Validation for required fields
   if (!username || !email) {
@@ -158,7 +166,7 @@ const editUserProfileHandler = async (request, h) => {
       where: {
         username,
         userId: {
-          [Op.not]: userId,
+          [Op.not]: paramUserId,
         },
       },
     });
@@ -179,7 +187,7 @@ const editUserProfileHandler = async (request, h) => {
       where: {
         email,
         userId: {
-          [Op.not]: userId,
+          [Op.not]: paramUserId,
         },
       },
     });
@@ -195,14 +203,13 @@ const editUserProfileHandler = async (request, h) => {
         .code(400);
     }
 
-    // Update user profile
     const [, updatedRowCount] = await User.update(
       {
         username,
         email,
         updatedAt: new Date(),
       },
-      { where: { userId }, returning: true, transaction: t }
+      { where: { userId: paramUserId }, returning: true, transaction: t }
     );
 
     if (updatedRowCount > 0) {
@@ -236,8 +243,19 @@ const editUserProfileHandler = async (request, h) => {
 
 // Handler to edit a user's password
 const editUserPasswordHandler = async (request, h) => {
-  const { userId } = request.params;
+  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
+  const { userId: paramUserId } = request.params;
   const { currentPassword, newPassword, confirmPassword } = request.payload;
+
+  // Check if the user is authorized to edit the password
+  if (tokenUserId !== paramUserId) {
+    return h
+      .response({
+        status: "fail",
+        message: "Not authorized to edit this password",
+      })
+      .code(403); // 403 Forbidden
+  }
 
   // Validation for required fields
   if (!currentPassword || !newPassword || !confirmPassword) {
@@ -250,13 +268,11 @@ const editUserPasswordHandler = async (request, h) => {
       .code(400);
   }
 
-  console.log("adaskdkmk");
-
   const t = await sequelize.transaction();
 
   try {
     // Find the target user
-    const targetUser = await User.findByPk(userId);
+    const targetUser = await User.findByPk(paramUserId);
 
     if (!targetUser) {
       await t.rollback();
@@ -273,8 +289,6 @@ const editUserPasswordHandler = async (request, h) => {
       currentPassword,
       targetUser.password
     );
-
-    console.log(isPasswordValid);
 
     if (!isPasswordValid) {
       await t.rollback();
@@ -327,21 +341,32 @@ const editUserPasswordHandler = async (request, h) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update user password with hashed password
-    await User.update(
+    const [, updatedRowCount] = await User.update(
       {
         password: hashedPassword,
         updatedAt: new Date(),
       },
-      { where: { userId }, transaction: t }
+      { where: { userId: paramUserId }, returning: true, transaction: t }
     );
 
     await t.commit();
+
+    if (updatedRowCount > 0) {
+      return h
+        .response({
+          status: "success",
+          message: "User password successfully updated",
+        })
+        .code(200);
+    }
+
+    await t.rollback();
     return h
       .response({
-        status: "success",
-        message: "User password successfully updated",
+        status: "fail",
+        message: "Failed to update user password. User ID not found",
       })
-      .code(200);
+      .code(404);
   } catch (error) {
     console.error(error);
     await t.rollback();
@@ -356,8 +381,19 @@ const editUserPasswordHandler = async (request, h) => {
 
 // Handler to edit a user's descriptions
 const editUserDescriptionsHandler = async (request, h) => {
-  const { userId } = request.params;
+  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
+  const { userId: paramUserId } = request.params;
   const { descriptions } = request.payload;
+
+  // Check if the user is authorized to edit the descriptions
+  if (tokenUserId !== paramUserId) {
+    return h
+      .response({
+        status: "fail",
+        message: "Not authorized to edit these descriptions",
+      })
+      .code(403); // 403 Forbidden
+  }
 
   const t = await sequelize.transaction();
 
@@ -368,7 +404,7 @@ const editUserDescriptionsHandler = async (request, h) => {
         descriptions: descriptions.trim(),
         updatedAt: new Date(),
       },
-      { where: { userId }, returning: true, transaction: t }
+      { where: { userId: paramUserId }, returning: true, transaction: t }
     );
 
     if (updatedRowCount > 0) {
@@ -402,20 +438,31 @@ const editUserDescriptionsHandler = async (request, h) => {
 
 // Handler to delete a user by ID
 const deleteUserByIdHandler = async (request, h) => {
-  const { userId } = request.params;
+  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
+  const { userId: paramUserId } = request.params;
+
+  // Check if the user is authorized to delete the user
+  if (tokenUserId !== paramUserId) {
+    return h
+      .response({
+        status: "fail",
+        message: "Not authorized to delete this user",
+      })
+      .code(403); // 403 Forbidden
+  }
 
   const t = await sequelize.transaction();
 
   try {
     // Delete user
     const deletedUserRowCount = await User.destroy({
-      where: { userId },
+      where: { userId: paramUserId },
       transaction: t,
     });
 
     // Delete articles related to the user
     const deletedArticleRowCount = await Article.destroy({
-      where: { userId },
+      where: { userId: paramUserId },
       transaction: t,
     });
 

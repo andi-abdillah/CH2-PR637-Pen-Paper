@@ -8,13 +8,17 @@ import Loading from "../../../components/Loading";
 import axios from "axios";
 
 const ExploreTopics = () => {
-  const [searchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(null);
-  const [filteredItems, setFilteredItems] = useState([]);
-  const [visibleItems, setVisibleItems] = useState(4);
-  const [loading, setLoading] = useState(true);
+  const { token, user } = useAuth();
 
-  const { authenticatedUser } = useAuth();
+  const [searchParams] = useSearchParams();
+
+  const [searchQuery, setSearchQuery] = useState(null);
+
+  const [filteredItems, setFilteredItems] = useState([]);
+
+  const [visibleItems, setVisibleItems] = useState(4);
+
+  const [loading, setLoading] = useState(true);
 
   const handleLoadMore = () => {
     setVisibleItems((prevVisibleItems) => prevVisibleItems + 4);
@@ -25,13 +29,18 @@ const ExploreTopics = () => {
       const fetchData = async () => {
         try {
           const foundArticles = await axios.get(
-            `http://localhost:9000/articles/search?query=${searchQuery}`
+            `http://localhost:9000/articles/search?query=${searchQuery}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
 
           const articles = foundArticles.data.data.articles;
 
           const filteredArticles = articles.filter(
-            (article) => article.userId !== authenticatedUser.userId
+            (article) => article.userId !== user.userId
           );
 
           setFilteredItems(filteredArticles);
@@ -46,7 +55,7 @@ const ExploreTopics = () => {
     } else {
       setFilteredItems([]);
     }
-  }, [searchQuery, authenticatedUser.userId]);
+  }, [token, searchQuery, user.userId]);
 
   useEffect(() => {
     setSearchQuery(searchParams.get("query"));

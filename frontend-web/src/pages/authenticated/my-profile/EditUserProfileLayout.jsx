@@ -23,7 +23,7 @@ const EditUserProfileLayout = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:9000/users/${userData.userId}`,
+          `http://localhost:9000/users/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ const EditUserProfileLayout = () => {
     };
 
     fetchData();
-  }, [token, userData.userId, userData.updateAt]);
+  }, [token, user.userId, userData.updateAt]);
 
   if (loading) {
     return <Loading />;
@@ -70,6 +70,7 @@ const EditUserProfileLayout = () => {
 
           <EditUserProfile
             token={token}
+            userId={user.userId}
             userData={userData}
             setUserData={setUserData}
             showAlert={showAlert}
@@ -87,6 +88,7 @@ const EditUserProfileLayout = () => {
 
           <EditUserPassword
             token={token}
+            userId={user.userId}
             userData={userData}
             setUserData={setUserData}
             showAlert={showAlert}
@@ -105,6 +107,7 @@ const EditUserProfileLayout = () => {
 
           <EditUserDescriptions
             token={token}
+            userId={user.userId}
             userData={userData}
             setUserData={setUserData}
             showAlert={showAlert}

@@ -5,7 +5,13 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserPassword = ({ token, userData, setUserData, showAlert }) => {
+const EditUserPassword = ({
+  token,
+  userId,
+  userData,
+  setUserData,
+  showAlert,
+}) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -25,7 +31,7 @@ const EditUserPassword = ({ token, userData, setUserData, showAlert }) => {
 
     try {
       const result = await axios.put(
-        `http://localhost:9000/users/${userData.userId}/password`,
+        `http://localhost:9000/users/${userId}/password`,
         formData,
         {
           headers: {

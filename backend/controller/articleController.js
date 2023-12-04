@@ -343,6 +343,7 @@ const getArticleByIdHandler = async (request, h) => {
 const editArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
   const { title, content } = request.payload;
+  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
 
   const t = await sequelize.transaction();
 
@@ -355,6 +356,31 @@ const editArticleByIdHandler = async (request, h) => {
           message: "Title and content are required fields.",
         })
         .code(400);
+    }
+
+    // Find the article by its ID
+    const targetArticle = await Article.findByPk(articleId);
+
+    // Check if the article is found
+    if (!targetArticle) {
+      await t.rollback();
+      return h
+        .response({
+          status: "fail",
+          message: "Failed to update the article. Article ID not found.",
+        })
+        .code(404);
+    }
+
+    // Check if the user is authorized to edit the article
+    if (tokenUserId !== targetArticle.userId) {
+      await t.rollback();
+      return h
+        .response({
+          status: "fail",
+          message: "Not authorized to edit this article.",
+        })
+        .code(403); // 403 Forbidden
     }
 
     // Update the article by its ID and fetch the number of updated rows
@@ -406,10 +432,36 @@ const editArticleByIdHandler = async (request, h) => {
 // Handler to delete an article by its ID
 const deleteArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
+  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
 
   const t = await sequelize.transaction();
 
   try {
+    // Find the article by its ID
+    const targetArticle = await Article.findByPk(articleId);
+
+    // Check if the article is found
+    if (!targetArticle) {
+      await t.rollback();
+      return h
+        .response({
+          status: "fail",
+          message: "Failed to delete the article. Article ID not found.",
+        })
+        .code(404);
+    }
+
+    // Check if the user is authorized to delete the article
+    if (tokenUserId !== targetArticle.userId) {
+      await t.rollback();
+      return h
+        .response({
+          status: "fail",
+          message: "Not authorized to delete this article.",
+        })
+        .code(403); // 403 Forbidden
+    }
+
     // Delete the article by its ID and fetch the number of deleted rows
     const deletedRowCount = await Article.destroy({
       where: { articleId },

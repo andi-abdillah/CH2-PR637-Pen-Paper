@@ -5,7 +5,13 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserProfile = ({ token, userData, setUserData, showAlert }) => {
+const EditUserProfile = ({
+  token,
+  userId,
+  userData,
+  setUserData,
+  showAlert,
+}) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -31,7 +37,7 @@ const EditUserProfile = ({ token, userData, setUserData, showAlert }) => {
 
     try {
       const result = await axios.put(
-        `http://localhost:9000/users/${userData.userId}/profile`,
+        `http://localhost:9000/users/${userId}/profile`,
         formData,
         {
           headers: {

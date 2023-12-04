@@ -1,16 +1,16 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../provider/AuthContext";
 import Card from "../../components/Card";
 import Icon from "../../components/Icon";
 import PrimaryButton from "../../components/PrimaryButton";
 import Banner from "../../assets/banner.jpeg";
 import Loading from "../../components/Loading";
 import axios from "axios";
-import { useAuth } from "../../provider/AuthContext";
 
 const Home = () => {
-  const { authenticatedUser } = useAuth();
+  const { token, user } = useAuth();
 
   const topics = [
     "Programming",
@@ -28,11 +28,17 @@ const Home = () => {
       try {
         const response = await axios.get("http://localhost:9000/articles", {
           headers: {
-            Authorization: `Bearer ${authenticatedUser.token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        setArticles(response.data.data.articles);
+        const foundArticles = response.data.data.articles;
+
+        const filteredArticles = foundArticles.filter(
+          (article) => article.userId !== user.userId
+        );
+
+        setArticles(filteredArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -41,7 +47,7 @@ const Home = () => {
     };
 
     fetchData();
-  }, [authenticatedUser]);
+  }, [token, user.userId]);
 
   return (
     <>

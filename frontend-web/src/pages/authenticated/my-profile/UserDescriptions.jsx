@@ -20,7 +20,7 @@ const UserDescriptions = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/users/${userData.userId}`,
+          `http://localhost:9000/users/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ const UserDescriptions = () => {
     };
 
     fetchData();
-  }, [token, userData.userId]);
+  }, [token, user.userId]);
 
   if (loading) {
     return <Loading />;
@@ -54,7 +54,9 @@ const UserDescriptions = () => {
         </SecondaryButton>
 
         <p className="md:text-xl font-semibold mt-8">
-          {user.descriptions ? user.descriptions : "No descriptions yet"}
+          {userData.descriptions
+            ? userData.descriptions
+            : "No descriptions yet"}
         </p>
       </div>
     </>
