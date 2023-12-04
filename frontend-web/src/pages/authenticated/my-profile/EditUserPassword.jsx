@@ -7,6 +7,7 @@ import axios from "axios";
 
 const EditUserPassword = ({ token, userData, setUserData, showAlert }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -32,9 +33,9 @@ const EditUserPassword = ({ token, userData, setUserData, showAlert }) => {
           },
         }
       );
-      const successMessage = result.data;
+      const { message, status } = result.data;
 
-      showAlert(successMessage.message, successMessage.status);
+      showAlert(message, status);
 
       setUserData((prevUser) => ({
         ...prevUser,
@@ -44,10 +45,10 @@ const EditUserPassword = ({ token, userData, setUserData, showAlert }) => {
 
       setIsProcessing(false);
     } catch (error) {
-      console.error("Error saving new password:", error);
       const { message, status } = error.response.data;
 
       showAlert(message, status);
+
       setIsProcessing(false);
     }
   };

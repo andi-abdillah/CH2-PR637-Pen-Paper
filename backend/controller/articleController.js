@@ -25,7 +25,7 @@ const addArticleHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Title, and content are required fields.",
+          message: "Title and content are required fields.",
         })
         .code(400);
     }
@@ -352,7 +352,7 @@ const editArticleByIdHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Title, and content are required fields.",
+          message: "Title and content are required fields.",
         })
         .code(400);
     }

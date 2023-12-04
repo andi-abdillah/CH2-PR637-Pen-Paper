@@ -27,6 +27,10 @@ export const AuthProvider = ({ children }) => {
     return null;
   });
 
+  const token = authenticatedUser?.token;
+
+  const user = authenticatedUser?.user;
+
   const login = (token) => {
     // Decode token untuk mendapatkan informasi pengguna
     const decodedToken = jwtDecode(token);
@@ -51,7 +55,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ authenticatedUser, login, logout }}>
+    <AuthContext.Provider
+      value={{ authenticatedUser, token, user, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

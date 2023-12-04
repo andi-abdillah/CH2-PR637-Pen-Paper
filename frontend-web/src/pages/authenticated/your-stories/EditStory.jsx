@@ -13,9 +13,9 @@ import Loading from "../../../components/Loading";
 import axios from "axios";
 
 const EditStory = () => {
-  const { id } = useParams();
+  const { token, user } = useAuth();
 
-  const { authenticatedUser } = useAuth();
+  const { id } = useParams();
 
   const { showAlert } = useAlert();
 
@@ -43,12 +43,17 @@ const EditStory = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/articles/${id}`
+          `http://localhost:9000/articles/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         const foundArticle = response.data.data.article;
 
-        if (foundArticle.userId !== authenticatedUser.userId || !foundArticle)
+        if (foundArticle.userId !== user.userId || !foundArticle)
           navigate("/dashboard/your-stories");
 
         setFormData({
@@ -63,7 +68,7 @@ const EditStory = () => {
     };
 
     fetchData();
-  }, [id, authenticatedUser.userId, navigate]);
+  }, [id, user.userId, navigate, token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,22 +76,28 @@ const EditStory = () => {
     setIsProcessing(true);
 
     try {
-      const result = await axios.put(`http://localhost:9000/articles/${id}`, {
-        title: formData.title,
-        content: formData.content,
-      });
+      const result = await axios.put(
+        `http://localhost:9000/articles/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      const successMessage = result.data;
+      const { message, status } = result.data;
 
-     showAlert(successMessage.message, successMessage.status);
+      showAlert(message, status);
 
       setIsProcessing(false);
+
       navigate("/dashboard/your-stories");
     } catch (error) {
-      console.error("Error publishing story:", error);
       const { message, status } = error.response.data;
 
       showAlert(message, status);
+
       setIsProcessing(false);
     }
   };

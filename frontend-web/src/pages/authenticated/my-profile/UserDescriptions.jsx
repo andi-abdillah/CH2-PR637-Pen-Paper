@@ -8,30 +8,29 @@ import Icon from "../../../components/Icon";
 import ProfileHeader from "../../../components/ProfileHeader";
 
 const UserDescriptions = () => {
-  const { authenticatedUser } = useAuth();
+  const { token, user } = useAuth();
 
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(authenticatedUser.user);
-
-  const token = authenticatedUser.token;
-
-  const id = user.userId;
+  const [userData, setUserData] = useState(user);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9000/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:9000/users/${userData.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const foundUser = response.data.data.user;
 
-        setUser(foundUser);
+        setUserData(foundUser);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -40,14 +39,14 @@ const UserDescriptions = () => {
     };
 
     fetchData();
-  }, [authenticatedUser.userId, token, id]);
+  }, [token, userData.userId]);
 
   if (loading) {
     return <Loading />;
   }
   return (
     <>
-      <ProfileHeader {...user} />
+      <ProfileHeader {...userData} />
 
       <div className="mt-8">
         <SecondaryButton onClick={() => navigate("edit")}>

@@ -8,9 +8,7 @@ import Card from "../../../components/Card";
 import axios from "axios";
 
 const UserStories = () => {
-  const { authenticatedUser } = useAuth();
-
-  const user = authenticatedUser;
+  const { token, user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -21,14 +19,18 @@ const UserStories = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/articles");
-        const allArticles = response.data.data.articles;
-
-        const filteredArticles = allArticles.filter(
-          (article) => article.userId === user.userId
+        const result = await axios.get(
+          `http://localhost:9000/articles/user/${user.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
-        setArticles(filteredArticles);
+        const foundArticles = result.data.data.articles;
+
+        setArticles(foundArticles);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -37,7 +39,7 @@ const UserStories = () => {
     };
 
     fetchData();
-  }, [user.userId]);
+  }, [user.userId, token]);
 
   if (loading) {
     return <Loading />;

@@ -12,18 +12,16 @@ import Icon from "../../../components/Icon";
 import axios from "axios";
 
 const CreateStory = () => {
-  const { authenticatedUser } = useAuth();
+  const { token, user } = useAuth();
 
   const { showAlert } = useAlert();
-
-  const userId = authenticatedUser.userId;
 
   const [isProcessing, setIsProcessing] = useState(false);
 
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    userId,
+    userId: user.userId,
     title: "",
     content: "",
   });
@@ -43,23 +41,28 @@ const CreateStory = () => {
     setIsProcessing(true);
 
     try {
-      const result = await axios.post("http://localhost:9000/articles", {
-        userId: formData.userId,
-        title: formData.title,
-        content: formData.content,
-      });
+      const result = await axios.post(
+        "http://localhost:9000/articles",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      const successMessage = result.data;
+      const { message, status } = result.data;
 
-      showAlert(successMessage.message, successMessage.status);
+      showAlert(message, status);
 
       setIsProcessing(false);
+
       navigate("/dashboard/your-stories");
     } catch (error) {
-      console.error("Error publishing story:", error);
       const { message, status } = error.response.data;
 
       showAlert(message, status);
+
       setIsProcessing(false);
     }
   };

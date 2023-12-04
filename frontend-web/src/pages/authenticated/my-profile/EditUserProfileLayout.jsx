@@ -11,29 +11,29 @@ import Loading from "../../../components/Loading";
 import axios from "axios";
 
 const EditUserProfileLayout = () => {
-  const { authenticatedUser } = useAuth();
+  const { token, user } = useAuth();
 
-  const token = authenticatedUser.token;
+  const [userData, setUserData] = useState(user);
 
   const { showAlert } = useAlert();
-
-  const [user, setUser] = useState(authenticatedUser.user);
-
-  const id = user.userId;
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const foundUser = await axios.get(`http://localhost:9000/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const result = await axios.get(
+          `http://localhost:9000/users/${userData.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        const userData = foundUser.data.data.user;
-        setUser(userData);
+        const foundUser = result.data.data.user;
+
+        setUserData(foundUser);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {
@@ -42,9 +42,7 @@ const EditUserProfileLayout = () => {
     };
 
     fetchData();
-  }, [id, token, user.updateAt]);
-
-  console.log(user);
+  }, [token, userData.userId, userData.updateAt]);
 
   if (loading) {
     return <Loading />;
@@ -58,7 +56,7 @@ const EditUserProfileLayout = () => {
         </Helmet>
       </HelmetProvider>
 
-      <ProfileHeader {...user} />
+      <ProfileHeader {...userData} />
 
       <BackButton />
 
@@ -72,10 +70,10 @@ const EditUserProfileLayout = () => {
 
           <EditUserProfile
             token={token}
-            userData={user}
-            setUserData={setUser}
+            userData={userData}
+            setUserData={setUserData}
             showAlert={showAlert}
-            key={user.updateAt}
+            key={userData.updateAt}
           />
         </div>
         <div className="px-6 border-[1.2px] border-gray-400 rounded-2xl">
@@ -89,10 +87,10 @@ const EditUserProfileLayout = () => {
 
           <EditUserPassword
             token={token}
-            userData={user}
-            setUserData={setUser}
+            userData={userData}
+            setUserData={setUserData}
             showAlert={showAlert}
-            key={user.updateAt}
+            key={userData.updateAt}
           />
         </div>
         <div className="px-6 border-[1.2px] border-gray-400 rounded-2xl">
@@ -107,10 +105,10 @@ const EditUserProfileLayout = () => {
 
           <EditUserDescriptions
             token={token}
-            userData={user}
-            setUserData={setUser}
+            userData={userData}
+            setUserData={setUserData}
             showAlert={showAlert}
-            key={user.updateAt}
+            key={userData.updateAt}
           />
         </div>
       </div>

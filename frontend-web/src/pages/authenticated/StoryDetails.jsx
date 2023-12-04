@@ -11,30 +11,49 @@ import axios from "axios";
 
 const StoryDetails = () => {
   const { id } = useParams();
-  const { authenticatedUser } = useAuth();
+
+  const { token, user } = useAuth();
+
   const [isMyArticle, setIsMyArticle] = useState(false);
-  const [user, setUser] = useState({});
+
+  const [author, setAuthor] = useState({});
+
   const [article, setArticle] = useState(null);
+
   const navigate = useNavigate();
+
   const [alertOpen, setAlertOpen] = useState(false);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const articleResponse = await axios.get(
-          `http://localhost:9000/articles/${id}`
+        const foundArticle = await axios.get(
+          `http://localhost:9000/articles/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        const userId = articleResponse.data.data.article.userId;
 
-        const userResponse = await axios.get(
-          `http://localhost:9000/users/${userId}`
+        const userId = foundArticle.data.data.article.userId;
+
+        const foundUser = await axios.get(
+          `http://localhost:9000/users/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
-        setArticle(articleResponse.data.data.article);
-        setUser(userResponse.data.data.user);
+        setArticle(foundArticle.data.data.article);
 
-        if (user.userId === authenticatedUser.userId) {
+        setAuthor(foundUser.data.data.user);
+
+        if (author.userId === user.userId) {
           setIsMyArticle(true);
         }
       } catch (error) {
@@ -45,7 +64,7 @@ const StoryDetails = () => {
     };
 
     fetchData();
-  }, [id, authenticatedUser.userId, user.userId]);
+  }, [id, token, user.userId, author.userId]);
 
   const openAlert = () => {
     setAlertOpen(true);
@@ -109,6 +128,7 @@ const StoryDetails = () => {
         <Divider />
 
         <StoryDeleteAlert
+          token={token}
           isOpen={alertOpen}
           onClose={closeAlert}
           navigate={navigate}
@@ -116,12 +136,12 @@ const StoryDetails = () => {
         />
 
         <div className="flex flex-col gap-6 max-w-2xl xs:mx-8 mt-8 text-lg font-semibold">
-          {user.userId !== authenticatedUser.userId && (
+          {author.userId !== user.userId && (
             <Link
-              to={`/dashboard/user-profile/${user.userId}`}
+              to={`/dashboard/user-profile/${author.userId}`}
               className="text-black text-2xl w-max"
             >
-              {user.username}
+              {author.username}
             </Link>
           )}
           <h3 className="text-gray-700">{article.date}</h3>
