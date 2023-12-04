@@ -13,18 +13,24 @@ import axios from "axios";
 const EditUserProfileLayout = () => {
   const { authenticatedUser } = useAuth();
 
+  const token = authenticatedUser.token;
+
   const { showAlert } = useAlert();
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(authenticatedUser.user);
+
+  const id = user.userId;
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const foundUser = await axios.get(
-          `http://localhost:9000/users/${authenticatedUser.userId}`
-        );
+        const foundUser = await axios.get(`http://localhost:9000/users/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const userData = foundUser.data.data.user;
         setUser(userData);
@@ -36,7 +42,9 @@ const EditUserProfileLayout = () => {
     };
 
     fetchData();
-  }, [authenticatedUser.userId, user.updateAt]);
+  }, [id, token, user.updateAt]);
+
+  console.log(user);
 
   if (loading) {
     return <Loading />;
@@ -63,6 +71,7 @@ const EditUserProfileLayout = () => {
           <h3>Update your account's profile information and email address.</h3>
 
           <EditUserProfile
+            token={token}
             userData={user}
             setUserData={setUser}
             showAlert={showAlert}
@@ -79,6 +88,7 @@ const EditUserProfileLayout = () => {
           </h2>
 
           <EditUserPassword
+            token={token}
             userData={user}
             setUserData={setUser}
             showAlert={showAlert}
@@ -96,6 +106,7 @@ const EditUserProfileLayout = () => {
           </h3>
 
           <EditUserDescriptions
+            token={token}
             userData={user}
             setUserData={setUser}
             showAlert={showAlert}

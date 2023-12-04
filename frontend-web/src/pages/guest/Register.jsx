@@ -27,7 +27,10 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const result = await axios.post("http://localhost:9000/users", formData);
+      const result = await axios.post(
+        "http://localhost:9000/register",
+        formData
+      );
       const successMessage = result?.data;
 
       showAlert(successMessage.message, successMessage.status);

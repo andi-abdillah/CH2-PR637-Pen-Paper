@@ -12,16 +12,22 @@ const UserDescriptions = () => {
 
   const navigate = useNavigate();
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(authenticatedUser.user);
+
+  const token = authenticatedUser.token;
+
+  const id = user.userId;
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:9000/users/${authenticatedUser.userId}`
-        );
+        const response = await axios.get(`http://localhost:9000/users/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const foundUser = response.data.data.user;
 
@@ -34,7 +40,7 @@ const UserDescriptions = () => {
     };
 
     fetchData();
-  }, [authenticatedUser.userId]);
+  }, [authenticatedUser.userId, token, id]);
 
   if (loading) {
     return <Loading />;

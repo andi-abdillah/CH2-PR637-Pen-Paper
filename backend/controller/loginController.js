@@ -2,7 +2,7 @@ const { User } = require("../models");
 const bcrypt = require("bcrypt");
 const createToken = require("./utils/createToken");
 
-const loginController = async (request, h) => {
+const loginHandler = async (request, h) => {
   try {
     const { email, password } = request.payload;
 
@@ -51,7 +51,7 @@ const loginController = async (request, h) => {
       .code(200);
   } catch (error) {
     // Handle errors
-    console.error("Error in loginController:", error);
+    console.error("Error in loginHandler:", error);
     return h
       .response({
         status: "error",
@@ -61,4 +61,4 @@ const loginController = async (request, h) => {
   }
 };
 
-module.exports = loginController;
+module.exports = loginHandler;

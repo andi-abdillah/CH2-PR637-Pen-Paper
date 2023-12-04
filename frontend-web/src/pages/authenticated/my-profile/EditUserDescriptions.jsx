@@ -5,7 +5,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserDescriptions = ({ userData, setUserData, showAlert }) => {
+const EditUserDescriptions = ({ token, userData, setUserData, showAlert }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     descriptions: "",
@@ -29,7 +29,12 @@ const EditUserDescriptions = ({ userData, setUserData, showAlert }) => {
     try {
       const result = await axios.put(
         `http://localhost:9000/users/${userData.userId}/descriptions`,
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const successMessage = result.data;
 

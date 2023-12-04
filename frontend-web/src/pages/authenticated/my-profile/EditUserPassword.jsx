@@ -5,7 +5,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserPassword = ({ userData, setUserData, showAlert }) => {
+const EditUserPassword = ({ token, userData, setUserData, showAlert }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     currentPassword: "",
@@ -25,11 +25,16 @@ const EditUserPassword = ({ userData, setUserData, showAlert }) => {
     try {
       const result = await axios.put(
         `http://localhost:9000/users/${userData.userId}/password`,
-        formData
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const successMessage = result.data;
 
-     showAlert(successMessage.message, successMessage.status);
+      showAlert(successMessage.message, successMessage.status);
 
       setUserData((prevUser) => ({
         ...prevUser,
@@ -77,7 +82,7 @@ const EditUserPassword = ({ userData, setUserData, showAlert }) => {
           required
         />
 
-        <InputLabel htmlFor="confirmPassword" value="Password" />
+        <InputLabel htmlFor="confirmPassword" value="Confirm Password" />
         <TextInput
           id="confirmPassword"
           name="confirmPassword"

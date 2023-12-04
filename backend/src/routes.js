@@ -19,7 +19,9 @@ const {
   deleteArticleByIdHandler,
 } = require("./../controller/articleController");
 
-const loginController = require("./../controller/loginController");
+const loginHandler = require("./../controller/loginController");
+
+const registerHandler = require("./../controller/registerController");
 
 const routes = [
   {
@@ -32,16 +34,29 @@ const routes = [
   {
     method: "POST",
     path: "/login",
-    handler: loginController,
     config: {
       auth: false,
     },
+    handler: loginHandler,
+  },
+
+  //Register Route
+  {
+    method: "POST",
+    path: "/register",
+    config: {
+      auth: false,
+    },
+    handler: registerHandler,
   },
 
   // Start of Users Routes
   {
     method: "GET",
     path: "/users",
+    config: {
+      auth: false,
+    },
     handler: getAllUsersHandler,
   },
   {
@@ -53,14 +68,6 @@ const routes = [
     method: "GET",
     path: "/articles/user/{userId}",
     handler: getArticlesByUserIdHandler,
-  },
-  {
-    method: "POST",
-    path: "/users",
-    handler: addUserHandler,
-    config: {
-      auth: false,
-    },
   },
   {
     method: "GET",
@@ -126,11 +133,11 @@ const routes = [
   {
     method: "*",
     path: "/{any*}",
-    handler: (request, h) =>
-      h.response({ status: "fail", message: "Resource not found" }).code(404),
     config: {
       auth: false,
     },
+    handler: (request, h) =>
+      h.response({ status: "fail", message: "Resource not found" }).code(404),
   },
 ];
 
