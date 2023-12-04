@@ -2,55 +2,46 @@
   {
     "username": "John Smith",
     "email": "john.smith@gmail.com",
-    "password": "password",
     "descriptions": "Passionate writer exploring the realms of fantasy and adventure."
   },
   {
     "username": "Jane Doe",
     "email": "jane.doe@gmail.com",
-    "password": "password",
     "descriptions": "Tech enthusiast with a knack for unraveling complex coding challenges."
   },
   {
     "username": "Emily Archer",
     "email": "emily.archer@gmail.com",
-    "password": "password",
     "descriptions": "Lover of art and poetry, weaving emotions into every word written."
   },
   {
     "username": "David Brown",
     "email": "david.brown@gmail.com",
-    "password": "password",
     "descriptions": "Adventurous spirit exploring the wonders of the natural world."
   },
   {
     "username": "Eva Williams",
     "email": "eva.williams@gmail.com",
-    "password": "password",
     "descriptions": "Advocate for social change, using words to inspire and ignite conversations."
   },
   {
     "username": "Alice Johnson",
     "email": "alice.johnson@gmail.com",
-    "password": "password",
     "descriptions": "Curious mind delving into the mysteries of science and discovery."
   },
   {
     "username": "Bob Anderson",
     "email": "bob.anderson@gmail.com",
-    "password": "password",
     "descriptions": "Champion of positivity, spreading joy through uplifting tales."
   },
   {
     "username": "Olivia Turner",
     "email": "olivia.turner@gmail.com",
-    "password": "password",
     "descriptions": "Explorer of new horizons, finding inspiration in the beauty of the unknown."
   },
   {
     "username": "Michael Reed",
     "email": "michael.reed@gmail.com",
-    "password": "password",
     "descriptions": ""
   }
 ]

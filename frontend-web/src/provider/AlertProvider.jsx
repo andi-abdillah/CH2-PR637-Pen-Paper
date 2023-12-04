@@ -1,15 +1,10 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import Alert from "../components/Alert";
 
 const AlertContext = createContext();
 
 export const AlertProvider = ({ children }) => {
   const [alert, setAlert] = useState(null);
-
-  const [response, setResponse] = useState({
-    status: "",
-    message: "",
-  });
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -19,18 +14,10 @@ export const AlertProvider = ({ children }) => {
     setAlert(null);
   };
 
-  useEffect(() => {
-    if (response.message && response.status) {
-      showAlert(response.message, response.status);
-    }
-  }, [response]);
-
-  console.log(alert);
-
   return (
-    <AlertContext.Provider value={{ setResponse }}>
+    <AlertContext.Provider value={{ showAlert }}>
       {alert && (
-        <Alert type={alert.type} onClose={closeAlert} message={alert.message} />
+        <Alert message={alert.message} type={alert.type} onClose={closeAlert} />
       )}
       {children}
     </AlertContext.Provider>

@@ -5,7 +5,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserProfile = ({ userData, setUserData, setResponse }) => {
+const EditUserProfile = ({ userData, setUserData, showAlert }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -35,10 +35,7 @@ const EditUserProfile = ({ userData, setUserData, setResponse }) => {
       );
       const successMessage = result.data;
 
-      setResponse({
-        status: successMessage.status,
-        message: successMessage.message,
-      });
+     showAlert(successMessage.message, successMessage.status);
 
       setUserData((prevUser) => ({
         ...prevUser,
@@ -49,11 +46,9 @@ const EditUserProfile = ({ userData, setUserData, setResponse }) => {
       setIsProcessing(false);
     } catch (error) {
       console.error("Error saving username and email:", error);
-      const errorMessage = error.response.data;
-      setResponse({
-        status: errorMessage.status,
-        message: errorMessage.message,
-      });
+      const { message, status } = error.response.data;
+
+      showAlert(message, status);
       setIsProcessing(false);
     }
   };

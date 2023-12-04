@@ -13,7 +13,7 @@ import axios from "axios";
 const EditUserProfileLayout = () => {
   const { authenticatedUser } = useAuth();
 
-  const { setResponse } = useAlert();
+  const { showAlert } = useAlert();
 
   const [user, setUser] = useState({});
 
@@ -46,7 +46,7 @@ const EditUserProfileLayout = () => {
     <div className="max-w-4xl">
       <HelmetProvider>
         <Helmet>
-          <title>Update Profile</title>
+          <title>Manage Profile</title>
         </Helmet>
       </HelmetProvider>
 
@@ -65,7 +65,7 @@ const EditUserProfileLayout = () => {
           <EditUserProfile
             userData={user}
             setUserData={setUser}
-            setResponse={setResponse}
+            showAlert={showAlert}
             key={user.updateAt}
           />
         </div>
@@ -81,7 +81,7 @@ const EditUserProfileLayout = () => {
           <EditUserPassword
             userData={user}
             setUserData={setUser}
-            setResponse={setResponse}
+            showAlert={showAlert}
             key={user.updateAt}
           />
         </div>
@@ -98,7 +98,7 @@ const EditUserProfileLayout = () => {
           <EditUserDescriptions
             userData={user}
             setUserData={setUser}
-            setResponse={setResponse}
+            showAlert={showAlert}
             key={user.updateAt}
           />
         </div>

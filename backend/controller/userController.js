@@ -1,11 +1,11 @@
 const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
 const { User, Article, sequelize } = require("../models");
+const bcrypt = require("bcrypt");
 
 // Function to generate a unique user ID
 const generateId = () => `user-${nanoid(20)}`;
 
-// Handler to add a new user
 const addUserHandler = async (request, h) => {
   const t = await sequelize.transaction();
 
@@ -29,7 +29,7 @@ const addUserHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Username, email and password are required",
+          message: "Username, email, and password are required",
         })
         .code(400);
     }
@@ -66,13 +66,16 @@ const addUserHandler = async (request, h) => {
         .code(400);
     }
 
-    // Create a new user
+    // Enkripsi password sebelum menyimpannya
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new user dengan password yang dienkripsi
     const createdUser = await User.create(
       {
         userId,
         username,
         email,
-        password,
+        password: hashedPassword, // Gunakan password yang sudah dienkripsi
         descriptions,
         createdAt,
         updatedAt,
@@ -357,6 +360,8 @@ const editUserPasswordHandler = async (request, h) => {
       })
       .code(400);
   }
+  
+  console.log("adaskdkmk")
 
   const t = await sequelize.transaction();
 
@@ -374,8 +379,13 @@ const editUserPasswordHandler = async (request, h) => {
         .code(404);
     }
 
-    // Validate if the current password matches the password in the database
-    const isPasswordValid = targetUser.password === currentPassword;
+    // Validate if the current password matches the password in the database using bcrypt
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      targetUser.password
+    );
+
+    console.log(isPasswordValid);
 
     if (!isPasswordValid) {
       await t.rollback();
@@ -424,10 +434,13 @@ const editUserPasswordHandler = async (request, h) => {
         .code(400);
     }
 
-    // Update user password
+    // Hash the new password before updating
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user password with hashed password
     await User.update(
       {
-        password: newPassword,
+        password: hashedPassword,
         updatedAt: new Date(),
       },
       { where: { userId }, transaction: t }

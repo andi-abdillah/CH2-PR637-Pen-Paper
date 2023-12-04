@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Alert = ({ type, message, onClose }) => {
+const Alert = ({ message, type, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
   const backgroundColor = type === "success" ? "bg-emerald-500" : "bg-red-500";
 

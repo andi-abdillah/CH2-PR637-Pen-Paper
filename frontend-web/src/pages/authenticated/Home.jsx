@@ -7,8 +7,11 @@ import PrimaryButton from "../../components/PrimaryButton";
 import Banner from "../../assets/banner.jpeg";
 import Loading from "../../components/Loading";
 import axios from "axios";
+import { useAuth } from "../../provider/AuthContext";
 
 const Home = () => {
+  const { authenticatedUser } = useAuth();
+
   const topics = [
     "Programming",
     "Self Improvement",
@@ -23,7 +26,12 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/articles");
+        const response = await axios.get("http://localhost:9000/articles", {
+          headers: {
+            Authorization: `Bearer ${authenticatedUser.token}`,
+          },
+        });
+
         setArticles(response.data.data.articles);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -33,7 +41,7 @@ const Home = () => {
     };
 
     fetchData();
-  }, []);
+  }, [authenticatedUser]);
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../../provider/AuthContext";
 import axios from "axios";
 import Alert from "../../components/Alert";
@@ -11,23 +11,9 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const { login } = useAuth();
   const [alert, setAlert] = useState(null);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("http://localhost:9000/users");
-        setUsers(response.data.data.users);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -46,21 +32,22 @@ const Login = () => {
     }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      showAlert("Email and password are required", "error");
-      return;
-    }
+    try {
+      const result = await axios.post("http://localhost:9000/login", formData);
+      const { message, status, token } = result.data;
 
-    const user = users.find((userData) => userData.email === formData.email);
+      login(token);
 
-    if (user && user.password === formData.password) {
-      login(user);
+      showAlert(message, status);
+
       navigate("/dashboard");
-    } else {
-      showAlert("Invalid email or password. Please try again.", "error");
+    } catch (error) {
+      const { message, status } = error.response.data;
+
+      showAlert(message, status);
     }
   };
 

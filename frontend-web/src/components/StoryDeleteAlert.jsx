@@ -4,7 +4,7 @@ import SecondaryButton from "./SecondaryButton";
 import axios from "axios";
 
 const StoryDeleteAlert = ({ isOpen, onClose, navigate, articleId }) => {
-  const { setResponse } = useAlert();
+  const { showAlert } = useAlert();
 
   if (!isOpen) {
     return null;
@@ -18,21 +18,16 @@ const StoryDeleteAlert = ({ isOpen, onClose, navigate, articleId }) => {
 
       const successMessage = result.data;
 
-      setResponse({
-        status: successMessage.status,
-        message: successMessage.message,
-      });
+     showAlert(successMessage.message, successMessage.status);
 
       onClose();
 
       navigate("/dashboard/your-stories");
     } catch (error) {
       console.error("Error deleting article:", error);
-      const errorMessage = error.response.data;
-      setResponse({
-        status: errorMessage.status,
-        message: errorMessage.message,
-      });
+      const { message, status } = error.response.data;
+
+      showAlert(message, status);
     }
   };
 

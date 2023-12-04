@@ -17,7 +17,7 @@ const EditStory = () => {
 
   const { authenticatedUser } = useAuth();
 
-  const { setResponse } = useAlert();
+  const { showAlert } = useAlert();
 
   const navigate = useNavigate();
 
@@ -78,20 +78,15 @@ const EditStory = () => {
 
       const successMessage = result.data;
 
-      setResponse({
-        status: successMessage.status,
-        message: successMessage.message,
-      });
+     showAlert(successMessage.message, successMessage.status);
 
       setIsProcessing(false);
       navigate("/dashboard/your-stories");
     } catch (error) {
       console.error("Error publishing story:", error);
-      const errorMessage = error.response.data;
-      setResponse({
-        status: errorMessage.status,
-        message: errorMessage.message,
-      });
+      const { message, status } = error.response.data;
+
+      showAlert(message, status);
       setIsProcessing(false);
     }
   };

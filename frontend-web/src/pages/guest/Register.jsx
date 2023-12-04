@@ -6,7 +6,7 @@ import axios from "axios";
 import { useAlert } from "../../provider/AlertProvider";
 
 const Register = () => {
-  const { setResponse } = useAlert();
+  const { showAlert } = useAlert();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -28,12 +28,9 @@ const Register = () => {
 
     try {
       const result = await axios.post("http://localhost:9000/users", formData);
-      const successMessage = result.data;
+      const successMessage = result?.data;
 
-      setResponse({
-        status: successMessage.status,
-        message: successMessage.message,
-      });
+      showAlert(successMessage.message, successMessage.status);
 
       setFormData({
         username: "",
@@ -41,15 +38,10 @@ const Register = () => {
         password: "",
       });
     } catch (error) {
-      const errorMessage = error.response.data;
-      setResponse({
-        status: errorMessage.status,
-        message: errorMessage.message,
-      });
+      const errorMessage = error.response?.data;
+      showAlert(errorMessage.message, errorMessage.status);
     }
   };
-
-  console.log(formData);
 
   return (
     <>

@@ -19,11 +19,23 @@ const {
   deleteArticleByIdHandler,
 } = require("./../controller/articleController");
 
+const loginController = require("./../controller/loginController");
+
 const routes = [
   {
     method: "GET",
     path: "/",
     handler: () => "Welcome to Pen & Paper API",
+  },
+
+  //Login Route
+  {
+    method: "POST",
+    path: "/login",
+    handler: loginController,
+    config: {
+      auth: false,
+    },
   },
 
   // Start of Users Routes
@@ -46,6 +58,9 @@ const routes = [
     method: "POST",
     path: "/users",
     handler: addUserHandler,
+    config: {
+      auth: false,
+    },
   },
   {
     method: "GET",
@@ -113,6 +128,9 @@ const routes = [
     path: "/{any*}",
     handler: (request, h) =>
       h.response({ status: "fail", message: "Resource not found" }).code(404),
+    config: {
+      auth: false,
+    },
   },
 ];
 

@@ -5,7 +5,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
 
-const EditUserPassword = ({ userData, setUserData, setResponse }) => {
+const EditUserPassword = ({ userData, setUserData, showAlert }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     currentPassword: "",
@@ -29,10 +29,7 @@ const EditUserPassword = ({ userData, setUserData, setResponse }) => {
       );
       const successMessage = result.data;
 
-      setResponse({
-        status: successMessage.status,
-        message: successMessage.message,
-      });
+     showAlert(successMessage.message, successMessage.status);
 
       setUserData((prevUser) => ({
         ...prevUser,
@@ -43,11 +40,9 @@ const EditUserPassword = ({ userData, setUserData, setResponse }) => {
       setIsProcessing(false);
     } catch (error) {
       console.error("Error saving new password:", error);
-      const errorMessage = error.response.data;
-      setResponse({
-        status: errorMessage.status,
-        message: errorMessage.message,
-      });
+      const { message, status } = error.response.data;
+
+      showAlert(message, status);
       setIsProcessing(false);
     }
   };
