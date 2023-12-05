@@ -27,14 +27,18 @@ const Home = () => {
 
   const [currentPage, setCurrentPage] = useState(page);
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 5;
 
   const [loading, setLoading] = useState(true);
 
   const [articles, setArticles] = useState([]);
 
+  const [isLastPage, setIsLastPage] = useState(false);
+
   const handleLoadMore = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
+    if (!isLastPage) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
   };
 
   useEffect(() => {
@@ -52,16 +56,25 @@ const Home = () => {
 
         const foundArticles = response.data.data.articles;
 
-        const filteredArticles = foundArticles.filter(
-          (article) => article.userId !== user.userId
-        );
+        if (currentPage === response.data.data.totalPages) {
+          setIsLastPage(true);
+        }
 
-        // If it's the first page, replace the articles; otherwise, append to the existing ones
-        setArticles((prevArticles) =>
-          currentPage === 1
-            ? filteredArticles
-            : [...prevArticles, ...filteredArticles]
-        );
+        setArticles((prevArticles) => {
+          const combinedArticles = [...prevArticles];
+
+          foundArticles.forEach((newArticle) => {
+            const isArticleExist = prevArticles.some(
+              (prevArticle) => prevArticle.articleId === newArticle.articleId
+            );
+
+            if (!isArticleExist) {
+              combinedArticles.push(newArticle);
+            }
+          });
+
+          return combinedArticles;
+        });
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -73,8 +86,8 @@ const Home = () => {
   }, [token, user.userId, currentPage]);
 
   useEffect(() => {
-    navigate(`/dashboard?page=${currentPage}&pageSize=${itemsPerPage}`);
-  }, [currentPage, navigate]);
+    navigate(`/dashboard?page=${currentPage}`);
+  }, [page, currentPage, navigate]);
 
   return (
     <>
@@ -117,9 +130,11 @@ const Home = () => {
             {articles?.map((article, index) => (
               <Card key={index} {...article} />
             ))}
-            <PrimaryButton className="m-auto" onClick={handleLoadMore}>
-              Load More<Icon>arrow_circle_down</Icon>
-            </PrimaryButton>
+            {!isLastPage && (
+              <PrimaryButton className="m-auto" onClick={handleLoadMore}>
+                Load More<Icon>arrow_circle_down</Icon>
+              </PrimaryButton>
+            )}
           </div>
 
           <div className="fixed bottom-3 right-3 text-center dropdown dropdown-top dropdown-end z-[1] md:hidden">

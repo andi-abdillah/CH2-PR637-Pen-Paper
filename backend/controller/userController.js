@@ -4,10 +4,17 @@ const bcrypt = require("bcrypt");
 
 // Handler to get all users
 const getAllUsersHandler = async (request, h) => {
+  const { userId: tokenUserId } = request.auth.credentials;
+
   try {
     // Find all users and order by creation date in descending order
     const users = await User.findAll({
       order: [["createdAt", "DESC"]],
+      where: {
+        userId: {
+          [Op.ne]: tokenUserId, // Filter out the current user
+        },
+      },
     });
 
     // If no users, return an empty array
@@ -49,13 +56,18 @@ const getAllUsersHandler = async (request, h) => {
 
 // Handler to search users based on a query string
 const searchUsersHandler = async (request, h) => {
+  const { userId: tokenUserId } = request.auth.credentials;
+
   try {
     const { query } = request.query;
 
     // Define search condition based on the query string
     const searchCondition = query
-      ? { username: { [Op.like]: `%${query}%` } }
-      : {};
+      ? {
+          userId: { [Op.ne]: tokenUserId },
+          username: { [Op.like]: `%${query}%` },
+        }
+      : { userId: { [Op.ne]: tokenUserId } };
 
     // Find users matching the search condition
     const users = await User.findAll({

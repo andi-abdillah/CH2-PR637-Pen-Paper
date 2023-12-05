@@ -14,21 +14,21 @@ const ExploreTopics = () => {
 
   const [searchQuery, setSearchQuery] = useState(null);
 
-  const [filteredItems, setFilteredItems] = useState([]);
+  const [articles, setArticles] = useState([]);
 
-  const [visibleItems, setVisibleItems] = useState(4);
+  const [visibleArticles, setVisibleArticles] = useState(4);
 
   const [loading, setLoading] = useState(true);
 
   const handleLoadMore = () => {
-    setVisibleItems((prevVisibleItems) => prevVisibleItems + 4);
+    setVisibleArticles((prevVisibleArticles) => prevVisibleArticles + 4);
   };
 
   useEffect(() => {
     if (searchQuery) {
       const fetchData = async () => {
         try {
-          const foundArticles = await axios.get(
+          const result = await axios.get(
             `http://localhost:9000/articles/search?query=${searchQuery}`,
             {
               headers: {
@@ -37,13 +37,9 @@ const ExploreTopics = () => {
             }
           );
 
-          const articles = foundArticles.data.data.articles;
+          const foundArticles = result.data.data.articles;
 
-          const filteredArticles = articles.filter(
-            (article) => article.userId !== user.userId
-          );
-
-          setFilteredItems(filteredArticles);
+          setArticles(foundArticles);
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {
@@ -53,7 +49,7 @@ const ExploreTopics = () => {
 
       fetchData();
     } else {
-      setFilteredItems([]);
+      setArticles([]);
     }
   }, [token, searchQuery, user.userId]);
 
@@ -65,7 +61,7 @@ const ExploreTopics = () => {
     return <Loading />;
   }
 
-  if (filteredItems?.length === 0 && searchQuery) {
+  if (articles?.length === 0 && searchQuery) {
     return (
       <p>
         No articles found matching "<b>{searchQuery}</b>". Try a different
@@ -76,10 +72,10 @@ const ExploreTopics = () => {
 
   return (
     <div className="flex flex-wrap justify-between">
-      {filteredItems.slice(0, visibleItems).map((item, index) => (
+      {articles.slice(0, visibleArticles).map((item, index) => (
         <Card key={index} {...item} />
       ))}
-      {visibleItems < filteredItems.length && (
+      {visibleArticles < articles.length && (
         <PrimaryButton className="m-auto" onClick={handleLoadMore}>
           Load More<Icon>arrow_circle_down</Icon>
         </PrimaryButton>

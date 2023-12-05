@@ -32,11 +32,7 @@ const ExploreAccount = () => {
 
           const usersData = foundUsers.data.data.users;
 
-          const filteredUsers = usersData.filter(
-            (userData) => userData.userId !== user.userId
-          );
-
-          setUsersList(filteredUsers);
+          setUsersList(usersData);
         } catch (error) {
           console.error("Error fetching data:", error);
         } finally {

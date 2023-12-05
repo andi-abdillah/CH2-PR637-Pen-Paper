@@ -102,16 +102,18 @@ const addArticleHandler = async (request, h) => {
 
 // Handler to get all articles
 const getAllArticlesHandler = async (request, h) => {
+  const { userId: tokenUserId } = request.auth.credentials;
+
   try {
     // Set default values for page and pageSize
     const page = parseInt(request.query.page) || 1;
-    const pageSize = parseInt(request.query.pageSize) || 10;
+    const pageSize = parseInt(request.query.pageSize) || 3;
 
     // Calculate the offset based on page and pageSize
     const offset = (page - 1) * pageSize;
 
     // Find all articles with pagination and order by creation date in descending order
-    const articles = await Article.findAll({
+    const articles = await Article.findAndCountAll({
       order: [["createdAt", "DESC"]],
       include: [
         {
@@ -122,20 +124,31 @@ const getAllArticlesHandler = async (request, h) => {
       ],
       offset: offset,
       limit: pageSize,
+      where: {
+        userId: { [Op.ne]: tokenUserId },
+      },
     });
 
+    // Destructure the result object to get count and rows
+    const { count, rows } = articles;
+
     // If no articles, return an empty array
-    if (!articles || articles.length === 0) {
+    if (!rows || rows.length === 0) {
       return h
         .response({
           status: "success",
-          data: { articles: [] },
+          data: {
+            articles: [],
+            totalArticles: 0,
+            totalPages: 0,
+            currentPage: page,
+          },
         })
         .code(200);
     }
 
     // Map articles to a simplified format
-    const listArticles = articles.map((article) => ({
+    const listArticles = rows.map((article) => ({
       articleId: article.articleId,
       userId: article.userId,
       username: article.user.username,
@@ -145,11 +158,19 @@ const getAllArticlesHandler = async (request, h) => {
       updatedAt: article.updatedAt,
     }));
 
-    // Respond with success and the list of articles
+    // Calculate total pages
+    const totalPages = Math.ceil(count / pageSize);
+
+    // Respond with success and the list of articles, along with pagination details
     return h
       .response({
         status: "success",
-        data: { articles: listArticles },
+        data: {
+          articles: listArticles,
+          totalArticles: count,
+          totalPages: totalPages,
+          currentPage: page,
+        },
       })
       .code(200);
   } catch (error) {
@@ -167,15 +188,22 @@ const getAllArticlesHandler = async (request, h) => {
 
 // Handler to search articles based on a query string
 const searchArticlesHandler = async (request, h) => {
+  const { userId: tokenUserId } = request.auth.credentials;
+
   try {
     const { query } = request.query;
 
     // Define search condition based on the query string
     const searchCondition = query
       ? {
-          [Op.or]: [
-            { title: { [Op.like]: `%${query}%` } },
-            { content: { [Op.like]: `%${query}%` } },
+          [Op.and]: [
+            {
+              [Op.or]: [
+                { title: { [Op.like]: `%${query}%` } },
+                { content: { [Op.like]: `%${query}%` } },
+              ],
+            },
+            { userId: { [Op.ne]: tokenUserId } },
           ],
         }
       : {};
