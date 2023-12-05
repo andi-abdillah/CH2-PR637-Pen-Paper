@@ -103,7 +103,14 @@ const addArticleHandler = async (request, h) => {
 // Handler to get all articles
 const getAllArticlesHandler = async (request, h) => {
   try {
-    // Find all articles and order by creation date in descending order
+    // Set default values for page and pageSize
+    const page = parseInt(request.query.page) || 1;
+    const pageSize = parseInt(request.query.pageSize) || 10;
+
+    // Calculate the offset based on page and pageSize
+    const offset = (page - 1) * pageSize;
+
+    // Find all articles with pagination and order by creation date in descending order
     const articles = await Article.findAll({
       order: [["createdAt", "DESC"]],
       include: [
@@ -113,6 +120,8 @@ const getAllArticlesHandler = async (request, h) => {
           attributes: ["username"],
         },
       ],
+      offset: offset,
+      limit: pageSize,
     });
 
     // If no articles, return an empty array

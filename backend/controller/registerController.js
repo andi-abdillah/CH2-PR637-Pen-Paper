@@ -23,8 +23,18 @@ const registerHandler = async (request, h) => {
       updatedAt = new Date(),
     } = request.payload;
 
+    const removeExtraSpaces = (inputString) => {
+      return inputString.replace(/\s+/g, " ").trim();
+    };
+
+    const trimmedUsername = removeExtraSpaces(username);
+    const trimmedEmail = removeExtraSpaces(email);
+    const trimmedPassword = removeExtraSpaces(password);
+
+    console.log("trimmedUsername = ", trimmedUsername);
+
     // Validation checks for empty fields
-    if (!username || !email || !password) {
+    if (!trimmedUsername || !trimmedEmail || !trimmedPassword) {
       return h
         .response({
           status: "fail",
@@ -34,7 +44,10 @@ const registerHandler = async (request, h) => {
     }
 
     // Check if username is already taken
-    const existingUsername = await User.findOne({ where: { username } });
+    const existingUsername = await User.findOne({
+      where: { username: trimmedUsername },
+    });
+
     if (existingUsername) {
       return h
         .response({
@@ -45,7 +58,9 @@ const registerHandler = async (request, h) => {
     }
 
     // Check if email is already taken
-    const existingEmail = await User.findOne({ where: { email } });
+    const existingEmail = await User.findOne({
+      where: { email: trimmedEmail },
+    });
     if (existingEmail) {
       return h
         .response({
@@ -56,7 +71,7 @@ const registerHandler = async (request, h) => {
     }
 
     // Password length validation
-    if (password.length < 8) {
+    if (trimmedPassword.length < 8) {
       return h
         .response({
           status: "fail",
@@ -65,15 +80,28 @@ const registerHandler = async (request, h) => {
         .code(400);
     }
 
+    // const passwordRegex =
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    // if (!passwordRegex.test(trimmedPassword)) {
+    //   return h
+    //     .response({
+    //       status: "fail",
+    //       message:
+    //         "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one numeric digit, and one special character.",
+    //     })
+    //     .code(400);
+    // }
+
     // Enkripsi password sebelum menyimpannya
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
 
     // Create a new user dengan password yang dienkripsi
     const createdUser = await User.create(
       {
         userId,
-        username,
-        email,
+        username: trimmedUsername,
+        email: trimmedEmail,
         password: hashedPassword, // Gunakan password yang sudah dienkripsi
         descriptions,
         createdAt,

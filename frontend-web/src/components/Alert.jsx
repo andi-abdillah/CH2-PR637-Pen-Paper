@@ -14,7 +14,7 @@ const Alert = ({ message, type, onClose }) => {
   }, [onClose]);
 
   return isVisible ? (
-    <div className="fixed right-5 bottom-5 flex items-center justify-end w-max z-50">
+    <div className="fixed right-5 bottom-5 flex items-center justify-end z-50">
       <div className="chat chat-end">
         <div
           className={`chat-bubble ${backgroundColor} text-white text-xs md:text-lg px-4 drop-shadow-card`}

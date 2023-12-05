@@ -1,6 +1,6 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../provider/AuthContext";
 import Card from "../../components/Card";
 import Icon from "../../components/Icon";
@@ -12,6 +12,8 @@ import axios from "axios";
 const Home = () => {
   const { token, user } = useAuth();
 
+  const navigate = useNavigate();
+
   const topics = [
     "Programming",
     "Self Improvement",
@@ -19,9 +21,21 @@ const Home = () => {
     "Politics",
   ];
 
+  const params = new URLSearchParams(window.location.search);
+
+  const page = parseInt(params.get("page")) || 1;
+
+  const [currentPage, setCurrentPage] = useState(page);
+
+  const itemsPerPage = 8;
+
   const [loading, setLoading] = useState(true);
 
   const [articles, setArticles] = useState([]);
+
+  const handleLoadMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +43,10 @@ const Home = () => {
         const response = await axios.get("http://localhost:9000/articles", {
           headers: {
             Authorization: `Bearer ${token}`,
+          },
+          params: {
+            page: currentPage,
+            pageSize: itemsPerPage,
           },
         });
 
@@ -38,7 +56,12 @@ const Home = () => {
           (article) => article.userId !== user.userId
         );
 
-        setArticles(filteredArticles);
+        // If it's the first page, replace the articles; otherwise, append to the existing ones
+        setArticles((prevArticles) =>
+          currentPage === 1
+            ? filteredArticles
+            : [...prevArticles, ...filteredArticles]
+        );
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -47,7 +70,11 @@ const Home = () => {
     };
 
     fetchData();
-  }, [token, user.userId]);
+  }, [token, user.userId, currentPage]);
+
+  useEffect(() => {
+    navigate(`/dashboard?page=${currentPage}&pageSize=${itemsPerPage}`);
+  }, [currentPage, navigate]);
 
   return (
     <>
@@ -81,17 +108,20 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-between">
-        <div>
-          <h2 className="mb-6 text-center xs:text-start text-xl text-primary font-semibold">
-            Might for you
-          </h2>
-          {articles?.map((article, index) => (
-            <Card key={index} {...article} />
-          ))}
-        </div>
+      {!loading ? (
+        <div className="flex flex-wrap justify-between">
+          <div>
+            <h2 className="mb-6 text-center xs:text-start text-xl text-primary font-semibold">
+              Might for you
+            </h2>
+            {articles?.map((article, index) => (
+              <Card key={index} {...article} />
+            ))}
+            <PrimaryButton className="m-auto" onClick={handleLoadMore}>
+              Load More<Icon>arrow_circle_down</Icon>
+            </PrimaryButton>
+          </div>
 
-        {!loading ? (
           <div className="fixed bottom-3 right-3 text-center dropdown dropdown-top dropdown-end z-[1] md:hidden">
             <PrimaryButton
               tabIndex={0}
@@ -111,7 +141,7 @@ const Home = () => {
                   key={index}
                   className="mb-2 px-4 py-2 bg-neutral-50 rounded-3xl drop-shadow"
                 >
-                  <Link>{topic}</Link>
+                  <Link to={`/dashboard?topic=${topic}`}>{topic}</Link>
                 </li>
               ))}
               <Link
@@ -137,51 +167,51 @@ const Home = () => {
               </Link>
             </ul>
           </div>
-        ) : (
-          <Loading />
-        )}
 
-        <div className="w-max hidden md:block">
-          <h2 className="mb-6 text-xl text-primary font-semibold">
-            Discover by topics
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            {topics?.map((topic, index) => (
-              <div
-                key={index}
-                className="card w-60 h-14 mb-2 bg-neutral-50 rounded-3xl drop-shadow-card"
-              >
-                <div className="card-body p-0">
-                  <h4 className="font-semibold m-auto text-lg text-gray-400">
-                    {topic}
-                  </h4>
+          <div className="w-max hidden md:block">
+            <h2 className="mb-6 text-xl text-primary font-semibold">
+              Discover by topics
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {topics?.map((topic, index) => (
+                <div
+                  key={index}
+                  className="card w-60 h-14 mb-2 bg-neutral-50 rounded-3xl drop-shadow-card"
+                >
+                  <div className="card-body p-0">
+                    <h4 className="font-semibold m-auto text-lg text-gray-400">
+                      {topic}
+                    </h4>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <Link
-            to="explore"
-            className="flex items-center mt-3 text-xl text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
-          >
-            Browse more topics
-            <svg
-              className="w-3.5 h-3.5 ml-1"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 14 10"
+              ))}
+            </div>
+            <Link
+              to="explore"
+              className="flex items-center mt-3 text-xl text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
             >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 5h12m0 0L9 1m4 4L9 9"
-              />
-            </svg>
-          </Link>
+              Browse more topics
+              <svg
+                className="w-3.5 h-3.5 ml-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+              </svg>
+            </Link>
+          </div>
         </div>
-      </div>
+      ) : (
+        <Loading />
+      )}
     </>
   );
 };

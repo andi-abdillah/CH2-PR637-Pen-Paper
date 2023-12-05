@@ -19,7 +19,7 @@ const Register = () => {
 
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value.trim(),
+      [name]: value,
     }));
   };
 
@@ -31,9 +31,9 @@ const Register = () => {
         "http://localhost:9000/register",
         formData
       );
-      const successMessage = result?.data;
+      const { message, status } = result?.data;
 
-      showAlert(successMessage.message, successMessage.status);
+      showAlert(message, status);
 
       setFormData({
         username: "",
@@ -41,8 +41,9 @@ const Register = () => {
         password: "",
       });
     } catch (error) {
-      const errorMessage = error.response?.data;
-      showAlert(errorMessage.message, errorMessage.status);
+      const { message, status } = error.response?.data;
+
+      showAlert(message, status);
     }
   };
 
@@ -65,7 +66,7 @@ const Register = () => {
                 id="username"
                 name="username"
                 type="text"
-                value={formData.username}
+                value={formData?.username}
                 onChange={handleInputChange}
                 placeholder="Full Name"
                 className="text-center"
@@ -76,7 +77,7 @@ const Register = () => {
                 id="email"
                 name="email"
                 type="email"
-                value={formData.email}
+                value={formData?.email}
                 onChange={handleInputChange}
                 placeholder="Email"
                 className="text-center"
@@ -86,7 +87,7 @@ const Register = () => {
                 id="password"
                 name="password"
                 type="password"
-                value={formData.password}
+                value={formData?.password}
                 onChange={handleInputChange}
                 placeholder="Password"
                 className="text-center"
