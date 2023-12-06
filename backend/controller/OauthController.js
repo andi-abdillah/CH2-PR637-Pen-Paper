@@ -37,28 +37,14 @@ const loginWithOAuth = async (request, h) => {
           token,
         })
         .code(200);
-    } else {
-      // If the user doesn't exist, create a new user using Google ID information
-      const newUser = new User({
-        userId: payload.sub,
-        email: userEmail,
-        // Add other fields as needed
-      });
-
-      // Save the new user to the database
-      await newUser.save();
-
-      // Generate a token for the new user
-      const token = createToken(newUser);
-
-      return h
-        .response({
-          status: "success",
-          message: "User created and logged in successfully",
-          token,
-        })
-        .code(200);
     }
+
+    return h
+      .response({
+        status: "fail",
+        message: "Your Google account is not registered yet. Please sign up!",
+      })
+      .code(401);
   } catch (error) {
     console.error("Error verifying Google token:", error);
     // Handle token verification error

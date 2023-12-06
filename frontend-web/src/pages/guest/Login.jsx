@@ -14,6 +14,8 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -47,6 +49,10 @@ const Login = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <>
       <HelmetProvider>
@@ -76,16 +82,25 @@ const Login = () => {
               <TextInput
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Password"
                 className="text-center"
                 required
               />
+              <span className="flex gap-2">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-success"
+                  checked={showPassword}
+                  onChange={togglePasswordVisibility}
+                />
+                Show Password
+              </span>
               <button
                 type="submit"
-                className="text-primary text-lg font-semibold mx-auto w-max"
+                className="text-primary text-lg font-semibold mx-auto w-max mt-4"
               >
                 Sign In
               </button>

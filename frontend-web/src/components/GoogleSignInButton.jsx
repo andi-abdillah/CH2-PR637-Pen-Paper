@@ -1,5 +1,4 @@
 import { GoogleLogin } from "@react-oauth/google";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import axios from "axios";
 
 const GoogleSignInButton = ({ login, showAlert, navigate }) => {
@@ -24,16 +23,14 @@ const GoogleSignInButton = ({ login, showAlert, navigate }) => {
   };
 
   return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-      <div className="flex items-center justify-center">
-        <GoogleLogin
-          onSuccess={handleOnSuccess}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
-      </div>
-    </GoogleOAuthProvider>
+    <div className="flex items-center justify-center">
+      <GoogleLogin
+        onSuccess={handleOnSuccess}
+        onError={() => {
+          console.log("Login Failed");
+        }}
+      />
+    </div>
   );
 };
 

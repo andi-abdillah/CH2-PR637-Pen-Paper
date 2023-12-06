@@ -4,9 +4,12 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useState } from "react";
 import axios from "axios";
 import { useAlert } from "../../provider/AlertProvider";
+import GoogleRegisterButton from "../../components/GoogleRegisterButton";
 
 const Register = () => {
   const { showAlert } = useAlert();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -45,6 +48,10 @@ const Register = () => {
 
       showAlert(message, status);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
@@ -86,20 +93,32 @@ const Register = () => {
               <TextInput
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={formData?.password}
                 onChange={handleInputChange}
                 placeholder="Password"
                 className="text-center"
                 required
               />
+              <span className="flex gap-2">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-success"
+                  checked={showPassword}
+                  onChange={togglePasswordVisibility}
+                />
+                Show Password
+              </span>
+
               <button
                 type="submit"
-                className="text-primary text-lg font-semibold mx-auto w-max"
+                className="text-primary text-lg font-semibold mx-auto w-max mt-4"
               >
                 Create Account
               </button>
             </form>
+            <div className="divider my-8">OR</div>
+            <GoogleRegisterButton setFormData={setFormData} />
           </div>
           <center className="my-6 text-lg">
             Already have an account?{" "}
