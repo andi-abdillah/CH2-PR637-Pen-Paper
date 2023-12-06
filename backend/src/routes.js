@@ -1,5 +1,4 @@
 const {
-  addUserHandler,
   getAllUsersHandler,
   searchUsersHandler,
   getUserByIdHandler,
@@ -23,6 +22,8 @@ const loginHandler = require("./../controller/loginController");
 
 const registerHandler = require("./../controller/registerController");
 
+const loginWithOauth = require("./../controller/OauthController");
+
 const routes = [
   {
     method: "GET",
@@ -38,6 +39,16 @@ const routes = [
       auth: false,
     },
     handler: loginHandler,
+  },
+
+  // OAuth Route to Initiate Google Sign-In
+  {
+    method: "POST",
+    path: "/auth/google",
+    config: {
+      auth: false,
+    },
+    handler: loginWithOauth,
   },
 
   //Register Route

@@ -4,24 +4,20 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useState } from "react";
 import { useAuth } from "../../provider/AuthContext";
 import axios from "axios";
-import Alert from "../../components/Alert";
+import GoogleSignInButton from "../../components/GoogleSignInButton";
+import { useAlert } from "../../provider/AlertProvider";
 
 const Login = () => {
+  const { login } = useAuth();
+
+  const { showAlert } = useAlert();
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const [alert, setAlert] = useState(null);
-
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert(null);
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,14 +55,6 @@ const Login = () => {
         </Helmet>
       </HelmetProvider>
 
-      {alert && (
-        <Alert
-          type={alert.type}
-          onClose={handleCloseAlert}
-          message={alert.message}
-        />
-      )}
-
       <div className="flex justify-center w-screen min-h-screen bg-primary">
         <div className="mx-6 my-auto lg:my-24 p-8 md:p-20 bg-neutral-50 rounded-3xl drop-shadow-card">
           <h1 className="max-w-md text-primary text-4xl sm:text-5xl md:text-6xl">
@@ -102,6 +90,12 @@ const Login = () => {
                 Sign In
               </button>
             </form>
+            <div className="divider my-8">OR</div>
+            <GoogleSignInButton
+              login={login}
+              showAlert={showAlert}
+              navigate={navigate}
+            />
           </div>
           <center className="my-6 text-lg">
             No account yet?{" "}
