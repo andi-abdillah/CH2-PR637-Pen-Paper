@@ -40,8 +40,9 @@ const OtherUserProfile = () => {
         );
         const articles = foundArticles.data.data.articles;
 
-        setUserArticles(articles);
         setUser(userData);
+
+        setUserArticles(articles);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {

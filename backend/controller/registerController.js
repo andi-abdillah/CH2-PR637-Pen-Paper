@@ -80,18 +80,18 @@ const registerHandler = async (request, h) => {
         .code(400);
     }
 
-    // const passwordRegex =
-    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // if (!passwordRegex.test(trimmedPassword)) {
-    //   return h
-    //     .response({
-    //       status: "fail",
-    //       message:
-    //         "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one numeric digit, and one special character.",
-    //     })
-    //     .code(400);
-    // }
+    if (!passwordRegex.test(trimmedPassword)) {
+      return h
+        .response({
+          status: "fail",
+          message:
+            "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one numeric digit, and one special character.",
+        })
+        .code(400);
+    }
 
     // Enkripsi password sebelum menyimpannya
     const hashedPassword = await bcrypt.hash(trimmedPassword, 10);

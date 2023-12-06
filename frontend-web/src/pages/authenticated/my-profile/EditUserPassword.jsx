@@ -48,13 +48,11 @@ const EditUserPassword = ({
         password: formData.newPassword,
         updateAt: new Date(),
       }));
-
-      setIsProcessing(false);
     } catch (error) {
       const { message, status } = error.response.data;
 
       showAlert(message, status);
-
+    } finally {
       setIsProcessing(false);
     }
   };

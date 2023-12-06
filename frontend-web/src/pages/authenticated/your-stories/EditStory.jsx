@@ -90,14 +90,12 @@ const EditStory = () => {
 
       showAlert(message, status);
 
-      setIsProcessing(false);
-
       navigate("/dashboard/your-stories");
     } catch (error) {
       const { message, status } = error.response.data;
 
       showAlert(message, status);
-
+    } finally {
       setIsProcessing(false);
     }
   };
