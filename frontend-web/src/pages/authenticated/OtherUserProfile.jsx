@@ -1,15 +1,18 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../provider/AuthContext";
+import { dateFormater } from "../../utils/dateFormater";
 import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";
 import Card from "../../components/Card";
 import Loading from "../../components/Loading";
-import { dateFormater } from "../../utils/dateFormater";
 import axios from "axios";
 
 const OtherUserProfile = () => {
   const { id } = useParams();
+
+  const { token } = useAuth();
 
   const [user, setUser] = useState(null);
 
@@ -20,11 +23,20 @@ const OtherUserProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const foundUser = await axios.get(`http://localhost:9000/users/${id}`);
+        const foundUser = await axios.get(`http://localhost:9000/users/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const userData = foundUser.data.data.user;
 
         const foundArticles = await axios.get(
-          `http://localhost:9000/articles/user/${id}`
+          `http://localhost:9000/articles/user/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         const articles = foundArticles.data.data.articles;
 
@@ -38,7 +50,7 @@ const OtherUserProfile = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, token]);
 
   if (loading) {
     return <Loading />;
