@@ -1,6 +1,7 @@
 const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
 const { Article, User, sequelize } = require("../models");
+const formattedDate = require("./utils/formattedDate");
 
 // Function to generate a unique article ID
 const generateId = () => `article-${nanoid(20)}`;
@@ -13,8 +14,8 @@ const addArticleHandler = async (request, h) => {
     userId,
     title,
     content,
-    createdAt = new Date(),
-    updatedAt = new Date(),
+    createdAt = formattedDate,
+    updatedAt = formattedDate,
   } = request.payload;
 
   const t = await sequelize.transaction();
@@ -425,7 +426,7 @@ const editArticleByIdHandler = async (request, h) => {
       {
         title,
         content,
-        updatedAt: new Date(),
+        updatedAt: formattedDate,
       },
       { where: { articleId }, returning: true, transaction: t }
     );

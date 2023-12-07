@@ -1,6 +1,7 @@
 const { nanoid } = require("nanoid");
 const { User, sequelize } = require("../models");
 const bcrypt = require("bcrypt");
+const formattedDate = require("./utils/formattedDate");
 
 // Function to generate a unique user ID
 const generateId = () => `user-${nanoid(20)}`;
@@ -19,8 +20,8 @@ const registerHandler = async (request, h) => {
       email,
       password,
       descriptions,
-      createdAt = new Date(),
-      updatedAt = new Date(),
+      createdAt = formattedDate,
+      updatedAt = formattedDate,
     } = request.payload;
 
     const removeExtraSpaces = (inputString) => {
@@ -93,16 +94,16 @@ const registerHandler = async (request, h) => {
         .code(400);
     }
 
-    // Enkripsi password sebelum menyimpannya
+    // Encrypt password before saving it
     const hashedPassword = await bcrypt.hash(trimmedPassword, 10);
 
-    // Create a new user dengan password yang dienkripsi
+    // Create a new user with the encrypted password
     const createdUser = await User.create(
       {
         userId,
         username: trimmedUsername,
         email: trimmedEmail,
-        password: hashedPassword, // Gunakan password yang sudah dienkripsi
+        password: hashedPassword,
         descriptions,
         createdAt,
         updatedAt,

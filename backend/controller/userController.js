@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const { User, Article, sequelize } = require("../models");
 const bcrypt = require("bcrypt");
+const formattedDate = require("./utils/formattedDate");
 
 // Handler to get all users
 const getAllUsersHandler = async (request, h) => {
@@ -219,7 +220,7 @@ const editUserProfileHandler = async (request, h) => {
       {
         username,
         email,
-        updatedAt: new Date(),
+        updatedAt: formattedDate,
       },
       { where: { userId: paramUserId }, returning: true, transaction: t }
     );
@@ -356,7 +357,7 @@ const editUserPasswordHandler = async (request, h) => {
     const [, updatedRowCount] = await User.update(
       {
         password: hashedPassword,
-        updatedAt: new Date(),
+        updatedAt: formattedDate,
       },
       { where: { userId: paramUserId }, returning: true, transaction: t }
     );
@@ -414,7 +415,7 @@ const editUserDescriptionsHandler = async (request, h) => {
     const [, updatedRowCount] = await User.update(
       {
         descriptions: descriptions.trim(),
-        updatedAt: new Date(),
+        updatedAt: formattedDate,
       },
       { where: { userId: paramUserId }, returning: true, transaction: t }
     );

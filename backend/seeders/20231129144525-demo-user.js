@@ -4,6 +4,11 @@ const { nanoid } = require("nanoid");
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcrypt");
+const { DateTime } = require("luxon");
+
+const timeZone = "Asia/Jakarta";
+const now = DateTime.now().setZone(timeZone);
+const formattedDate = now.toFormat("yyyy-MM-dd HH:mm:ss");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -19,8 +24,8 @@ module.exports = {
       email: user.email,
       password,
       descriptions: user.descriptions,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: formattedDate,
+      updatedAt: formattedDate,
     }));
 
     await queryInterface.bulkInsert("Users", seedData, {});

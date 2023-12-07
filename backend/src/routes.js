@@ -24,11 +24,22 @@ const registerHandler = require("./../controller/registerController");
 
 const loginWithOauth = require("./../controller/OauthController");
 
+const sendResetPasswordMail = require("./../controller/utils/sendResetPasswordMail");
+
 const routes = [
   {
     method: "GET",
     path: "/",
     handler: () => "Welcome to Pen & Paper API",
+  },
+
+  {
+    method: "POST",
+    path: "/reset-password",
+    config: {
+      auth: false,
+    },
+    handler: sendResetPasswordMail,
   },
 
   //Login Route
