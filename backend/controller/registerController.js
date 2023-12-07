@@ -32,8 +32,6 @@ const registerHandler = async (request, h) => {
     const trimmedEmail = removeExtraSpaces(email);
     const trimmedPassword = removeExtraSpaces(password);
 
-    console.log("trimmedUsername = ", trimmedUsername);
-
     // Validation checks for empty fields
     if (!trimmedUsername || !trimmedEmail || !trimmedPassword) {
       return h

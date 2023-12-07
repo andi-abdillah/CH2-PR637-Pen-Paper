@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
 const { Entropy, charset32 } = require("entropy-string");
-const { User, sequelize } = require("../../models");
+const { User, sequelize } = require("../models");
 const bcrypt = require("bcrypt");
-const formattedDate = require("./formattedDate");
+const formattedDate = require("./utils/formattedDate");
 
 const sendResetPasswordMail = async (request, h) => {
   const { email } = request.payload;

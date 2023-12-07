@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useState } from "react";
-import axios from "axios";
 import { useAlert } from "../../provider/AlertProvider";
 import GoogleRegisterButton from "../../components/GoogleRegisterButton";
+import axios from "axios";
 
 const Register = () => {
   const { showAlert } = useAlert();

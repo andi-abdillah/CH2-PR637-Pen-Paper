@@ -24,7 +24,7 @@ const registerHandler = require("./../controller/registerController");
 
 const loginWithOauth = require("./../controller/OauthController");
 
-const sendResetPasswordMail = require("./../controller/utils/sendResetPasswordMail");
+const sendResetPasswordMail = require("./../controller/sendResetPasswordMail");
 
 const routes = [
   {

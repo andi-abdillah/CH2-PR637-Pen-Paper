@@ -325,15 +325,16 @@ const editUserPasswordHandler = async (request, h) => {
         })
         .code(400);
     }
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // Validate password length
-    if (newPassword.length < 8) {
+    if (!passwordRegex.test(newPassword)) {
       await t.rollback();
       return h
         .response({
           status: "fail",
           message:
-            "Failed to update user password. New password must be at least 8 characters long",
+            "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one numeric digit, and one special character.",
         })
         .code(400);
     }

@@ -3,9 +3,9 @@ import TextInput from "../../components/TextInput";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useState } from "react";
 import { useAuth } from "../../provider/AuthContext";
-import axios from "axios";
 import GoogleSignInButton from "../../components/GoogleSignInButton";
 import { useAlert } from "../../provider/AlertProvider";
+import axios from "axios";
 
 const Login = () => {
   const { login } = useAuth();
@@ -98,6 +98,12 @@ const Login = () => {
                 />
                 Show Password
               </span>
+              <Link
+                className="self-end text-blue-900 hover:underline"
+                to="/forgot-password"
+              >
+                Forgot password?
+              </Link>
               <button
                 type="submit"
                 className="text-primary text-lg font-semibold mx-auto w-max mt-4"

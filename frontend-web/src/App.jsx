@@ -8,6 +8,7 @@ import Home from "./pages/authenticated/Home";
 import PageNotFound from "./pages/PageNotFound";
 import Login from "./pages/guest/Login";
 import Register from "./pages/guest/Register";
+import ForgotPassword from "./pages/guest/ForgotPassword";
 import StoryDetails from "./pages/authenticated/StoryDetails";
 import OtherUserProfile from "./pages/authenticated/OtherUserProfile";
 import WelcomePage from "./pages/guest/WelcomePage";
@@ -54,6 +55,7 @@ function App() {
             <Route index element={<WelcomePage />} />
             <Route path="sign-in" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
