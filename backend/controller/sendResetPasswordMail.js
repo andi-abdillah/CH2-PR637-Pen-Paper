@@ -97,7 +97,6 @@ const sendResetPasswordMail = async (request, h) => {
     // Commit the transaction
     await t.commit();
 
-    console.log("Message sent: %s", info.messageId);
     return h
       .response({
         status: "success",

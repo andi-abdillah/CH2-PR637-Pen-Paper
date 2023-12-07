@@ -46,8 +46,6 @@ const ForgotPassword = () => {
     }
   };
 
-  console.log(formData);
-
   return (
     <>
       <HelmetProvider>

@@ -36,7 +36,7 @@ const StoryDeleteAlert = ({ token, isOpen, onClose, navigate, articleId }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-40 bg-black/30">
       <div className="modal-box shadow-xl">
         <h3 className="m-4 font-bold text-lg text-red-500">
           Are you sure you want to delete this article?

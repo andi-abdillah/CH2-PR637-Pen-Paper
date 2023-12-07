@@ -24,12 +24,7 @@ const GoogleSignInButton = ({ login, showAlert, navigate }) => {
 
   return (
     <div className="flex items-center justify-center">
-      <GoogleLogin
-        onSuccess={handleOnSuccess}
-        onError={() => {
-          console.log("Login Failed");
-        }}
-      />
+      <GoogleLogin onSuccess={handleOnSuccess} />
     </div>
   );
 };

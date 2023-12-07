@@ -6,6 +6,7 @@ import BackButton from "../../../components/BackButton";
 import EditUserDescriptions from "./EditUserDescriptions";
 import EditUserPassword from "./EditUserPassword";
 import EditUserProfile from "./EditUserProfile";
+import DeleteUser from "./DeleteUser";
 import ProfileHeader from "../../../components/ProfileHeader";
 import Loading from "../../../components/Loading";
 import axios from "axios";
@@ -111,6 +112,23 @@ const EditUserProfileLayout = () => {
             userData={userData}
             setUserData={setUserData}
             showAlert={showAlert}
+            key={userData.updateAt}
+          />
+        </div>
+
+        <div className="px-6 border-[1.2px] border-gray-400 rounded-2xl">
+          <h2 className="mt-4 mb-1 md:text-xl text-primary font-semibold">
+            Delete Account
+          </h2>
+
+          <h3>
+            Once your account is deleted, all of its resources and data will be
+            permanently deleted. Before deleting your account, please download
+            any data or information that you wish to retain.
+          </h3>
+          <DeleteUser
+            token={token}
+            userId={user.userId}
             key={userData.updateAt}
           />
         </div>

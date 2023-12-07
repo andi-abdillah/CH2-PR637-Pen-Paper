@@ -454,6 +454,7 @@ const editUserDescriptionsHandler = async (request, h) => {
 const deleteUserByIdHandler = async (request, h) => {
   const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
   const { userId: paramUserId } = request.params;
+  const { password } = request.payload;
 
   // Check if the user is authorized to delete the user
   if (tokenUserId !== paramUserId) {
@@ -468,6 +469,32 @@ const deleteUserByIdHandler = async (request, h) => {
   const t = await sequelize.transaction();
 
   try {
+    // Find the target user
+    const targetUser = await User.findByPk(paramUserId);
+
+    if (!targetUser) {
+      await t.rollback();
+      return h
+        .response({
+          status: "fail",
+          message: "Failed to delete user. User ID not found",
+        })
+        .code(404);
+    }
+
+    // Validate if the provided password matches the user's password using bcrypt
+    const isPasswordValid = await bcrypt.compare(password, targetUser.password);
+
+    if (!isPasswordValid) {
+      await t.rollback();
+      return h
+        .response({
+          status: "fail",
+          message: "Failed to delete user. Incorrect password",
+        })
+        .code(400);
+    }
+
     // Delete user
     const deletedUserRowCount = await User.destroy({
       where: { userId: paramUserId },

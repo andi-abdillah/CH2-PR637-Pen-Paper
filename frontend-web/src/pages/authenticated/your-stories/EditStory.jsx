@@ -127,6 +127,7 @@ const EditStory = () => {
           <TextInput
             id="title"
             name="title"
+            type="text"
             placeholder="Add title"
             defaultValue={formData.title}
             onChange={handleInputChange}
@@ -139,6 +140,7 @@ const EditStory = () => {
           <TextArea
             id="content"
             name="content"
+            type="text"
             placeholder="Write here"
             defaultValue={formData.content}
             onChange={handleInputChange}

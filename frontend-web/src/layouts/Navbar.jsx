@@ -39,7 +39,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`navbar sticky top-3 w-[95%] mx-auto z-50 bg-base-100 lg:py-5 lg:px-20 rounded-full transition duration-500 ease-in-out ${
+      className={`navbar sticky top-3 w-[95%] mx-auto z-30 bg-base-100 lg:py-5 lg:px-20 rounded-full transition duration-500 ease-in-out ${
         isScrolled ? "drop-shadow-card" : ""
       }`}
     >

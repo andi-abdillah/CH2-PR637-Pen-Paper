@@ -88,6 +88,7 @@ const CreateStory = () => {
           <TextInput
             id="title"
             name="title"
+            type="text"
             placeholder="Add title"
             className="border-0 my-3 font-semibold"
             defaultValue={formData.title}
@@ -101,6 +102,7 @@ const CreateStory = () => {
           <TextArea
             id="content"
             name="content"
+            type="text"
             placeholder="Write here"
             className="border-0 mt-3"
             defaultValue={formData.content}
