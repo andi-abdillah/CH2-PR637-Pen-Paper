@@ -482,6 +482,17 @@ const deleteUserByIdHandler = async (request, h) => {
         .code(404);
     }
 
+    // Validation for required field
+    if (!password) {
+      return h
+        .response({
+          status: "fail",
+          message:
+            "Failed to delete user account. Please provide your password to confirm the account deletion.",
+        })
+        .code(400);
+    }
+
     // Validate if the provided password matches the user's password using bcrypt
     const isPasswordValid = await bcrypt.compare(password, targetUser.password);
 
