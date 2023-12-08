@@ -16,6 +16,7 @@ const registerHandler = async (request, h) => {
     // Destructure payload and provide default values
     const {
       userId = id,
+      fullName,
       username,
       email,
       password,
@@ -28,16 +29,52 @@ const registerHandler = async (request, h) => {
       return inputString.replace(/\s+/g, " ").trim();
     };
 
-    const trimmedUsername = removeExtraSpaces(username);
+    const trimmedFullName = removeExtraSpaces(fullName);
+    const trimmedUsername = removeExtraSpaces(username.toLowerCase());
     const trimmedEmail = removeExtraSpaces(email);
     const trimmedPassword = removeExtraSpaces(password);
 
     // Validation checks for empty fields
-    if (!trimmedUsername || !trimmedEmail || !trimmedPassword) {
+    if (
+      !trimmedFullName ||
+      !trimmedUsername ||
+      !trimmedEmail ||
+      !trimmedPassword
+    ) {
       return h
         .response({
           status: "fail",
           message: "Username, email, and password are required",
+        })
+        .code(400);
+    }
+
+    // Validation for minimum and maximum length of fullName
+    const fullNameMinLength = 3;
+    const fullNameMaxLength = 50;
+    if (
+      trimmedFullName.length < fullNameMinLength ||
+      trimmedFullName.length > fullNameMaxLength
+    ) {
+      return h
+        .response({
+          status: "fail",
+          message: `Full Name must be between ${fullNameMinLength} and ${fullNameMaxLength} characters.`,
+        })
+        .code(400);
+    }
+
+    // Validation for minimum and maximum length of username
+    const usernameMinLength = 3;
+    const usernameMaxLength = 20;
+    if (
+      trimmedUsername.length < usernameMinLength ||
+      trimmedUsername.length > usernameMaxLength
+    ) {
+      return h
+        .response({
+          status: "fail",
+          message: `Username must be between ${usernameMinLength} and ${usernameMaxLength} characters.`,
         })
         .code(400);
     }
@@ -56,15 +93,39 @@ const registerHandler = async (request, h) => {
         .code(400);
     }
 
+    // Additional validation for username (Only letters, numbers, and underscores are allowed)
+    const usernameRegex = /^[a-zA-Z0-9_.]+$/;
+    if (!usernameRegex.test(trimmedUsername)) {
+      return h
+        .response({
+          status: "fail",
+          message:
+            "Invalid username. Please use only letters, numbers, underscores, or periods.",
+        })
+        .code(400);
+    }
+
     // Check if email is already taken
     const existingEmail = await User.findOne({
       where: { email: trimmedEmail },
     });
+
     if (existingEmail) {
       return h
         .response({
           status: "fail",
           message: "Email is already registered. Please use a different email.",
+        })
+        .code(400);
+    }
+
+    // Email format validation using regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      return h
+        .response({
+          status: "fail",
+          message: "Invalid email format. Please enter a valid email address.",
         })
         .code(400);
     }
@@ -99,6 +160,7 @@ const registerHandler = async (request, h) => {
     const createdUser = await User.create(
       {
         userId,
+        fullName: trimmedFullName,
         username: trimmedUsername,
         email: trimmedEmail,
         password: hashedPassword,
@@ -114,7 +176,8 @@ const registerHandler = async (request, h) => {
       return h
         .response({
           status: "success",
-          message: "User successfully added.",
+          message:
+            "Account registration is complete. Sign in now and explore our platform.",
           data: { userId },
         })
         .code(201);

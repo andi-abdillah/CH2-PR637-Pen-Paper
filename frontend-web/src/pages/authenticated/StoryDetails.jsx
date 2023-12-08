@@ -140,7 +140,7 @@ const StoryDetails = () => {
           articleId={article.articleId}
         />
 
-        <div className="flex flex-col gap-6 max-w-5xl xs:mx-8 mt-8 text-lg">
+        <div className="flex flex-col gap-6 max-w-4xl xs:mx-8 mt-8 text-lg">
           {author.userId !== user.userId && (
             <Link
               to={`/dashboard/user-profile/${author.userId}`}

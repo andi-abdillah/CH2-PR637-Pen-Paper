@@ -15,12 +15,14 @@ const EditUserProfile = ({
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
+    fullName: "",
     username: "",
     email: "",
   });
 
   useEffect(() => {
     setFormData({
+      fullName: userData.fullName,
       username: userData.username,
       email: userData.email,
     });
@@ -28,7 +30,11 @@ const EditUserProfile = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value.trim() }));
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "username" ? value.toLowerCase() : value.trim(),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -51,7 +57,9 @@ const EditUserProfile = ({
 
       setUserData((prevUser) => ({
         ...prevUser,
+        fullName: formData.fullName,
         username: formData.username,
+        email: formData.email,
         updateAt: new Date(),
       }));
     } catch (error) {
@@ -69,15 +77,25 @@ const EditUserProfile = ({
         onSubmit={handleSubmit}
         className="flex flex-col text-sm xs:text-lg mt-3"
       >
+        <InputLabel htmlFor="fullname" value="Full Name" />
+        <TextInput
+          id="fullname"
+          name="fullName"
+          type="text"
+          defaultValue={formData?.fullName}
+          onChange={handleInputChange}
+          placeholder="Full Name"
+          required
+        />
+
         <InputLabel htmlFor="username" value="Username" />
         <TextInput
           id="username"
           name="username"
-          type="username"
-          defaultValue={formData.username}
+          type="text"
+          value={formData?.username}
           onChange={handleInputChange}
           placeholder="Username"
-          autoComplete="username"
           required
         />
 
@@ -86,10 +104,9 @@ const EditUserProfile = ({
           id="email"
           name="email"
           type="email"
-          defaultValue={formData.email}
+          defaultValue={formData?.email}
           onChange={handleInputChange}
           placeholder="Email"
-          autoComplete="email"
           required
         />
 

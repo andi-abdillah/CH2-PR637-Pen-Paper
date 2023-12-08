@@ -72,7 +72,7 @@ const Login = () => {
                 id="email"
                 name="email"
                 type="email"
-                value={formData.email}
+                value={formData?.email}
                 onChange={handleInputChange}
                 placeholder="Email"
                 className="text-center"
@@ -83,7 +83,7 @@ const Login = () => {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                value={formData.password}
+                value={formData?.password}
                 onChange={handleInputChange}
                 placeholder="Password"
                 className="text-center"

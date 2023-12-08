@@ -5,7 +5,8 @@ const GoogleRegisterButton = ({ setFormData }) => {
   const handleOnSuccess = (credentialResponse) => {
     const decodedToken = jwtDecode(credentialResponse.credential);
     setFormData({
-      username: decodedToken.name,
+      fullName: decodedToken.name,
+      username: "",
       email: decodedToken.email,
       password: "",
     });

@@ -9,6 +9,10 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
       },
+      fullName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       username: {
         type: Sequelize.STRING,
         allowNull: false,

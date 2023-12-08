@@ -94,10 +94,8 @@ const CreateStory = () => {
             type="text"
             placeholder="Add title"
             className="border-0 my-3 font-semibold"
-            defaultValue={formData.title}
+            defaultValue={formData?.title}
             onChange={handleInputChange}
-            maxLength={100}
-            minLength={10}
             isFocused
             required
           />
@@ -110,10 +108,8 @@ const CreateStory = () => {
             type="text"
             placeholder="Add descriptions"
             className="border-0 my-3 font-semibold"
-            defaultValue={formData.descriptions}
+            defaultValue={formData?.descriptions}
             onChange={handleInputChange}
-            maxLength={250}
-            minLength={10}
             required
           />
 

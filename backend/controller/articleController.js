@@ -23,7 +23,7 @@ const addArticleHandler = async (request, h) => {
 
   try {
     // Payload validation
-    if (!title || !content) {
+    if (!title || !descriptions || !content) {
       return h
         .response({
           status: "fail",

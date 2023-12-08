@@ -77,7 +77,7 @@ const DeleteAccountAlert = ({
           type="password"
           placeholder="Password"
           className="border-0 my-3 font-semibold"
-          value={formData.password}
+          value={formData?.password}
           onChange={handleInputChange}
           isFocused
           required

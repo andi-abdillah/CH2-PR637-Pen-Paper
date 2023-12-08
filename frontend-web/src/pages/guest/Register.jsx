@@ -12,6 +12,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
+    fullName: "",
     username: "",
     email: "",
     password: "",
@@ -22,7 +23,7 @@ const Register = () => {
 
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === "username" ? value.toLowerCase() : value,
     }));
   };
 
@@ -39,6 +40,7 @@ const Register = () => {
       showAlert(message, status);
 
       setFormData({
+        fullName: "",
         username: "",
         email: "",
         password: "",
@@ -70,15 +72,25 @@ const Register = () => {
           <div className="w-full sm:max-w-xs mx-auto mt-16">
             <form onSubmit={handleRegister} className="flex flex-col gap-4">
               <TextInput
-                id="username"
-                name="username"
+                id="fullname"
+                name="fullName"
                 type="text"
-                value={formData?.username}
+                value={formData?.fullName}
                 onChange={handleInputChange}
                 placeholder="Full Name"
                 className="text-center"
                 required
                 isFocused
+              />
+              <TextInput
+                id="username"
+                name="username"
+                type="text"
+                value={formData?.username}
+                onChange={handleInputChange}
+                placeholder="Username"
+                className="text-center"
+                required
               />
               <TextInput
                 id="email"

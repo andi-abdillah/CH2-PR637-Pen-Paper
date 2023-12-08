@@ -20,6 +20,7 @@ module.exports = {
 
     const seedData = users.map((user) => ({
       userId: `user-${nanoid(20)}`,
+      fullName: user.fullName,
       username: user.username,
       email: user.email,
       password,

@@ -1,121 +1,145 @@
 [
   {
-    "username": "Amin Abdillah",
+    "fullName": "Amin Abdillah",
+    "username": "amin_abdillah",
     "email": "andiabdillah255@gmail.com",
     "descriptions": ""
   },
   {
-    "username": "Adi Wijaya",
+    "fullName": "Adi Wijaya",
+    "username": "adiwijaya",
     "email": "adi.wijaya@gmail.com",
     "descriptions": "Penggemar seni dan puisi, menganyam emosi ke dalam setiap kata yang tertulis."
   },
   {
-    "username": "Putri Damayanti",
+    "fullName": "Putri Damayanti",
+    "username": "putri_damayanti",
     "email": "putri.damayanti@gmail.com",
     "descriptions": "Manusia biasa yang suka kucing"
   },
   {
-    "username": "Gila Seni",
+    "fullName": "Gila Seni",
+    "username": "gila_seni",
     "email": "gila.seni@gmail.com",
     "descriptions": "Seniman gagal yang suka ngelukis pemandangan langit, tapi hasilnya mirip banget sama pemandangan bawah laut. Kalau gak lagi berantakan di studio, bisa ketemu di warung sate terdekat."
   },
   {
-    "username": "Aldo 1999",
+    "fullName": "Aldo 1999",
+    "username": "aldo1999",
     "email": "aldo.1999@gmail.com",
     "descriptions": "Pencari bahan lucu dari kehidupan sehari-hari. Kalau gak ketawa sendiri, berarti bahan tulisannya belum lucu. Suka banget ngehibur diri sendiri."
   },
   {
-    "username": "Siti Widya",
+    "fullName": "Siti Widya",
+    "username": "sitiwidya",
     "email": "siti.widya@gmail.com",
     "descriptions": "Pecinta seni dan kopi. Kadang-kadang sibuk dengan sketsa di buku catatannya sambil menikmati secangkir kopi hangat."
   },
   {
-    "username": "Arief Abdullah",
+    "fullName": "Arief Abdullah",
+    "username": "ariefabdullah",
     "email": "arief.abdullah@gmail.com",
     "descriptions": "Penggemar musik yang suka mencoba berbagai instrumen. Paling senang berdiam diri di sudut kamar sambil memetik senar gitar."
   },
   {
-    "username": "Rani Maulana",
+    "fullName": "Rani Maulana",
+    "username": "ranimaulana",
     "email": "rani.maulana@gmail.com",
     "descriptions": "Pembaca setia novel bergenre fantasi. Selalu membayangkan dirinya sebagai karakter utama dalam petualangan yang menegangkan."
   },
   {
-    "username": "Ivan Halim",
+    "fullName": "Ivan Halim",
+    "username": "ivanhalim",
     "email": "ivan.halim@gmail.com",
     "descriptions": "Pecinta alam yang suka berpetualang ke hutan. Hobinya adalah mendaki gunung dan menyaksikan matahari terbit di puncak."
   },
   {
-    "username": "Dina Wijaya",
+    "fullName": "Dina Wijaya",
+    "username": "dinawijaya",
     "email": "dina.wijaya@gmail.com",
     "descriptions": "Penggemar fashion dengan kantong mahasiswa. Terkadang bingung memilih antara baju cantik atau makan enak."
   },
   {
-    "username": "Budi Santoso",
+    "fullName": "Budi Santoso",
+    "username": "budi_santoso",
     "email": "budi.santoso@gmail.com",
     "descriptions": "Pecinta alam yang senang bersepeda di akhir pekan. Sering kali menemukan keindahan alam yang tersembunyi."
   },
   {
-    "username": "Citra Dewi",
+    "fullName": "Citra Dewi",
+    "username": "citradewi",
     "email": "citra.dewi@gmail.com",
     "descriptions": "Penggemar seni rupa dan fotografi. Selalu membawa kamera ke mana pun pergi untuk menangkap momen indah."
   },
   {
-    "username": "Rizki Pratama",
+    "fullName": "Rizki Pratama",
+    "username": "rizkipratama",
     "email": "rizki.pratama@gmail.com",
     "descriptions": "Pecinta teknologi dan coding. Menghabiskan waktu luang dengan mengeksplorasi dunia pemrograman."
   },
   {
-    "username": "Lia Rahayu",
+    "fullName": "Lia Rahayu",
+    "username": "liarahayu",
     "email": "lia.rahayu@gmail.com",
     "descriptions": "Penikmat kopi dan buku. Menyukai suasana tenang di kafe sambil membaca novel favorit."
   },
   {
-    "username": "Dito Nugroho",
+    "fullName": "Dito Nugroho",
+    "username": "ditonugroho",
     "email": "dito.nugroho@gmail.com",
     "descriptions": "Pecinta musik klasik yang sering menghadiri konser. Juga suka bermain piano di waktu luang."
   },
   {
-    "username": "Nina Sari",
+    "fullName": "Nina Sari",
+    "username": "ninasari",
     "email": "nina.sari@gmail.com",
     "descriptions": "Penulis amatir yang gemar menuangkan ide-ide kreatif dalam cerita pendek."
   },
   {
-    "username": "Yoga Pratama",
+    "fullName": "Yoga Pratama",
+    "username": "yogapratama",
     "email": "yoga.pratama@gmail.com",
     "descriptions": "Penggemar olahraga outdoor, terutama hiking. Selalu mencari tantangan di alam terbuka."
   },
   {
-    "username": "Lulu Rahman",
+    "fullName": "Lulu Rahman",
+    "username": "lulurahman",
     "email": "lulu.rahman@gmail.com",
     "descriptions": "Pecinta film independen dan seni panggung. Mengikuti festival film setiap tahunnya."
   },
   {
-    "username": "Aditya Kusuma",
+    "fullName": "Aditya Kusuma",
+    "username": "adityakusuma",
     "email": "aditya.kusuma@gmail.com",
     "descriptions": "Pembaca berat buku non-fiksi. Gemar menggali pengetahuan baru dari berbagai sumber."
   },
   {
-    "username": "Sara Putri",
+    "fullName": "Sara Putri",
+    "username": "saraputri",
     "email": "sara.putri@gmail.com",
     "descriptions": "Pecinta binatang peliharaan dan sukarelawan di tempat penampungan hewan."
   },
   {
-    "username": "Ahmad Fauzi",
+    "fullName": "Ahmad Fauzi",
+    "username": "ahmadfauzi",
     "email": "ahmad.fauzi@gmail.com",
     "descriptions": "Mahasiswa Teknik Informatika yang berpikir bahwa bahasa pemrograman lebih mudah dimengerti daripada bahasa percintaan. Menyatakan cinta dengan 'Hello World!'"
   },
   {
-    "username": "Diana Fitriani",
+    "fullName": "Diana Fitriani",
+    "username": "dianafitriani_",
     "email": "diana.fitriani@gmail.com",
     "descriptions": "Mahasiswi Sastra Inggris yang melihat hidup seperti sebuah novel romantis, namun sering kali berakhir seperti kisah komedi. Menulis puisi di sela-sela mencari referensi tugas."
   },
   {
-    "username": "Arief Santoso",
+    "fullName": "Arief Santoso",
+    "username": "arief_santoso",
     "email": "arief.santoso@gmail.com",
     "descriptions": "Pengemudi ojek online yang suka bercanda. Selalu memberikan pelayanan cepat dan menyenangkan kepada penumpang."
   },
   {
-    "username": "Budi Kurniawan",
+    "fullName": "Budi Kurniawan",
+    "username": "budikurniawan",
     "email": "budi.kurniawan@gmail.com",
     "descriptions": "Pengemudi ojek online yang ramah dan santai. Menyukai obrolan ringan dengan penumpang sambil menemani perjalanan."
   }

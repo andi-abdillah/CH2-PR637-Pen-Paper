@@ -67,7 +67,7 @@ const ForgotPassword = () => {
                 id="email"
                 name="email"
                 type="email"
-                value={formData.email}
+                value={formData?.email}
                 onChange={handleInputChange}
                 placeholder="Email"
                 className="text-center"

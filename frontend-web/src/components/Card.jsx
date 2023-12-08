@@ -30,7 +30,7 @@ const Card = ({
               to={`/dashboard/user-profile/${userId}`}
               className="text-lg w-max"
             >
-              {username}
+              @{username}
             </Link>
           )}
 

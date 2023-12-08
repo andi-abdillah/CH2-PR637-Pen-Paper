@@ -131,11 +131,9 @@ const EditStory = () => {
             name="title"
             type="text"
             placeholder="Add title"
-            defaultValue={formData.title}
+            defaultValue={formData?.title}
             onChange={handleInputChange}
             className="border-0 my-3 font-semibold"
-            maxLength={100}
-            minLength={10}
             required
           />
 
@@ -147,10 +145,8 @@ const EditStory = () => {
             type="text"
             placeholder="Add descriptions"
             className="border-0 my-3 font-semibold"
-            defaultValue={formData.descriptions}
+            defaultValue={formData?.descriptions}
             onChange={handleInputChange}
-            maxLength={250}
-            minLength={10}
             required
           />
 

@@ -7,20 +7,20 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  // Membaca nilai dari cookie saat komponen dimuat
+  // Read the value from the cookie when the component is loaded
   const [authenticatedUser, setAuthenticatedUser] = useState(() => {
     const token = document.cookie
       .split("; ")
       .find((row) => row.startsWith("authToken="));
 
     if (token) {
-      // Mengambil nilai token dari cookie
+      // Get the token value from the cookie
       const tokenValue = token.split("=")[1];
 
-      // Decode token untuk mendapatkan informasi pengguna
+      // Decode the token to get user information
       const decodedToken = jwtDecode(tokenValue);
 
-      // Sesuaikan dengan format token Anda
+      // Adjust to your token format
       return { token: tokenValue, user: decodedToken };
     }
 
@@ -32,25 +32,25 @@ export const AuthProvider = ({ children }) => {
   const user = authenticatedUser?.user;
 
   const login = (token) => {
-    // Decode token untuk mendapatkan informasi pengguna
+    // Decode the token to get user information
     const decodedToken = jwtDecode(token);
 
-    // Simpan token dalam cookie
+    // Save the token in the cookie
     document.cookie = `authToken=${token}; path=/; Secure`;
 
-    // Simpan informasi pengguna dalam state
+    // Save user information in the state
     setAuthenticatedUser({ token, user: decodedToken });
   };
 
   const logout = () => {
-    // Hapus token dari cookie
+    // Remove the token from the cookie
     document.cookie =
       "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
-    // Hapus informasi pengguna dari state
+    // Remove user information from the state
     setAuthenticatedUser(null);
 
-    // Redirect ke halaman login
+    // Redirect to the login page
     navigate("/");
   };
 

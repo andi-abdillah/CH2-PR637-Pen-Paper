@@ -26,8 +26,8 @@ import ExploreAccount from "./pages/authenticated/explore/ExploreAccount";
 
 function App() {
   return (
-    <AuthProvider>
-      <AlertProvider>
+    <AlertProvider>
+      <AuthProvider>
         <Routes>
           <Route path="/dashboard" element={<AuthenticatedLayout />}>
             <Route index element={<Home />} />
@@ -59,8 +59,8 @@ function App() {
           </Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
-      </AlertProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </AlertProvider>
   );
 }
 

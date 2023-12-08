@@ -33,7 +33,7 @@ const loginWithOAuth = async (request, h) => {
       return h
         .response({
           status: "success",
-          message: "Login successful",
+          message: "Sign in successful",
           token,
         })
         .code(200);

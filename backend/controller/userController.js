@@ -125,6 +125,7 @@ const getUserByIdHandler = async (request, h) => {
         data: {
           user: {
             userId: targetUser.userId,
+            fullName: targetUser.fullName,
             username: targetUser.username,
             email: targetUser.email,
             descriptions: targetUser.descriptions,
@@ -148,7 +149,7 @@ const getUserByIdHandler = async (request, h) => {
 const editUserProfileHandler = async (request, h) => {
   const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
   const { userId: paramUserId } = request.params;
-  const { username, email } = request.payload;
+  const { fullName, username, email, descriptions } = request.payload;
 
   // Check if the user is authorized to edit the profile
   if (tokenUserId !== paramUserId) {
@@ -161,7 +162,7 @@ const editUserProfileHandler = async (request, h) => {
   }
 
   // Validation for required fields
-  if (!username || !email) {
+  if (!fullName || !username || !email) {
     return h
       .response({
         status: "fail",
@@ -171,55 +172,109 @@ const editUserProfileHandler = async (request, h) => {
       .code(400);
   }
 
+  // Validation for minimum and maximum length of fullName
+  const fullNameMinLength = 3;
+  const fullNameMaxLength = 50;
+  if (
+    fullName.length < fullNameMinLength ||
+    fullName.length > fullNameMaxLength
+  ) {
+    return h
+      .response({
+        status: "fail",
+        message: `Full Name must be between ${fullNameMinLength} and ${fullNameMaxLength} characters.`,
+      })
+      .code(400);
+  }
+
+  // Validation for minimum and maximum length of username
+  const usernameMinLength = 3;
+  const usernameMaxLength = 20;
+  if (
+    username.length < usernameMinLength ||
+    username.length > usernameMaxLength
+  ) {
+    return h
+      .response({
+        status: "fail",
+        message: `Username must be between ${usernameMinLength} and ${usernameMaxLength} characters.`,
+      })
+      .code(400);
+  }
+
+  // Additional validation for username (Only letters, numbers, and underscores are allowed)
+  const usernameRegex = /^[a-zA-Z0-9_.]+$/;
+  if (!usernameRegex.test(username)) {
+    return h
+      .response({
+        status: "fail",
+        message:
+          "Invalid username. Please use only letters, numbers, underscores, or periods.",
+      })
+      .code(400);
+  }
+
+  // Check if the new username is already taken by another user
+  const existingUsername = await User.findOne({
+    where: {
+      username,
+      userId: {
+        [Op.not]: paramUserId,
+      },
+    },
+  });
+
+  if (existingUsername) {
+    return h
+      .response({
+        status: "fail",
+        message:
+          "Failed to update user profile. Username is already taken by another user.",
+      })
+      .code(400);
+  }
+
+  // Check if the new email is already registered by another user
+  const existingEmail = await User.findOne({
+    where: {
+      email,
+      userId: {
+        [Op.not]: paramUserId,
+      },
+    },
+  });
+
+  if (existingEmail) {
+    return h
+      .response({
+        status: "fail",
+        message:
+          "Failed to update user profile. Email is already registered by another user.",
+      })
+      .code(400);
+  }
+
+  // Email format validation using regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return h
+      .response({
+        status: "fail",
+        message: "Invalid email format. Please enter a valid email address.",
+      })
+      .code(400);
+  }
+
   const t = await sequelize.transaction();
 
   try {
-    // Check if the new username is already taken by another user
-    const existingUsername = await User.findOne({
-      where: {
-        username,
-        userId: {
-          [Op.not]: paramUserId,
-        },
-      },
-    });
-
-    if (existingUsername) {
-      await t.rollback();
-      return h
-        .response({
-          status: "fail",
-          message:
-            "Failed to update user profile. Username is already taken by another user.",
-        })
-        .code(400);
-    }
-
-    // Check if the new email is already registered by another user
-    const existingEmail = await User.findOne({
-      where: {
-        email,
-        userId: {
-          [Op.not]: paramUserId,
-        },
-      },
-    });
-
-    if (existingEmail) {
-      await t.rollback();
-      return h
-        .response({
-          status: "fail",
-          message:
-            "Failed to update user profile. Email is already registered by another user.",
-        })
-        .code(400);
-    }
-
+    // Update user profile
     const [, updatedRowCount] = await User.update(
       {
+        fullName,
         username,
         email,
+        descriptions,
         updatedAt: formattedDate,
       },
       { where: { userId: paramUserId }, returning: true, transaction: t }
@@ -477,7 +532,7 @@ const deleteUserByIdHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Failed to delete user. User ID not found",
+          message: "Failed to delete account. User ID not found",
         })
         .code(404);
     }
@@ -488,7 +543,7 @@ const deleteUserByIdHandler = async (request, h) => {
         .response({
           status: "fail",
           message:
-            "Failed to delete user account. Please provide your password to confirm the account deletion.",
+            "Failed to delete account. Please provide your password to confirm the account deletion.",
         })
         .code(400);
     }
@@ -501,7 +556,7 @@ const deleteUserByIdHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Failed to delete user. Incorrect password",
+          message: "Failed to delete account. Incorrect password",
         })
         .code(400);
     }
@@ -523,7 +578,7 @@ const deleteUserByIdHandler = async (request, h) => {
       return h
         .response({
           status: "success",
-          message: "User and related articles successfully deleted",
+          message: "Your account and related articles successfully deleted",
         })
         .code(200);
     }
@@ -532,7 +587,7 @@ const deleteUserByIdHandler = async (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "Failed to delete user. User ID not found",
+        message: "Failed to delete account. User ID not found",
       })
       .code(404);
   } catch (error) {

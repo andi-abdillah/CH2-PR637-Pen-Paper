@@ -4,6 +4,7 @@ import { useAuth } from "../provider/AuthContext";
 
 const Navbar = () => {
   const location = useLocation();
+
   const { logout } = useAuth();
 
   const [isScrolled, setIsScrolled] = useState(false);
