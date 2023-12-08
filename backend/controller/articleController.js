@@ -13,6 +13,7 @@ const addArticleHandler = async (request, h) => {
     articleId = id,
     userId,
     title,
+    descriptions,
     content,
     createdAt = formattedDate,
     updatedAt = formattedDate,
@@ -26,7 +27,23 @@ const addArticleHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Title and content are required fields.",
+          message: "Title, descriptions, and content are required fields.",
+        })
+        .code(400);
+    }
+
+    // Additional validation for title and descriptions length
+    if (
+      title.length > 100 ||
+      title.length < 10 ||
+      descriptions.length > 250 ||
+      descriptions.length < 10
+    ) {
+      return h
+        .response({
+          status: "fail",
+          message:
+            "Title must be between 10 and 100 characters, and descriptions must be between 10 and 250 characters.",
         })
         .code(400);
     }
@@ -37,6 +54,7 @@ const addArticleHandler = async (request, h) => {
         articleId,
         userId,
         title,
+        descriptions,
         content,
         createdAt,
         updatedAt,
@@ -70,6 +88,7 @@ const addArticleHandler = async (request, h) => {
             userId: createdArticle.userId,
             username: createdArticle.user.username,
             title: createdArticle.title,
+            descriptions: createdArticle.descriptions,
             content: createdArticle.content,
             createdAt: createdArticle.createdAt,
             updatedAt: createdArticle.updatedAt,
@@ -154,6 +173,7 @@ const getAllArticlesHandler = async (request, h) => {
       userId: article.userId,
       username: article.user.username,
       title: article.title,
+      descriptions: article.descriptions,
       content: article.content,
       createdAt: article.createdAt,
       updatedAt: article.updatedAt,
@@ -237,6 +257,7 @@ const searchArticlesHandler = async (request, h) => {
       userId: article.userId,
       username: article.user.username,
       title: article.title,
+      descriptions: article.descriptions,
       content: article.content,
       createdAt: article.createdAt,
       updatedAt: article.updatedAt,
@@ -296,6 +317,7 @@ const getArticlesByUserIdHandler = async (request, h) => {
       userId: article.userId,
       username: article.user.username,
       title: article.title,
+      descriptions: article.descriptions,
       content: article.content,
       createdAt: article.createdAt,
       updatedAt: article.updatedAt,
@@ -348,6 +370,7 @@ const getArticleByIdHandler = async (request, h) => {
               userId: targetArticle.userId,
               username: targetArticle.user.username,
               title: targetArticle.title,
+              descriptions: targetArticle.descriptions,
               content: targetArticle.content,
               createdAt: targetArticle.createdAt,
               updatedAt: targetArticle.updatedAt,
@@ -380,18 +403,34 @@ const getArticleByIdHandler = async (request, h) => {
 // Handler to edit an article by its ID
 const editArticleByIdHandler = async (request, h) => {
   const { articleId } = request.params;
-  const { title, content } = request.payload;
+  const { title, descriptions, content } = request.payload;
   const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
 
   const t = await sequelize.transaction();
 
   try {
     // Payload validation
-    if (!title || !content) {
+    if (!title || !descriptions || !content) {
       return h
         .response({
           status: "fail",
-          message: "Title and content are required fields.",
+          message: "Title, descriptions, and content are required fields.",
+        })
+        .code(400);
+    }
+
+    // Additional validation for title and descriptions length
+    if (
+      title.length > 100 ||
+      title.length < 10 ||
+      descriptions.length > 250 ||
+      descriptions.length < 10
+    ) {
+      return h
+        .response({
+          status: "fail",
+          message:
+            "Title must be between 10 and 100 characters, and descriptions must be between 10 and 250 characters.",
         })
         .code(400);
     }
@@ -425,6 +464,7 @@ const editArticleByIdHandler = async (request, h) => {
     const [, updatedRowCount] = await Article.update(
       {
         title,
+        descriptions,
         content,
         updatedAt: formattedDate,
       },

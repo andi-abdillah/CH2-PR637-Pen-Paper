@@ -26,6 +26,7 @@ module.exports = {
       articleId: `article-${nanoid(20)}`,
       userId: getRandomUserId(users),
       title: article.title,
+      descriptions: article.descriptions,
       content: article.content,
       createdAt: formattedDate,
       updatedAt: formattedDate,
