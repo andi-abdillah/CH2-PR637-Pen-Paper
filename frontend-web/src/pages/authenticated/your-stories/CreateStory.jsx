@@ -23,6 +23,7 @@ const CreateStory = () => {
   const [formData, setFormData] = useState({
     userId: user.userId,
     title: "",
+    descriptions: "",
     content: "",
   });
 
@@ -65,6 +66,8 @@ const CreateStory = () => {
     }
   };
 
+  console.log(formData);
+
   return (
     <>
       <HelmetProvider>
@@ -93,7 +96,24 @@ const CreateStory = () => {
             className="border-0 my-3 font-semibold"
             defaultValue={formData.title}
             onChange={handleInputChange}
+            maxLength={100}
+            minLength={10}
             isFocused
+            required
+          />
+
+          <Divider />
+
+          <TextInput
+            id="descriptions"
+            name="descriptions"
+            type="text"
+            placeholder="Add descriptions"
+            className="border-0 my-3 font-semibold"
+            defaultValue={formData.descriptions}
+            onChange={handleInputChange}
+            maxLength={250}
+            minLength={10}
             required
           />
 

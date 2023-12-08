@@ -27,6 +27,7 @@ const EditStory = () => {
 
   const [formData, setFormData] = useState({
     title: "",
+    descriptions: "",
     content: "",
   });
 
@@ -58,6 +59,7 @@ const EditStory = () => {
 
         setFormData({
           title: foundArticle.title,
+          descriptions: foundArticle.descriptions,
           content: foundArticle.content,
         });
       } catch (error) {
@@ -132,6 +134,23 @@ const EditStory = () => {
             defaultValue={formData.title}
             onChange={handleInputChange}
             className="border-0 my-3 font-semibold"
+            maxLength={100}
+            minLength={10}
+            required
+          />
+
+          <Divider />
+
+          <TextInput
+            id="descriptions"
+            name="descriptions"
+            type="text"
+            placeholder="Add descriptions"
+            className="border-0 my-3 font-semibold"
+            defaultValue={formData.descriptions}
+            onChange={handleInputChange}
+            maxLength={250}
+            minLength={10}
             required
           />
 

@@ -7,15 +7,15 @@ const Card = ({
   username,
   isMyArticle,
   title,
-  content,
+  descriptions,
   createdAt,
 }) => {
-  const maxContentLength = 200;
+  const maxDescriptionsLength = 180;
 
-  const slicedContent =
-    content.length > maxContentLength
-      ? `${content.slice(0, maxContentLength)}...`
-      : content;
+  const slicedDescriptions =
+    descriptions.length > maxDescriptionsLength
+      ? `${descriptions.slice(0, maxDescriptionsLength)}...`
+      : descriptions;
 
   const createMarkup = (htmlString) => {
     return { __html: htmlString };
@@ -23,21 +23,24 @@ const Card = ({
 
   return (
     <div className="card max-w-[525px] w-full text-black mb-10 bg-neutral-50 rounded-3xl drop-shadow-card">
-      <div className="card-body">
-        {!isMyArticle && (
-          <Link
-            to={`/dashboard/user-profile/${userId}`}
-            className="text-lg w-max"
-          >
-            {username}
-          </Link>
-        )}
+      <div className="card-body justify-between">
+        <div className="flex flex-col gap-2">
+          {!isMyArticle && (
+            <Link
+              to={`/dashboard/user-profile/${userId}`}
+              className="text-lg w-max"
+            >
+              {username}
+            </Link>
+          )}
 
-        <h1 className="card-title text-3xl">{title}</h1>
+          <h1 className="card-title text-3xl">{title}</h1>
 
-        <div>
-          <p dangerouslySetInnerHTML={createMarkup(slicedContent)} />
-          <span>- {dateFormater(createdAt)}</span>
+          <p dangerouslySetInnerHTML={createMarkup(slicedDescriptions)} />
+
+          <span className="font-semibold text-black/70">
+            - {dateFormater(createdAt)}
+          </span>
         </div>
 
         <div className="card-actions">

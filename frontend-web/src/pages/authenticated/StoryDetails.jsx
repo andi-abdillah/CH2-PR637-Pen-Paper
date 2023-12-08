@@ -152,7 +152,9 @@ const StoryDetails = () => {
           <h3 className="text-gray-700 font-semibold">
             {dateFormater(article.createdAt)}
           </h3>
-          <h3 className="text-gray-500 font-semibold">Article Description</h3>
+          <h3 className="text-gray-500 font-semibold">
+            {article.descriptions}
+          </h3>
           <p dangerouslySetInnerHTML={createMarkup(article.content)} />
         </div>
       </div>
