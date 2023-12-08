@@ -7,6 +7,7 @@ import BackButton from "../../components/BackButton";
 import Icon from "../../components/Icon";
 import StoryDeleteAlert from "../../components/StoryDeleteAlert";
 import Loading from "../../components/Loading";
+import { dateFormater } from "../../utils/dateFormater";
 import axios from "axios";
 
 const StoryDetails = () => {
@@ -74,6 +75,10 @@ const StoryDetails = () => {
     setAlertOpen(false);
   };
 
+  const createMarkup = (htmlString) => {
+    return { __html: htmlString };
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -110,7 +115,7 @@ const StoryDetails = () => {
               </label>
               <ul
                 tabIndex={0}
-                className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max"
+                className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max list-none"
               >
                 <li className="mx-5 mb-2 cursor-pointer">
                   <Link to={`/dashboard/your-stories/${id}/edit`}>
@@ -135,18 +140,20 @@ const StoryDetails = () => {
           articleId={article.articleId}
         />
 
-        <div className="flex flex-col gap-6 max-w-2xl xs:mx-8 mt-8 text-lg font-semibold">
+        <div className="flex flex-col gap-6 max-w-5xl xs:mx-8 mt-8 text-lg">
           {author.userId !== user.userId && (
             <Link
               to={`/dashboard/user-profile/${author.userId}`}
-              className="text-black text-2xl w-max"
+              className="text-grey-600 text-2xl w-max font-semibold"
             >
               {author.username}
             </Link>
           )}
-          <h3 className="text-gray-700">{article.date}</h3>
-          <h3 className="text-gray-500">Article Description</h3>
-          <p>{article.content}</p>
+          <h3 className="text-gray-700 font-semibold">
+            {dateFormater(article.createdAt)}
+          </h3>
+          <h3 className="text-gray-500 font-semibold">Article Description</h3>
+          <p dangerouslySetInnerHTML={createMarkup(article.content)} />
         </div>
       </div>
     </>

@@ -22,7 +22,8 @@ const DeleteAccountAlert = ({
     return null;
   }
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async (e) => {
+    e.preventDefault();
     try {
       const result = await axios.delete(
         `http://localhost:9000/users/${userId}`,
@@ -61,7 +62,7 @@ const DeleteAccountAlert = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-40 bg-black/30">
-      <div className="modal-box shadow-xl">
+      <form className="modal-box shadow-xl" onSubmit={handleConfirmDelete}>
         <h2 className="mb-4 font-bold text-lg text-red-500">
           Are you sure you want to delete your account?
         </h2>
@@ -82,10 +83,10 @@ const DeleteAccountAlert = ({
           required
         />
         <div className="modal-action">
-          <PrimaryButton onClick={handleConfirmDelete}>Confirm</PrimaryButton>
+          <PrimaryButton type="submit">Confirm</PrimaryButton>
           <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

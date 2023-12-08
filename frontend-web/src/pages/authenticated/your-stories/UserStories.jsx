@@ -16,6 +16,8 @@ const UserStories = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const isMyArticle = true;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -53,7 +55,7 @@ const UserStories = () => {
 
       <div className="flex flex-wrap justify-between mt-8">
         {articles.map((article, index) => (
-          <Card key={index} {...article} />
+          <Card key={index} {...article} isMyArticle={isMyArticle} />
         ))}
       </div>
     </>

@@ -5,8 +5,8 @@ import { useAuth } from "../../../provider/AuthContext";
 import { useAlert } from "../../../provider/AlertProvider";
 import BackButton from "../../../components/BackButton";
 import TextInput from "../../../components/TextInput";
+import Editor from "../../../components/Editor";
 import Divider from "../../../components/Divider";
-import TextArea from "../../../components/TextArea";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import axios from "axios";
@@ -99,18 +99,7 @@ const CreateStory = () => {
 
           <Divider />
 
-          <TextArea
-            id="content"
-            name="content"
-            type="text"
-            placeholder="Write here"
-            className="border-0 mt-3"
-            defaultValue={formData.content}
-            onChange={handleInputChange}
-            cols="30"
-            rows="15"
-            required
-          ></TextArea>
+          <Editor formData={formData} handleChange={handleInputChange} />
 
           <PrimaryButton
             type="submit"

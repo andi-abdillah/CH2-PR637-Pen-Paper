@@ -146,7 +146,7 @@ const Home = () => {
             </PrimaryButton>
             <ul
               tabIndex={0}
-              className="dropdown-content z-[1] mb-2 mx-3 p-4 drop-shadow-card bg-base-100 rounded-box w-60"
+              className="dropdown-content z-[1] mb-2 mx-3 p-4 drop-shadow-card bg-base-100 rounded-box w-60 list-none"
             >
               <h2 className="mb-6 text-primary font-semibold">
                 Discover by topics

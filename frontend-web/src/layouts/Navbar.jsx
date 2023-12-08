@@ -63,7 +63,7 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="flex flex-col gap-3 p-6 dropdown-content mt-5 z-[1] drop-shadow-card bg-base-100 rounded-box w-56"
+            className="flex flex-col gap-3 p-6 dropdown-content mt-5 z-[1] drop-shadow-card bg-base-100 rounded-box w-56 list-none"
           >
             <li className={path.home ? mediumActive : mediumInActive}>
               <Link to="/dashboard">Home</Link>
@@ -95,7 +95,7 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-end hidden lg:flex">
-        <ul className="flex gap-4">
+        <ul className="flex gap-4 list-none">
           <li className={path.explore ? largeActive : largeInActive}>
             <Link to="explore">Explore</Link>
           </li>

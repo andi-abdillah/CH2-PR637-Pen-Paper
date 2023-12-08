@@ -20,6 +20,8 @@ const OtherUserProfile = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const isMyArticle = true;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -97,7 +99,7 @@ const OtherUserProfile = () => {
         <div className="flex flex-wrap justify-between mt-6">
           {userArticles.length > 0 ? (
             userArticles.map((userArticle, index) => (
-              <Card key={index} {...userArticle} />
+              <Card key={index} {...userArticle} isMyArticle={isMyArticle} />
             ))
           ) : (
             <p className="mx-auto mt-12 text-2xl font-semibold">

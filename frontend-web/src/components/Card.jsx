@@ -1,21 +1,30 @@
 import { Link } from "react-router-dom";
 import { dateFormater } from "../utils/dateFormater";
-import { useAuth } from "../provider/AuthContext";
 
-const Card = ({ articleId, userId, username, title, content, createdAt }) => {
+const Card = ({
+  articleId,
+  userId,
+  username,
+  isMyArticle,
+  title,
+  content,
+  createdAt,
+}) => {
   const maxContentLength = 200;
-
-  const { user } = useAuth();
 
   const slicedContent =
     content.length > maxContentLength
       ? `${content.slice(0, maxContentLength)}...`
       : content;
 
+  const createMarkup = (htmlString) => {
+    return { __html: htmlString };
+  };
+
   return (
     <div className="card max-w-[525px] w-full text-black mb-10 bg-neutral-50 rounded-3xl drop-shadow-card">
       <div className="card-body">
-        {userId !== user.userId && (
+        {!isMyArticle && (
           <Link
             to={`/dashboard/user-profile/${userId}`}
             className="text-lg w-max"
@@ -26,9 +35,10 @@ const Card = ({ articleId, userId, username, title, content, createdAt }) => {
 
         <h1 className="card-title text-3xl">{title}</h1>
 
-        <p>
-          <b>{slicedContent}</b> - {dateFormater(createdAt)}
-        </p>
+        <div>
+          <p dangerouslySetInnerHTML={createMarkup(slicedContent)} />
+          <span>- {dateFormater(createdAt)}</span>
+        </div>
 
         <div className="card-actions">
           <Link
