@@ -25,10 +25,13 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       descriptions: DataTypes.TEXT,
+      createdAt: DataTypes.STRING,
+      updatedAt: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "User",
+      timestamps: false,
     }
   );
   return User;

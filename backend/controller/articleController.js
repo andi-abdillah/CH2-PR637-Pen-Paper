@@ -15,8 +15,8 @@ const addArticleHandler = async (request, h) => {
     title,
     descriptions,
     content,
-    createdAt = formattedDate,
-    updatedAt = formattedDate,
+    createdAt = formattedDate(),
+    updatedAt = formattedDate(),
   } = request.payload;
 
   const t = await sequelize.transaction();
@@ -466,7 +466,7 @@ const editArticleByIdHandler = async (request, h) => {
         title,
         descriptions,
         content,
-        updatedAt: formattedDate,
+        updatedAt: formattedDate(),
       },
       { where: { articleId }, returning: true, transaction: t }
     );

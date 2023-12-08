@@ -21,8 +21,8 @@ const registerHandler = async (request, h) => {
       email,
       password,
       descriptions,
-      createdAt = formattedDate,
-      updatedAt = formattedDate,
+      createdAt = formattedDate(),
+      updatedAt = formattedDate(),
     } = request.payload;
 
     const removeExtraSpaces = (inputString) => {

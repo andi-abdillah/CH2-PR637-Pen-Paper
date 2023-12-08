@@ -44,7 +44,7 @@ const sendResetPasswordMail = async (request, h) => {
 
     // Update the user's password in the database
     const [, updatedRowCount] = await User.update(
-      { password: hashedPassword, updatedAt: formattedDate },
+      { password: hashedPassword, updatedAt: formattedDate() },
       {
         where: {
           email,

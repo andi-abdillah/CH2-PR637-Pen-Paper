@@ -66,8 +66,6 @@ const CreateStory = () => {
     }
   };
 
-  console.log(formData);
-
   return (
     <>
       <HelmetProvider>

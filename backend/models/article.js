@@ -25,10 +25,13 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       descriptions: DataTypes.TEXT,
       content: DataTypes.TEXT,
+      createdAt: DataTypes.STRING,
+      updatedAt: DataTypes.STRING,
     },
     {
       sequelize,
       modelName: "Article",
+      timestamps: false,
     }
   );
   return Article;
