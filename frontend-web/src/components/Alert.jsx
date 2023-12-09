@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const Alert = ({ message, type, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const backgroundColor = type === "success" ? "bg-emerald-500" : "bg-red-500";
+  const backgroundColor = type === "success" ? "bg-primary" : "bg-red-500";
 
   useEffect(() => {
     const timer = setTimeout(() => {
