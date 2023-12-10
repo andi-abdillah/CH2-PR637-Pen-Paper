@@ -55,7 +55,13 @@ const UserStories = () => {
 
       <div className="flex flex-wrap justify-between mt-8">
         {articles.map((article, index) => (
-          <Card key={index} {...article} isMyArticle={isMyArticle} />
+          <Card
+            key={index}
+            token={token}
+            authenticatedUsername={user.username}
+            {...article}
+            isMyArticle={isMyArticle}
+          />
         ))}
       </div>
     </>

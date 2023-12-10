@@ -73,7 +73,12 @@ const ExploreTopics = () => {
   return (
     <div className="flex flex-wrap justify-between">
       {articles.slice(0, visibleArticles).map((item, index) => (
-        <Card key={index} {...item} />
+        <Card
+          key={index}
+          token={token}
+          authenticatedUsername={user.username}
+          {...item}
+        />
       ))}
       {visibleArticles < articles.length && (
         <PrimaryButton className="m-auto" onClick={handleLoadMore}>

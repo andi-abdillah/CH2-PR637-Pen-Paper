@@ -128,7 +128,12 @@ const Home = () => {
               Might for you
             </h2>
             {articles?.map((article, index) => (
-              <Card key={index} {...article} />
+              <Card
+                key={index}
+                token={token}
+                authenticatedUsername={user.username}
+                {...article}
+              />
             ))}
             {!isLastPage && (
               <PrimaryButton className="m-auto" onClick={handleLoadMore}>

@@ -26,6 +26,12 @@ const loginWithOauth = require("./../controller/OauthController");
 
 const sendResetPasswordMail = require("./../controller/sendResetPasswordMail");
 
+const {
+  addLikeHandler,
+  getLikesForArticleHandler,
+  removeLikeHandler,
+} = require("./../controller/likeController");
+
 const routes = [
   {
     method: "GET",
@@ -147,6 +153,23 @@ const routes = [
     handler: deleteArticleByIdHandler,
   },
   // End of Articles Routes
+
+  // Start of Like Routes
+  {
+    method: "POST",
+    path: "/article/likes",
+    handler: addLikeHandler,
+  },
+  {
+    method: "GET",
+    path: "/article/{articleId}/likes",
+    handler: getLikesForArticleHandler,
+  },
+  {
+    method: "DELETE",
+    path: "/article/likes",
+    handler: removeLikeHandler,
+  },
 
   // Not Found Handler
   {

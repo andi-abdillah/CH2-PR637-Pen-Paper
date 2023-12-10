@@ -100,7 +100,13 @@ const OtherUserProfile = () => {
         <div className="flex flex-wrap justify-between mt-6">
           {userArticles.length > 0 ? (
             userArticles.map((userArticle, index) => (
-              <Card key={index} {...userArticle} isMyArticle={isMyArticle} />
+              <Card
+                key={index}
+                token={token}
+                authenticatedUsername={user.username}
+                {...userArticle}
+                isMyArticle={isMyArticle}
+              />
             ))
           ) : (
             <p className="mx-auto mt-12 text-2xl font-semibold">

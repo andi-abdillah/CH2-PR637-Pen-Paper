@@ -1,5 +1,3 @@
-import { Quill } from "react-quill";
-
 // Custom Undo button icon component for Quill editor. You can import it directly
 // from 'quill/assets/icons/undo.svg' but I found that a number of loaders do not
 // handle them correctly
@@ -32,11 +30,6 @@ function redoChange() {
   this.quill.history.redo();
 }
 
-// Add sizes to whitelist and register them
-const Size = Quill.import("formats/size");
-Size.whitelist = ["extra-small", "small", "medium", "large"];
-Quill.register(Size, true);
-
 // Modules object for setting up the Quill editor
 export const modules = {
   toolbar: {
@@ -57,7 +50,6 @@ export const modules = {
 export const formats = [
   "header",
   "font",
-  "size",
   "bold",
   "italic",
   "underline",
@@ -66,9 +58,6 @@ export const formats = [
   "script",
   "blockquote",
   "background",
-  "list",
-  "bullet",
-  "indent",
   "link",
   //   "image",
   "color",
@@ -86,12 +75,6 @@ export const QuillToolbar = () => (
     }}
   >
     <span className="ql-formats">
-      <select className="ql-size" defaultValue="medium">
-        <option value="extra-small">Size 1</option>
-        <option value="small">Size 2</option>
-        <option value="medium">Size 3</option>
-        <option value="large">Size 4</option>
-      </select>
       <select className="ql-header" defaultValue="3">
         <option value="1">Heading</option>
         <option value="2">Subheading</option>
@@ -105,16 +88,9 @@ export const QuillToolbar = () => (
       <button className="ql-strike" />
     </span>
     <span className="ql-formats">
-      <button className="ql-list" value="ordered" />
-      <button className="ql-list" value="bullet" />
-      <button className="ql-indent" value="-1" />
-      <button className="ql-indent" value="+1" />
-    </span>
-    <span className="ql-formats">
       <button className="ql-script" value="super" />
       <button className="ql-script" value="sub" />
       <button className="ql-blockquote" />
-      <button className="ql-direction" />
     </span>
     <span className="ql-formats">
       <select className="ql-align" />
@@ -127,7 +103,6 @@ export const QuillToolbar = () => (
       <button className="ql-video" /> */}
     </span>
     <span className="ql-formats">
-      <button className="ql-formula" />
       <button className="ql-code-block" />
       <button className="ql-clean" />
     </span>
