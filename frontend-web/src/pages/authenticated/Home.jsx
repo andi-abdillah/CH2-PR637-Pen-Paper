@@ -131,7 +131,7 @@ const Home = () => {
               <Card
                 key={index}
                 token={token}
-                authenticatedUsername={user.username}
+                authenticatedUserId={user.userId}
                 {...article}
               />
             ))}

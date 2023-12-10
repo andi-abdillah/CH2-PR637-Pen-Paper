@@ -5,7 +5,7 @@ import axios from "axios";
 
 const Card = ({
   token,
-  authenticatedUsername,
+  authenticatedUserId,
   articleId,
   userId,
   username,
@@ -38,7 +38,7 @@ const Card = ({
         setTotalLikes(foundLikes.length);
 
         const userHasLiked = foundLikes.some((like) => {
-          return like.username === authenticatedUsername;
+          return like.userId === authenticatedUserId;
         });
 
         setIsLiked(userHasLiked);
@@ -47,7 +47,7 @@ const Card = ({
       }
     };
     fetchLikes();
-  }, [token, authenticatedUsername, articleId]);
+  }, [token, authenticatedUserId, articleId]);
 
   const likeArticle = async () => {
     try {

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "articles",
       });
       this.hasMany(models.Like, {
-        foreignKey: "username",
+        foreignKey: "userId",
         as: "likes",
       });
     }

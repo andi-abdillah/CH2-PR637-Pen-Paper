@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { User, Article, sequelize } = require("../models");
+const { User, Article, Like, sequelize } = require("../models");
 const bcrypt = require("bcrypt");
 const formattedDate = require("./utils/formattedDate");
 
@@ -568,7 +568,13 @@ const deleteUserByIdHandler = async (request, h) => {
     });
 
     // Delete articles related to the user
-    const deletedArticleRowCount = await Article.destroy({
+    await Article.destroy({
+      where: { userId: paramUserId },
+      transaction: t,
+    });
+
+    // Delete likes associated with the user
+    await Like.destroy({
       where: { userId: paramUserId },
       transaction: t,
     });
@@ -578,7 +584,8 @@ const deleteUserByIdHandler = async (request, h) => {
       return h
         .response({
           status: "success",
-          message: "Your account and related articles successfully deleted",
+          message:
+            "Your account, related articles, and likes successfully deleted",
         })
         .code(200);
     }

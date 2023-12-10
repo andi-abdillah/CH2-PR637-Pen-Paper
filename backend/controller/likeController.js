@@ -2,7 +2,7 @@ const { Article, Like, sequelize } = require("../models");
 const formattedDate = require("./utils/formattedDate");
 
 const addLikeHandler = async (request, h) => {
-  const { username } = request.auth.credentials;
+  const { userId } = request.auth.credentials;
   const { articleId } = request.payload;
 
   const t = await sequelize.transaction();
@@ -23,7 +23,7 @@ const addLikeHandler = async (request, h) => {
 
     // Check if the like already exists
     const existingLike = await Like.findOne({
-      where: { articleId, username },
+      where: { articleId, userId },
     });
 
     if (existingLike) {
@@ -40,7 +40,7 @@ const addLikeHandler = async (request, h) => {
     const createdLike = await Like.create(
       {
         articleId,
-        username,
+        userId,
         likedAt,
       },
       { transaction: t }
@@ -52,7 +52,7 @@ const addLikeHandler = async (request, h) => {
         .response({
           status: "success",
           message: "Like added successfully.",
-          data: { articleId, username },
+          data: { articleId, userId },
         })
         .code(201);
     }
@@ -127,7 +127,7 @@ const getLikesForArticleHandler = async (request, h) => {
 };
 
 const removeLikeHandler = async (request, h) => {
-  const { username } = request.auth.credentials;
+  const { userId } = request.auth.credentials;
   const { articleId } = request.payload;
 
   const t = await sequelize.transaction();
@@ -146,7 +146,7 @@ const removeLikeHandler = async (request, h) => {
 
     // Remove Like from the database
     const deletedRows = await Like.destroy({
-      where: { articleId, username },
+      where: { articleId, userId },
       transaction: t,
     });
 
@@ -155,7 +155,7 @@ const removeLikeHandler = async (request, h) => {
       return h.response({
         status: "success",
         message: "Like removed successfully.",
-        data: { articleId, username },
+        data: { articleId, userId },
       });
     }
 

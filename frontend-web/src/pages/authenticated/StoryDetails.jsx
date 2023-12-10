@@ -75,7 +75,7 @@ const StoryDetails = () => {
         setTotalLikes(foundLikes.length);
 
         const userHasLiked = foundLikes.some(
-          (like) => like.username === user.username
+          (like) => like.userId === user.userId
         );
         setIsLiked(userHasLiked);
       } catch (error) {
@@ -83,7 +83,7 @@ const StoryDetails = () => {
       }
     };
     fetchLikes();
-  }, [id, token, user.username]);
+  }, [id, token, user.userId]);
 
   const likeArticle = async () => {
     try {

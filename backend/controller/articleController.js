@@ -1,6 +1,6 @@
 const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
-const { Article, User, sequelize } = require("../models");
+const { Article, User, Like, sequelize } = require("../models");
 const formattedDate = require("./utils/formattedDate");
 
 // Function to generate a unique article ID
@@ -542,6 +542,12 @@ const deleteArticleByIdHandler = async (request, h) => {
 
     // Delete the article by its ID and fetch the number of deleted rows
     const deletedRowCount = await Article.destroy({
+      where: { articleId },
+      transaction: t,
+    });
+
+    // Delete likes associated with the article
+    await Like.destroy({
       where: { articleId },
       transaction: t,
     });
