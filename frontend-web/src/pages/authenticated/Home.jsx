@@ -93,7 +93,7 @@ const Home = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Home</title>
+          <title>{`Home | Page ${currentPage} | Pen & Paper`}</title>
         </Helmet>
       </HelmetProvider>
 

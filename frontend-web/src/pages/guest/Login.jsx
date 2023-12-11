@@ -57,7 +57,7 @@ const Login = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Sign In</title>
+          <title>Sign In – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 

@@ -17,7 +17,7 @@ const Explore = () => {
 
   const location = useLocation();
   const pathArray = location.pathname.split("/");
-  const selectedTab = pathArray.includes("account") ? "account" : "topics";
+  const selectedTab = pathArray.includes("account") ? "Account" : "Topics";
 
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const Explore = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Explore</title>
+          <title>{`Explore ${selectedTab} – Pen & Paper`}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -89,13 +89,13 @@ const Explore = () => {
         <div className="flex gap-3">
           <PrimaryButton
             onClick={() => handleTabChange("topics")}
-            disabled={selectedTab === "topics"}
+            disabled={selectedTab === "Topics"}
           >
             Topics
           </PrimaryButton>
           <PrimaryButton
             onClick={() => handleTabChange("account")}
-            disabled={selectedTab === "account"}
+            disabled={selectedTab === "Account"}
           >
             Account
           </PrimaryButton>

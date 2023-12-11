@@ -11,7 +11,7 @@ import { dateFormater } from "../../utils/dateFormater";
 import axios from "axios";
 
 const StoryDetails = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
 
   const { token, user } = useAuth();
 
@@ -34,24 +34,28 @@ const StoryDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const foundArticle = await axios.get(
-          `http://localhost:9000/articles/${id}`,
+        const articleResult = await axios.get(
+          `http://localhost:9000/articles/${slug}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        const userId = foundArticle.data.data.article.userId;
+        const foundArticle = articleResult.data.data.article;
 
-        const foundUser = await axios.get(
-          `http://localhost:9000/users/${userId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        setArticle(foundArticle.data.data.article);
-        setAuthor(foundUser.data.data.user);
-
-        if (foundUser.data.data.user.userId === user.userId) {
+        if (foundArticle.userId === user.userId) {
           setIsMyArticle(true);
         }
+
+        setArticle(foundArticle);
+
+        const username = foundArticle.username;
+
+        const userResult = await axios.get(
+          `http://localhost:9000/users/username/${username}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const foundUser = userResult.data.data.user;
+
+        setAuthor(foundUser);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -60,36 +64,38 @@ const StoryDetails = () => {
     };
 
     fetchData();
-  }, [id, token, user.userId, user]);
+  }, [slug, token, user.userId, user]);
 
   useEffect(() => {
-    const fetchLikes = async () => {
-      try {
-        const result = await axios.get(
-          `http://localhost:9000/article/${id}/likes`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+    if (article) {
+      const fetchLikes = async () => {
+        try {
+          const result = await axios.get(
+            `http://localhost:9000/article/${article.articleId}/likes`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
 
-        const foundLikes = result.data.data.likes;
+          const foundLikes = result.data.data.likes;
 
-        setTotalLikes(foundLikes.length);
+          setTotalLikes(foundLikes.length);
 
-        const userHasLiked = foundLikes.some(
-          (like) => like.userId === user.userId
-        );
-        setIsLiked(userHasLiked);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchLikes();
-  }, [id, token, user.userId]);
+          const userHasLiked = foundLikes.some(
+            (like) => like.userId === user.userId
+          );
+          setIsLiked(userHasLiked);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchLikes();
+    }
+  }, [article, token, user.userId]);
 
   const likeArticle = async () => {
     try {
       await axios.post(
         `http://localhost:9000/article/likes`,
-        { articleId: id },
+        { articleId: article.articleId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTotalLikes((prevLikes) => prevLikes + 1);
@@ -102,7 +108,7 @@ const StoryDetails = () => {
   const unlikeArticle = async () => {
     try {
       await axios.delete(`http://localhost:9000/article/likes`, {
-        data: { articleId: id },
+        data: { articleId: article.articleId },
         headers: { Authorization: `Bearer ${token}` },
       });
       setTotalLikes((prevLikes) => prevLikes - 1);
@@ -131,6 +137,11 @@ const StoryDetails = () => {
   if (!article) {
     return (
       <div className="mx-4 mt-12">
+        <HelmetProvider>
+          <Helmet>
+            <title>Article Not Found – Pen & Paper</title>
+          </Helmet>
+        </HelmetProvider>
         <BackButton />
         <p className="mt-20 text-center text-2xl font-semibold">
           Article not found
@@ -143,7 +154,9 @@ const StoryDetails = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Story Details</title>
+          <title>
+            {`${article.title} | by ${author.fullName} | Pen & Paper`}
+          </title>
         </Helmet>
       </HelmetProvider>
 
@@ -181,7 +194,7 @@ const StoryDetails = () => {
                 className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max list-none"
               >
                 <li className="mx-5 mb-2 cursor-pointer">
-                  <Link to={`/dashboard/your-stories/${id}/edit`}>
+                  <Link to={`/dashboard/your-stories/${slug}/edit`}>
                     Edit story
                   </Link>
                 </li>
@@ -200,16 +213,16 @@ const StoryDetails = () => {
           isOpen={alertOpen}
           onClose={closeAlert}
           navigate={navigate}
-          articleId={article.articleId}
+          slug={article.slug}
         />
 
         <div className="flex flex-col gap-6 max-w-3xl xs:mx-8 mt-8 text-lg">
-          {author.userId !== user.userId && (
+          {!isMyArticle && (
             <Link
-              to={`/dashboard/user-profile/${author.userId}`}
+              to={`/dashboard/profile/@${author.username}`}
               className="text-grey-600 text-2xl w-max font-semibold"
             >
-              {author.username}
+              @{author.username}
             </Link>
           )}
           <h3 className="text-gray-700 font-semibold">

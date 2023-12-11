@@ -2,9 +2,17 @@ const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
 const { Article, User, Like, sequelize } = require("../models");
 const formattedDate = require("./utils/formattedDate");
+const slugify = require("slugify");
 
 // Function to generate a unique article ID
 const generateId = () => `article-${nanoid(20)}`;
+
+// Function to generate a unique slug based on the title
+const generateSlug = (title) => {
+  const baseSlug = slugify(title, { lower: true });
+  const uniqueSlug = nanoid(12);
+  return `${baseSlug}-${uniqueSlug}`;
+};
 
 // Handler to add a new article
 const addArticleHandler = async (request, h) => {
@@ -48,12 +56,15 @@ const addArticleHandler = async (request, h) => {
         .code(400);
     }
 
-    // Create a new article
+    // Create a new article with a generated slug
+    const slug = generateSlug(title);
+
     await Article.create(
       {
         articleId,
         userId,
         title,
+        slug,
         descriptions,
         content,
         createdAt,
@@ -173,6 +184,7 @@ const getAllArticlesHandler = async (request, h) => {
       userId: article.userId,
       username: article.user.username,
       title: article.title,
+      slug: article.slug,
       descriptions: article.descriptions,
       content: article.content,
       createdAt: article.createdAt,
@@ -257,6 +269,7 @@ const searchArticlesHandler = async (request, h) => {
       userId: article.userId,
       username: article.user.username,
       title: article.title,
+      slug: article.slug,
       descriptions: article.descriptions,
       content: article.content,
       createdAt: article.createdAt,
@@ -317,6 +330,7 @@ const getArticlesByUserIdHandler = async (request, h) => {
       userId: article.userId,
       username: article.user.username,
       title: article.title,
+      slug: article.slug,
       descriptions: article.descriptions,
       content: article.content,
       createdAt: article.createdAt,
@@ -343,13 +357,14 @@ const getArticlesByUserIdHandler = async (request, h) => {
   }
 };
 
-// Handler to get an article by its ID
-const getArticleByIdHandler = async (request, h) => {
-  const { articleId } = request.params;
+// Handler to get an article by its slug
+const getArticleBySlugHandler = async (request, h) => {
+  const { slug } = request.params;
 
   try {
-    // Find the article by its ID with the associated user
-    const targetArticle = await Article.findByPk(articleId, {
+    // Find the article by its slug with the associated user
+    const targetArticle = await Article.findOne({
+      where: { slug },
       include: [
         {
           model: User,
@@ -370,6 +385,7 @@ const getArticleByIdHandler = async (request, h) => {
               userId: targetArticle.userId,
               username: targetArticle.user.username,
               title: targetArticle.title,
+              slug: targetArticle.slug,
               descriptions: targetArticle.descriptions,
               content: targetArticle.content,
               createdAt: targetArticle.createdAt,
@@ -400,9 +416,9 @@ const getArticleByIdHandler = async (request, h) => {
   }
 };
 
-// Handler to edit an article by its ID
-const editArticleByIdHandler = async (request, h) => {
-  const { articleId } = request.params;
+// Handler to edit an article by its slug
+const editArticleBySlugHandler = async (request, h) => {
+  const { slug } = request.params;
   const { title, descriptions, content } = request.payload;
   const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
 
@@ -435,8 +451,10 @@ const editArticleByIdHandler = async (request, h) => {
         .code(400);
     }
 
-    // Find the article by its ID
-    const targetArticle = await Article.findByPk(articleId);
+    // Find the article by its slug
+    const targetArticle = await Article.findOne({
+      where: { slug },
+    });
 
     // Check if the article is found
     if (!targetArticle) {
@@ -444,7 +462,7 @@ const editArticleByIdHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Failed to update the article. Article ID not found.",
+          message: "Failed to update the article. Article not found.",
         })
         .code(404);
     }
@@ -460,15 +478,16 @@ const editArticleByIdHandler = async (request, h) => {
         .code(403); // 403 Forbidden
     }
 
-    // Update the article by its ID and fetch the number of updated rows
+    // Update the article by its slug and fetch the number of updated rows
     const [, updatedRowCount] = await Article.update(
       {
         title,
+        slug: generateSlug(title),
         descriptions,
         content,
         updatedAt: formattedDate(),
       },
-      { where: { articleId }, returning: true, transaction: t }
+      { where: { slug }, returning: true, transaction: t }
     );
 
     // Commit the transaction
@@ -488,7 +507,7 @@ const editArticleByIdHandler = async (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "Failed to update the article. Article ID not found.",
+        message: "Failed to update the article. Article not found.",
       })
       .code(404);
   } catch (error) {
@@ -507,16 +526,18 @@ const editArticleByIdHandler = async (request, h) => {
   }
 };
 
-// Handler to delete an article by its ID
-const deleteArticleByIdHandler = async (request, h) => {
-  const { articleId } = request.params;
+// Handler to delete an article by its slug
+const deleteArticleBySlugHandler = async (request, h) => {
+  const { slug } = request.params;
   const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
 
   const t = await sequelize.transaction();
 
   try {
-    // Find the article by its ID
-    const targetArticle = await Article.findByPk(articleId);
+    // Find the article by its slug
+    const targetArticle = await Article.findOne({
+      where: { slug },
+    });
 
     // Check if the article is found
     if (!targetArticle) {
@@ -524,7 +545,7 @@ const deleteArticleByIdHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "Failed to delete the article. Article ID not found.",
+          message: "Failed to delete the article. Article not found.",
         })
         .code(404);
     }
@@ -540,15 +561,15 @@ const deleteArticleByIdHandler = async (request, h) => {
         .code(403); // 403 Forbidden
     }
 
-    // Delete the article by its ID and fetch the number of deleted rows
+    // Delete the article by its slug and fetch the number of deleted rows
     const deletedRowCount = await Article.destroy({
-      where: { articleId },
+      where: { slug },
       transaction: t,
     });
 
     // Delete likes associated with the article
     await Like.destroy({
-      where: { articleId },
+      where: { articleId: targetArticle.articleId },
       transaction: t,
     });
 
@@ -569,7 +590,7 @@ const deleteArticleByIdHandler = async (request, h) => {
     return h
       .response({
         status: "fail",
-        message: "Failed to delete the article. Article ID not found.",
+        message: "Failed to delete the article. Article not found.",
       })
       .code(404);
   } catch (error) {
@@ -594,7 +615,7 @@ module.exports = {
   getAllArticlesHandler,
   searchArticlesHandler,
   getArticlesByUserIdHandler,
-  getArticleByIdHandler,
-  editArticleByIdHandler,
-  deleteArticleByIdHandler,
+  getArticleBySlugHandler,
+  editArticleBySlugHandler,
+  deleteArticleBySlugHandler,
 };

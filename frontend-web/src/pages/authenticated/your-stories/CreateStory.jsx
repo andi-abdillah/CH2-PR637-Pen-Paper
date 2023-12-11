@@ -70,7 +70,7 @@ const CreateStory = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Create A Story</title>
+          <title>Create A Story – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 

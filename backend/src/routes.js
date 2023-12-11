@@ -2,6 +2,7 @@ const {
   getAllUsersHandler,
   searchUsersHandler,
   getUserByIdHandler,
+  getUserByUsernameHandler,
   editUserProfileHandler,
   editUserPasswordHandler,
   editUserDescriptionsHandler,
@@ -13,9 +14,9 @@ const {
   getAllArticlesHandler,
   searchArticlesHandler,
   getArticlesByUserIdHandler,
-  getArticleByIdHandler,
-  editArticleByIdHandler,
-  deleteArticleByIdHandler,
+  getArticleBySlugHandler,
+  editArticleBySlugHandler,
+  deleteArticleBySlugHandler,
 } = require("./../controller/articleController");
 
 const loginHandler = require("./../controller/loginController");
@@ -96,8 +97,13 @@ const routes = [
   },
   {
     method: "GET",
-    path: "/users/{userId}",
+    path: "/users/id/{userId}",
     handler: getUserByIdHandler,
+  },
+  {
+    method: "GET",
+    path: "/users/username/{username}",
+    handler: getUserByUsernameHandler,
   },
   {
     method: "PUT",
@@ -139,18 +145,18 @@ const routes = [
   },
   {
     method: "GET",
-    path: "/articles/{articleId}",
-    handler: getArticleByIdHandler,
+    path: "/articles/{slug}",
+    handler: getArticleBySlugHandler,
   },
   {
     method: "PUT",
-    path: "/articles/{articleId}",
-    handler: editArticleByIdHandler,
+    path: "/articles/{slug}",
+    handler: editArticleBySlugHandler,
   },
   {
     method: "DELETE",
-    path: "/articles/{articleId}",
-    handler: deleteArticleByIdHandler,
+    path: "/articles/{slug}",
+    handler: deleteArticleBySlugHandler,
   },
   // End of Articles Routes
 

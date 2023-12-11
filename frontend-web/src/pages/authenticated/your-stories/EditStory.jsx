@@ -15,7 +15,7 @@ import axios from "axios";
 const EditStory = () => {
   const { token, user } = useAuth();
 
-  const { id } = useParams();
+  const { slug } = useParams();
 
   const { showAlert } = useAlert();
 
@@ -44,7 +44,7 @@ const EditStory = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/articles/${id}`,
+          `http://localhost:9000/articles/${slug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ const EditStory = () => {
     };
 
     fetchData();
-  }, [id, user.userId, navigate, token]);
+  }, [slug, user.userId, navigate, token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +79,7 @@ const EditStory = () => {
 
     try {
       const result = await axios.put(
-        `http://localhost:9000/articles/${id}`,
+        `http://localhost:9000/articles/${slug}`,
         formData,
         {
           headers: {
@@ -110,7 +110,7 @@ const EditStory = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Edit Story</title>
+          <title>{`${slug} | Edit | Pen & Paper`}</title>
         </Helmet>
       </HelmetProvider>
 

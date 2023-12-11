@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { nanoid } = require("nanoid");
 const { DateTime } = require("luxon");
+const slugify = require("slugify");
 
 const timeZone = "Asia/Jakarta";
 const now = DateTime.now().setZone(timeZone);
@@ -26,6 +27,7 @@ module.exports = {
       articleId: `article-${nanoid(20)}`,
       userId: getRandomUserId(users),
       title: article.title,
+      slug: generateSlug(article.title),
       descriptions: article.descriptions,
       content: article.content,
       createdAt: formattedDate,
@@ -44,4 +46,9 @@ module.exports = {
 function getRandomUserId(users) {
   const randomIndex = Math.floor(Math.random() * users.length);
   return users[randomIndex];
+}
+
+// Function to generate a slug from the title
+function generateSlug(title) {
+  return slugify(title, { lower: true }) + `-${nanoid(12)}`;
 }

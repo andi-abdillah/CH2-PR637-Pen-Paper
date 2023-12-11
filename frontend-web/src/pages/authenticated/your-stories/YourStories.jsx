@@ -15,7 +15,7 @@ const YourStories = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:9000/users/${userData.userId}`,
+          `http://localhost:9000/users/id/${userData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ const YourStories = () => {
     <div>
       <HelmetProvider>
         <Helmet>
-          <title>Your Stories</title>
+          <title>Your Stories – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 

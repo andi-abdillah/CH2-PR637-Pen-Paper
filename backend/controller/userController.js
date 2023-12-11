@@ -30,7 +30,7 @@ const getAllUsersHandler = async (request, h) => {
 
     // Map users to a simplified format
     const listUsers = users.map((user) => ({
-      userId: user.userId,
+      fullName: user.fullName,
       username: user.username,
       email: user.email,
       descriptions: user.descriptions,
@@ -57,7 +57,7 @@ const getAllUsersHandler = async (request, h) => {
 
 // Handler to search users based on a query string
 const searchUsersHandler = async (request, h) => {
-  const { userId: tokenUserId } = request.auth.credentials;
+  const { username: tokenUsername } = request.auth.credentials;
 
   try {
     const { query } = request.query;
@@ -65,10 +65,10 @@ const searchUsersHandler = async (request, h) => {
     // Define search condition based on the query string
     const searchCondition = query
       ? {
-          userId: { [Op.ne]: tokenUserId },
+          username: { [Op.ne]: tokenUsername },
           username: { [Op.like]: `%${query}%` },
         }
-      : { userId: { [Op.ne]: tokenUserId } };
+      : { username: { [Op.ne]: tokenUsername } };
 
     // Find users matching the search condition
     const users = await User.findAll({
@@ -88,7 +88,7 @@ const searchUsersHandler = async (request, h) => {
 
     // Map users to a simplified format
     const listUsers = users.map((user) => ({
-      userId: user.userId,
+      fullName: user.fullName,
       username: user.username,
       email: user.email,
       descriptions: user.descriptions,
@@ -115,8 +115,20 @@ const searchUsersHandler = async (request, h) => {
 
 // Handler to get a user by ID
 const getUserByIdHandler = async (request, h) => {
-  const { userId } = request.params;
-  const targetUser = await User.findByPk(userId);
+  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
+  const { userId: paramUserId } = request.params;
+
+  // Check if the user is authorized to find the profile
+  if (tokenUserId !== paramUserId) {
+    return h
+      .response({
+        status: "fail",
+        message: "Not authorized to find this profile",
+      })
+      .code(403); // 403 Forbidden
+  }
+
+  const targetUser = await User.findByPk(tokenUserId);
 
   if (targetUser) {
     return h
@@ -143,6 +155,48 @@ const getUserByIdHandler = async (request, h) => {
       message: "User not found",
     })
     .code(404);
+};
+
+// Handler to get a user by username
+const getUserByUsernameHandler = async (request, h) => {
+  try {
+    const { username } = request.params;
+    const targetUser = await User.findOne({ where: { username } });
+
+    if (targetUser) {
+      return h
+        .response({
+          status: "success",
+          data: {
+            user: {
+              userId: targetUser.userId,
+              fullName: targetUser.fullName,
+              username: targetUser.username,
+              email: targetUser.email,
+              descriptions: targetUser.descriptions,
+              createdAt: targetUser.createdAt,
+              updatedAt: targetUser.updatedAt,
+            },
+          },
+        })
+        .code(200);
+    } else {
+      return h
+        .response({
+          status: "fail",
+          message: "User not found",
+        })
+        .code(404);
+    }
+  } catch (error) {
+    console.error("Error retrieving user by username:", error);
+    return h
+      .response({
+        status: "error",
+        message: "Internal Server Error",
+      })
+      .code(500);
+  }
 };
 
 // Handler to edit a user's profile
@@ -585,7 +639,7 @@ const deleteUserByIdHandler = async (request, h) => {
         .response({
           status: "success",
           message:
-            "Your account, related articles, and likes successfully deleted",
+            "Your account and all related resources successfully deleted",
         })
         .code(200);
     }
@@ -613,6 +667,7 @@ module.exports = {
   getAllUsersHandler,
   searchUsersHandler,
   getUserByIdHandler,
+  getUserByUsernameHandler,
   editUserProfileHandler,
   editUserPasswordHandler,
   editUserDescriptionsHandler,

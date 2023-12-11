@@ -7,10 +7,10 @@ const Card = ({
   token,
   authenticatedUserId,
   articleId,
-  userId,
   username,
   isMyArticle,
   title,
+  slug,
   descriptions,
   createdAt,
 }) => {
@@ -82,10 +82,7 @@ const Card = ({
         <div className="h-full mb-4">
           {!isMyArticle && (
             <h2 className="mb-2">
-              <Link
-                to={`/dashboard/user-profile/${userId}`}
-                className="text-lg"
-              >
+              <Link to={`/dashboard/profile/@${username}`} className="text-lg">
                 @{username}
               </Link>
             </h2>
@@ -102,7 +99,7 @@ const Card = ({
 
         <div className="card-actions justify-between">
           <Link
-            to={`/dashboard/story-details/${articleId}`}
+            to={`/dashboard/story-details/${slug}`}
             className="flex h-full items-center text-lg text-primary font-semibold transition duration-100 ease-in-out hover:scale-[1.05]"
           >
             Read

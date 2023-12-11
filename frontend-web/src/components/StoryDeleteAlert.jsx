@@ -3,7 +3,7 @@ import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import axios from "axios";
 
-const StoryDeleteAlert = ({ token, isOpen, onClose, navigate, articleId }) => {
+const StoryDeleteAlert = ({ token, isOpen, onClose, navigate, slug }) => {
   const { showAlert } = useAlert();
 
   if (!isOpen) {
@@ -13,7 +13,7 @@ const StoryDeleteAlert = ({ token, isOpen, onClose, navigate, articleId }) => {
   const handleConfirmDelete = async () => {
     try {
       const result = await axios.delete(
-        `http://localhost:9000/articles/${articleId}`,
+        `http://localhost:9000/articles/${slug}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

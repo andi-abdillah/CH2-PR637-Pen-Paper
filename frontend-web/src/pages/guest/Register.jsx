@@ -60,7 +60,7 @@ const Register = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Register</title>
+          <title>Register – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 

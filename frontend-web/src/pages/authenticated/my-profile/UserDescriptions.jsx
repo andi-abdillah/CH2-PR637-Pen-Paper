@@ -20,7 +20,7 @@ const UserDescriptions = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/users/${user.userId}`,
+          `http://localhost:9000/users/id/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

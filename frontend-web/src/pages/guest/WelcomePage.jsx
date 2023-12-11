@@ -6,7 +6,7 @@ const WelcomePage = () => {
     <div className="w-screen h-screen">
       <HelmetProvider>
         <Helmet>
-          <title>Pen & Paper</title>
+          <title>Welcome – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 

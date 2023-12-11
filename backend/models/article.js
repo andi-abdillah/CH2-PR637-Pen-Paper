@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const slugify = require("slugify");
+const { nanoid } = require("nanoid");
 module.exports = (sequelize, DataTypes) => {
   class Article extends Model {
     /**
@@ -27,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       userId: DataTypes.STRING,
       title: DataTypes.STRING,
+      slug: {
+        type: DataTypes.STRING,
+        unique: true,
+      },
       descriptions: DataTypes.TEXT,
       content: DataTypes.TEXT,
       createdAt: DataTypes.STRING,
@@ -36,6 +42,15 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Article",
       timestamps: false,
+      hooks: {
+        beforeValidate: (article) => {
+          if (article.title) {
+            const baseSlug = slugify(article.title, { lower: true });
+            const uniqueSlug = nanoid(12);
+            article.slug = `${baseSlug}-${uniqueSlug}`;
+          }
+        },
+      },
     }
   );
   return Article;

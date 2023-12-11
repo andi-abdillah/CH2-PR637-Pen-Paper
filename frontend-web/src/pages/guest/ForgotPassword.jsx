@@ -50,7 +50,7 @@ const ForgotPassword = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Forgot Password</title>
+          <title>Forgot Password – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 

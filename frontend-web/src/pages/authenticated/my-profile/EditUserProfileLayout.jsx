@@ -24,7 +24,7 @@ const EditUserProfileLayout = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:9000/users/${user.userId}`,
+          `http://localhost:9000/users/id/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -53,7 +53,7 @@ const EditUserProfileLayout = () => {
     <div className="max-w-4xl">
       <HelmetProvider>
         <Helmet>
-          <title>Manage Profile</title>
+          <title>Manage Profile – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 

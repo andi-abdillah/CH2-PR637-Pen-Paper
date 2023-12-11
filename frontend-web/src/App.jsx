@@ -39,7 +39,7 @@ function App() {
             <Route path="your-stories" element={<YourStories />}>
               <Route index element={<UserStories />} />
               <Route path="create" element={<CreateStory />} />
-              <Route path=":id/edit" element={<EditStory />} />
+              <Route path=":slug/edit" element={<EditStory />} />
             </Route>
 
             <Route path="explore" element={<Explore />}>
@@ -48,8 +48,8 @@ function App() {
               <Route path="account" element={<ExploreAccount />} />
             </Route>
 
-            <Route path="story-details/:id" element={<StoryDetails />} />
-            <Route path="user-profile/:id" element={<OtherUserProfile />} />
+            <Route path="story-details/:slug" element={<StoryDetails />} />
+            <Route path="profile/:username" element={<OtherUserProfile />} />
           </Route>
           <Route path="/" element={<GuestLayout />}>
             <Route index element={<WelcomePage />} />

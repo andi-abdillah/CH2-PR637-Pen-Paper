@@ -1,13 +1,42 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { useAuth } from "../../../provider/AuthContext";
 import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Divider from "../../../components/Divider";
+import axios from "axios";
 
 const MyProfile = () => {
+  const { token, user } = useAuth();
+
+  const [userData, setUserData] = useState(user);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await axios.get(
+          `http://localhost:9000/users/id/${user.userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const foundUser = result.data.data.user;
+
+        setUserData(foundUser);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchData();
+  }, [token, user.userId, userData.updateAt]);
   return (
     <div>
       <HelmetProvider>
         <Helmet>
-          <title>Profile</title>
+          <title>{`${userData.fullName} on Pen & paper`}</title>
         </Helmet>
       </HelmetProvider>
 

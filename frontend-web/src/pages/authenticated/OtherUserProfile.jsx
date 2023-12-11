@@ -10,7 +10,9 @@ import Loading from "../../components/Loading";
 import axios from "axios";
 
 const OtherUserProfile = () => {
-  const { id } = useParams();
+  const { username } = useParams();
+
+  const cleanedUsername = username.replace("@", "");
 
   const { token } = useAuth();
 
@@ -20,20 +22,23 @@ const OtherUserProfile = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const isMyArticle = true;
+  const isAuthorArticle = true;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const foundUser = await axios.get(`http://localhost:9000/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const foundUser = await axios.get(
+          `http://localhost:9000/users/username/${cleanedUsername}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const userData = foundUser.data.data.user;
 
         const foundArticles = await axios.get(
-          `http://localhost:9000/articles/user/${id}`,
+          `http://localhost:9000/articles/user/${userData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -53,7 +58,7 @@ const OtherUserProfile = () => {
     };
 
     fetchData();
-  }, [id, token]);
+  }, [cleanedUsername, token]);
 
   if (loading) {
     return <Loading />;
@@ -74,7 +79,7 @@ const OtherUserProfile = () => {
     <div>
       <HelmetProvider>
         <Helmet>
-          <title>User Profile</title>
+          <title>{`${user.fullName} – Pen & Paper`}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -105,7 +110,7 @@ const OtherUserProfile = () => {
                 token={token}
                 authenticatedUserId={user.userId}
                 {...userArticle}
-                isMyArticle={isMyArticle}
+                isMyArticle={isAuthorArticle}
               />
             ))
           ) : (
