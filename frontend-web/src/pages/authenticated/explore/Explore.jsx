@@ -41,7 +41,7 @@ const Explore = () => {
   useEffect(() => {
     if (searchQuery) {
       const tabPath = `/dashboard/explore/${selectedTab}`;
-      navigate(`${tabPath}?query=${searchQuery}`);
+      navigate(`${tabPath.toLowerCase()}?query=${searchQuery}`);
     }
   }, [searchQuery, selectedTab, navigate]);
 
