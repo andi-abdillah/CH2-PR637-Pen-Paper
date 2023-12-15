@@ -96,7 +96,7 @@ const OtherUserProfile = () => {
           <h2>{user.fullName}</h2>
           <h2 className="text-black/70">@{user.username}</h2>
           <h2 className="text-primary">
-            Joined since {dateFormater(user.createdAt)}
+            Joined since {user.createdAt ? dateFormater(user.createdAt) : null}
           </h2>
         </div>
 

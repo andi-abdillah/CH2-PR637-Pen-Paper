@@ -1,6 +1,13 @@
 const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
-const { Article, User, Like, Bookmark, sequelize } = require("../models");
+const {
+  Article,
+  User,
+  Like,
+  Bookmark,
+  Comment,
+  sequelize,
+} = require("../models");
 const formattedDate = require("./utils/formattedDate");
 const slugify = require("slugify");
 const { getLikesForArticleHandler } = require("./likeController");
@@ -634,15 +641,27 @@ const deleteArticleBySlugHandler = async (request, h) => {
         .code(403); // 403 Forbidden
     }
 
-    // Delete the article by its slug and fetch the number of deleted rows
-    const deletedRowCount = await Article.destroy({
-      where: { slug },
-      transaction: t,
-    });
-
     // Delete likes associated with the article
     await Like.destroy({
       where: { articleId: targetArticle.articleId },
+      transaction: t,
+    });
+
+    // Delete bookmarks associated with the article
+    await Bookmark.destroy({
+      where: { articleId: targetArticle.articleId },
+      transaction: t,
+    });
+
+    // Delete comments associated with the article
+    await Comment.destroy({
+      where: { articleId: targetArticle.articleId },
+      transaction: t,
+    });
+
+    // Delete the article by its slug and fetch the number of deleted rows
+    const deletedRowCount = await Article.destroy({
+      where: { slug },
       transaction: t,
     });
 

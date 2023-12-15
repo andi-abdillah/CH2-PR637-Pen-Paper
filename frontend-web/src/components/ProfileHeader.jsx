@@ -7,7 +7,9 @@ const ProfileHeader = ({ fullName, username, createdAt }) => {
       <div className="text-lg px-3 xs:px-8 py-8 font-semibold">
         <h2>{fullName}</h2>
         <h2 className="text-black/70">@{username}</h2>
-        <h2 className="text-primary">Joined since {dateFormater(createdAt)}</h2>
+        <h2 className="text-primary">
+          Joined since {createdAt ? dateFormater(createdAt) : null}
+        </h2>
       </div>
 
       <Divider />

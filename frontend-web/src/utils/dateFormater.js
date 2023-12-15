@@ -1,10 +1,16 @@
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+
+TimeAgo.addDefaultLocale(en);
+
+const timeAgo = new TimeAgo("en-US");
+
 const dateFormater = (dateString) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = new Date(dateString).toLocaleDateString(
-    "en-US",
-    options
-  );
-  return formattedDate;
+  // Parse the input string into a Date object
+  const inputDate = new Date(dateString);
+
+  // Format the Date object using timeAgo
+  return timeAgo.format(inputDate);
 };
 
 export { dateFormater };

@@ -2,18 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../provider/AuthContext";
+import { useAlert } from "../../provider/AlertProvider";
 import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";
 import Icon from "../../components/Icon";
 import StoryDeleteAlert from "../../components/StoryDeleteAlert";
 import Loading from "../../components/Loading";
 import { dateFormater } from "../../utils/dateFormater";
+import CommentSection from "./comments/CommentSection";
 import axios from "axios";
 
 const StoryDetails = () => {
   const { slug } = useParams();
 
   const { token, user } = useAuth();
+
+  const { showAlert } = useAlert();
 
   const [isMyArticle, setIsMyArticle] = useState(false);
 
@@ -103,11 +107,15 @@ const StoryDetails = () => {
 
   const addBookmark = async () => {
     try {
-      await axios.post(
+      const response = await axios.post(
         `http://localhost:9000/bookmarks`,
         { articleId: article.articleId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
+      const { message, status } = response.data;
+
+      showAlert(message, status);
 
       setHasBookmarked(true);
     } catch (error) {
@@ -117,10 +125,14 @@ const StoryDetails = () => {
 
   const removeBookmark = async () => {
     try {
-      await axios.delete(`http://localhost:9000/bookmarks`, {
+      const response = await axios.delete(`http://localhost:9000/bookmarks`, {
         data: { articleId: article.articleId },
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      const { message, status } = response.data;
+
+      showAlert(message, status);
 
       setHasBookmarked(false);
     } catch (error) {
@@ -256,7 +268,7 @@ const StoryDetails = () => {
             </Link>
           )}
           <h3 className="text-gray-700 font-semibold">
-            {dateFormater(article.createdAt)}
+            {article.createdAt ? dateFormater(article.createdAt) : null}
           </h3>
           <h3 className="text-gray-500 font-semibold">
             {article.descriptions}
@@ -266,6 +278,8 @@ const StoryDetails = () => {
             dangerouslySetInnerHTML={createMarkup(article.content)}
           />
         </div>
+
+        <CommentSection articleId={article.articleId} />
       </div>
     </>
   );

@@ -1,5 +1,12 @@
 const { Op } = require("sequelize");
-const { User, Article, Like, sequelize } = require("../models");
+const {
+  User,
+  Article,
+  Like,
+  Bookmark,
+  Comment,
+  sequelize,
+} = require("../models");
 const bcrypt = require("bcrypt");
 const formattedDate = require("./utils/formattedDate");
 
@@ -591,7 +598,7 @@ const deleteUserByIdHandler = async (request, h) => {
         .code(404);
     }
 
-    // Validation for required field
+    // Validation for the required field
     if (!password) {
       return h
         .response({
@@ -629,6 +636,18 @@ const deleteUserByIdHandler = async (request, h) => {
 
     // Delete likes associated with the user
     await Like.destroy({
+      where: { userId: paramUserId },
+      transaction: t,
+    });
+
+    // Delete bookmarks associated with the user
+    await Bookmark.destroy({
+      where: { userId: paramUserId },
+      transaction: t,
+    });
+
+    // Delete comments associated with the user
+    await Comment.destroy({
       where: { userId: paramUserId },
       transaction: t,
     });

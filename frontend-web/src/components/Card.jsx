@@ -70,7 +70,7 @@ const Card = ({
           <p className="mb-2">{slicedDescriptions}</p>
 
           <span className="font-semibold text-black/70">
-            - {dateFormater(createdAt)}
+            - {createdAt ? dateFormater(createdAt) : null}
           </span>
         </div>
 

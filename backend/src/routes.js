@@ -29,6 +29,7 @@ const sendResetPasswordMail = require("./../controller/sendResetPasswordMail");
 
 const {
   addLikeHandler,
+  getLikedArticlesForUserHandler,
   removeLikeHandler,
 } = require("./../controller/likeController");
 
@@ -37,6 +38,13 @@ const {
   getBookmarksForUserHandler,
   removeBookmarkHandler,
 } = require("./../controller/bookmarkController");
+
+const {
+  addCommentHandler,
+  getAllArticleCommentsHandler,
+  editCommentHandler,
+  deleteCommentHandler,
+} = require("./../controller/commentController");
 
 const routes = [
   {
@@ -172,6 +180,11 @@ const routes = [
     handler: addLikeHandler,
   },
   {
+    method: "GET",
+    path: "/user/liked-articles",
+    handler: getLikedArticlesForUserHandler,
+  },
+  {
     method: "DELETE",
     path: "/article/likes",
     handler: removeLikeHandler,
@@ -194,6 +207,29 @@ const routes = [
     handler: removeBookmarkHandler,
   },
   // End of Bookmark Routes
+
+  // Start of Comment Routes
+  {
+    method: "POST",
+    path: "/comments",
+    handler: addCommentHandler,
+  },
+  {
+    method: "GET",
+    path: "/{articleId}/comments",
+    handler: getAllArticleCommentsHandler,
+  },
+  {
+    method: "PUT",
+    path: "/comments/{commentId}",
+    handler: editCommentHandler,
+  },
+  {
+    method: "DELETE",
+    path: "/comments/{commentId}",
+    handler: deleteCommentHandler,
+  },
+  // End of Comment Routes
 
   // Not Found Handler
   {
