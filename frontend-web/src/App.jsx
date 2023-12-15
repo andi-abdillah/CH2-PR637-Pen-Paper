@@ -16,6 +16,7 @@ import WelcomePage from "./pages/guest/WelcomePage";
 import MyProfile from "./pages/authenticated/my-profile/MyProfile";
 import UserDescriptions from "./pages/authenticated/my-profile/UserDescriptions";
 import EditUserProfileLayout from "./pages/authenticated/my-profile/EditUserProfileLayout";
+import Bookmarks from "./pages/authenticated/my-profile/Bookmarks";
 import YourStories from "./pages/authenticated/your-stories/YourStories";
 import UserStories from "./pages/authenticated/your-stories/UserStories";
 import CreateStory from "./pages/authenticated/your-stories/CreateStory";
@@ -35,6 +36,7 @@ function App() {
               <Route index element={<UserDescriptions />} />
               <Route path="edit" element={<EditUserProfileLayout />} />
             </Route>
+            <Route path="bookmarks" element={<Bookmarks />} />
 
             <Route path="your-stories" element={<YourStories />}>
               <Route index element={<UserStories />} />

@@ -108,7 +108,6 @@ const OtherUserProfile = () => {
               <Card
                 key={index}
                 token={token}
-                authenticatedUserId={user.userId}
                 {...userArticle}
                 isMyArticle={isAuthorArticle}
               />

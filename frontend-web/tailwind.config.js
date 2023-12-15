@@ -17,6 +17,9 @@ module.exports = {
         inter: ["Inter", "sans-serif"],
         newsreader: ["Newsreader", "serif"],
       },
+      fontSize: {
+        "7xl": "5rem",
+      },
     },
   },
   plugins: [require("daisyui"), require("@tailwindcss/typography")],

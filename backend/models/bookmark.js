@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Like extends Model {
+  class Bookmark extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -18,17 +18,17 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  Like.init(
+  Bookmark.init(
     {
       userId: DataTypes.STRING,
       articleId: DataTypes.STRING,
-      likedAt: DataTypes.STRING,
+      markedAt: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "Like",
+      modelName: "Bookmark",
       timestamps: false,
     }
   );
-  return Like;
+  return Bookmark;
 };

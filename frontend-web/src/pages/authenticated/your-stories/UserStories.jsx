@@ -58,7 +58,6 @@ const UserStories = () => {
           <Card
             key={index}
             token={token}
-            authenticatedUserId={user.userId}
             {...article}
             isMyArticle={isMyArticle}
           />

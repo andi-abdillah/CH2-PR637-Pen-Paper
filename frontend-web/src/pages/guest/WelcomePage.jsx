@@ -1,7 +1,9 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import GuestNavbar from "./GuestNavbar";
+import { useNavigate } from "react-router-dom";
 
 const WelcomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-screen h-screen">
       <HelmetProvider>
@@ -10,17 +12,21 @@ const WelcomePage = () => {
         </Helmet>
       </HelmetProvider>
 
-      <h1 className="fixed top-0 font-bold px-20 py-8 text-2xl md:text-3xl text-primary">
-        Pen & Paper
-      </h1>
+      <GuestNavbar />
 
-      <div className="flex justify-center items-center h-full">
-        <h1 className="text-2xl w-max">
-          Welcome to Pen & Paper,{" "}
-          <Link to="/sign-in" className="text-primary underline">
-            Sign in
-          </Link>
+      <div className="w-max mx-auto flex flex-col mt-40">
+        <h1 className="w-max text-primary text-3xl md:text-5xl lg:text-7xl">
+          Pen & Paper:
         </h1>
+        <h2 className="text-2xl md:text-4xl lg:text-6xl italic text-primary">
+          digital literacy for everyone
+        </h2>
+        <button
+          className="lg:hidden mt-8 px-8 py-3 text-xs text-white m-auto w-max font-semibold bg-primary rounded-lg"
+          onClick={() => navigate("sign-in")}
+        >
+          Join the community
+        </button>
       </div>
     </div>
   );

@@ -39,8 +39,8 @@ const addLikeHandler = async (request, h) => {
     // Add Like to the database
     const createdLike = await Like.create(
       {
-        articleId,
         userId,
+        articleId,
         likedAt,
       },
       { transaction: t }
@@ -52,7 +52,7 @@ const addLikeHandler = async (request, h) => {
         .response({
           status: "success",
           message: "Like added successfully.",
-          data: { articleId, userId },
+          data: { userId, articleId },
         })
         .code(201);
     }
@@ -76,20 +76,8 @@ const addLikeHandler = async (request, h) => {
   }
 };
 
-const getLikesForArticleHandler = async (request, h) => {
+const getLikesForArticleHandler = async (articleId) => {
   try {
-    const { articleId } = request.params;
-
-    // Validate articleId
-    if (!articleId) {
-      return h
-        .response({
-          status: "fail",
-          message: "articleId is required.",
-        })
-        .code(400);
-    }
-
     const isArticleExists = async (articleId) => {
       const article = await Article.findOne({ where: { articleId } });
       return article !== null;
@@ -99,30 +87,19 @@ const getLikesForArticleHandler = async (request, h) => {
     const articleExists = await isArticleExists(articleId);
 
     if (!articleExists) {
-      return h
-        .response({
-          status: "fail",
-          message: "Article not found.",
-        })
-        .code(404);
+      return null;
     }
 
     const likes = await Like.findAll({
-      where: { articleId },
+      where: { articleId: articleId },
     });
 
-    return h.response({
-      status: "success",
-      data: { likes },
-    });
+    return {
+      data: { likes: likes.length },
+    };
   } catch (error) {
     console.error(error);
-    return h
-      .response({
-        status: "error",
-        message: "Internal server error.",
-      })
-      .code(500);
+    return null;
   }
 };
 
@@ -146,7 +123,7 @@ const removeLikeHandler = async (request, h) => {
 
     // Remove Like from the database
     const deletedRows = await Like.destroy({
-      where: { articleId, userId },
+      where: { userId, articleId },
       transaction: t,
     });
 
@@ -155,7 +132,7 @@ const removeLikeHandler = async (request, h) => {
       return h.response({
         status: "success",
         message: "Like removed successfully.",
-        data: { articleId, userId },
+        data: { userId, articleId },
       });
     }
 

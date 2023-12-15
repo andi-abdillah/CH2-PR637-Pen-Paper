@@ -76,7 +76,6 @@ const ExploreTopics = () => {
         <Card
           key={index}
           token={token}
-          authenticatedUserId={user.userId}
           {...item}
         />
       ))}

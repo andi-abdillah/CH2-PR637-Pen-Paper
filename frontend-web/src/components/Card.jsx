@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import { dateFormater } from "../utils/dateFormater";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 const Card = ({
   token,
-  authenticatedUserId,
   articleId,
   username,
   isMyArticle,
@@ -13,6 +12,8 @@ const Card = ({
   slug,
   descriptions,
   createdAt,
+  isLiked,
+  likes,
 }) => {
   const maxDescriptionsLength = 180;
 
@@ -21,33 +22,9 @@ const Card = ({
       ? `${descriptions.slice(0, maxDescriptionsLength)}...`
       : descriptions;
 
-  const [totalLikes, setTotalLikes] = useState(0);
+  const [totalLikes, setTotalLikes] = useState(likes || 0);
 
-  const [isLiked, setIsLiked] = useState(false);
-
-  useEffect(() => {
-    const fetchLikes = async () => {
-      try {
-        const result = await axios.get(
-          `http://localhost:9000/article/${articleId}/likes`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        const foundLikes = result.data.data.likes;
-
-        setTotalLikes(foundLikes.length);
-
-        const userHasLiked = foundLikes.some((like) => {
-          return like.userId === authenticatedUserId;
-        });
-
-        setIsLiked(userHasLiked);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchLikes();
-  }, [token, authenticatedUserId, articleId]);
+  const [hasLiked, setHasLiked] = useState(isLiked);
 
   const likeArticle = async () => {
     try {
@@ -57,7 +34,7 @@ const Card = ({
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTotalLikes((prevLikes) => prevLikes + 1);
-      setIsLiked(true);
+      setHasLiked(true);
     } catch (error) {
       console.error("Error liking article:", error);
     }
@@ -70,7 +47,7 @@ const Card = ({
         headers: { Authorization: `Bearer ${token}` },
       });
       setTotalLikes((prevLikes) => prevLikes - 1);
-      setIsLiked(false);
+      setHasLiked(false);
     } catch (error) {
       console.error("Error unliking article:", error);
     }
@@ -121,10 +98,10 @@ const Card = ({
           </Link>
 
           <div className="flex gap-2 items-center md:ml-4">
-            <button onClick={isLiked ? unlikeArticle : likeArticle}>
+            <button onClick={hasLiked ? unlikeArticle : likeArticle}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill={isLiked ? "oklch(var(--s))" : "transparent"}
+                fill={hasLiked ? "oklch(var(--s))" : "transparent"}
                 viewBox="0 0 24 24"
                 className="inline-block w-8 h-8 stroke-current text-secondary"
               >

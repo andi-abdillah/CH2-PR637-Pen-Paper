@@ -29,9 +29,14 @@ const sendResetPasswordMail = require("./../controller/sendResetPasswordMail");
 
 const {
   addLikeHandler,
-  getLikesForArticleHandler,
   removeLikeHandler,
 } = require("./../controller/likeController");
+
+const {
+  addBookmarkHandler,
+  getBookmarksForUserHandler,
+  removeBookmarkHandler,
+} = require("./../controller/bookmarkController");
 
 const routes = [
   {
@@ -167,15 +172,28 @@ const routes = [
     handler: addLikeHandler,
   },
   {
-    method: "GET",
-    path: "/article/{articleId}/likes",
-    handler: getLikesForArticleHandler,
-  },
-  {
     method: "DELETE",
     path: "/article/likes",
     handler: removeLikeHandler,
   },
+
+  // Start of Bookmark Routes
+  {
+    method: "POST",
+    path: "/bookmarks",
+    handler: addBookmarkHandler,
+  },
+  {
+    method: "GET",
+    path: "/bookmarks",
+    handler: getBookmarksForUserHandler,
+  },
+  {
+    method: "DELETE",
+    path: "/bookmarks",
+    handler: removeBookmarkHandler,
+  },
+  // End of Bookmark Routes
 
   // Not Found Handler
   {

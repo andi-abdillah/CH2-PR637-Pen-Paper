@@ -1,8 +1,9 @@
 const { nanoid } = require("nanoid");
 const { Op } = require("sequelize");
-const { Article, User, Like, sequelize } = require("../models");
+const { Article, User, Like, Bookmark, sequelize } = require("../models");
 const formattedDate = require("./utils/formattedDate");
 const slugify = require("slugify");
+const { getLikesForArticleHandler } = require("./likeController");
 
 // Function to generate a unique article ID
 const generateId = () => `article-${nanoid(20)}`;
@@ -178,18 +179,36 @@ const getAllArticlesHandler = async (request, h) => {
         .code(200);
     }
 
-    // Map articles to a simplified format
-    const listArticles = rows.map((article) => ({
-      articleId: article.articleId,
-      userId: article.userId,
-      username: article.user.username,
-      title: article.title,
-      slug: article.slug,
-      descriptions: article.descriptions,
-      content: article.content,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
-    }));
+    // Map articles to a simplified format with like and bookmark information
+    const listArticles = rows.map(async (article) => {
+      // Check if the article is liked by the user
+      const isLiked = await Like.findOne({
+        where: { userId: tokenUserId, articleId: article.articleId },
+      });
+
+      // Check if the article is bookmarked by the user
+      const isBookmarked = await Bookmark.findOne({
+        where: { userId: tokenUserId, articleId: article.articleId },
+      });
+
+      // Get the number of likes for the article
+      const likes = await getLikesForArticleHandler(article.articleId);
+
+      return {
+        articleId: article.articleId,
+        userId: article.userId,
+        username: article.user.username,
+        title: article.title,
+        slug: article.slug,
+        descriptions: article.descriptions,
+        content: article.content,
+        createdAt: article.createdAt,
+        updatedAt: article.updatedAt,
+        isLiked: Boolean(isLiked),
+        isBookmarked: Boolean(isBookmarked),
+        likes: likes ? likes.data.likes : [],
+      };
+    });
 
     // Calculate total pages
     const totalPages = Math.ceil(count / pageSize);
@@ -199,7 +218,7 @@ const getAllArticlesHandler = async (request, h) => {
       .response({
         status: "success",
         data: {
-          articles: listArticles,
+          articles: await Promise.all(listArticles), // Await for all promises to resolve
           totalArticles: count,
           totalPages: totalPages,
           currentPage: page,
@@ -263,24 +282,42 @@ const searchArticlesHandler = async (request, h) => {
         .code(200);
     }
 
-    // Map articles to a simplified format
-    const listArticles = articles.map((article) => ({
-      articleId: article.articleId,
-      userId: article.userId,
-      username: article.user.username,
-      title: article.title,
-      slug: article.slug,
-      descriptions: article.descriptions,
-      content: article.content,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
-    }));
+    // Map articles to a simplified format with like and bookmark information
+    const listArticles = articles.map(async (article) => {
+      // Check if the article is liked by the user
+      const isLiked = await Like.findOne({
+        where: { userId: tokenUserId, articleId: article.articleId },
+      });
+
+      // Check if the article is bookmarked by the user
+      const isBookmarked = await Bookmark.findOne({
+        where: { userId: tokenUserId, articleId: article.articleId },
+      });
+
+      // Get the number of likes for the article
+      const likes = await getLikesForArticleHandler(article.articleId);
+
+      return {
+        articleId: article.articleId,
+        userId: article.userId,
+        username: article.user.username,
+        title: article.title,
+        slug: article.slug,
+        descriptions: article.descriptions,
+        content: article.content,
+        createdAt: article.createdAt,
+        updatedAt: article.updatedAt,
+        isLiked: Boolean(isLiked),
+        isBookmarked: Boolean(isBookmarked),
+        likes: likes ? likes.data.likes : [],
+      };
+    });
 
     // Respond with success and the list of articles
     return h
       .response({
         status: "success",
-        data: { articles: listArticles },
+        data: { articles: await Promise.all(listArticles) },
       })
       .code(200);
   } catch (error) {
@@ -298,13 +335,14 @@ const searchArticlesHandler = async (request, h) => {
 
 // Handler to get articles by user ID
 const getArticlesByUserIdHandler = async (request, h) => {
-  const { userId } = request.params;
+  const { userId: tokenUserId } = request.auth.credentials;
 
   try {
-    // Find articles by user ID and order by creation date in descending order
+    const { userId } = request.params;
+
+    // Find articles by user ID
     const articles = await Article.findAll({
       where: { userId },
-      order: [["createdAt", "DESC"]],
       include: [
         {
           model: User,
@@ -324,24 +362,42 @@ const getArticlesByUserIdHandler = async (request, h) => {
         .code(200);
     }
 
-    // Map articles to a simplified format
-    const listArticles = articles.map((article) => ({
-      articleId: article.articleId,
-      userId: article.userId,
-      username: article.user.username,
-      title: article.title,
-      slug: article.slug,
-      descriptions: article.descriptions,
-      content: article.content,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
-    }));
+    // Map articles to a simplified format with like and bookmark information
+    const listArticles = articles.map(async (article) => {
+      // Check if the article is liked by the user
+      const isLiked = await Like.findOne({
+        where: { userId: tokenUserId, articleId: article.articleId },
+      });
+
+      // Check if the article is bookmarked by the user
+      const isBookmarked = await Bookmark.findOne({
+        where: { userId: tokenUserId, articleId: article.articleId },
+      });
+
+      // Get the number of likes for the article
+      const likes = await getLikesForArticleHandler(article.articleId);
+
+      return {
+        articleId: article.articleId,
+        userId: article.userId,
+        username: article.user.username,
+        title: article.title,
+        slug: article.slug,
+        descriptions: article.descriptions,
+        content: article.content,
+        createdAt: article.createdAt,
+        updatedAt: article.updatedAt,
+        isLiked: Boolean(isLiked),
+        isBookmarked: Boolean(isBookmarked),
+        likes: likes ? likes.data.likes : [],
+      };
+    });
 
     // Respond with success and the list of articles
     return h
       .response({
         status: "success",
-        data: { articles: listArticles },
+        data: { articles: await Promise.all(listArticles) },
       })
       .code(200);
   } catch (error) {
@@ -360,6 +416,7 @@ const getArticlesByUserIdHandler = async (request, h) => {
 // Handler to get an article by its slug
 const getArticleBySlugHandler = async (request, h) => {
   const { slug } = request.params;
+  const { userId: tokenUserId } = request.auth.credentials;
 
   try {
     // Find the article by its slug with the associated user
@@ -376,6 +433,19 @@ const getArticleBySlugHandler = async (request, h) => {
 
     // If the article is found, respond with success and the article details
     if (targetArticle) {
+      // Check if the article is liked by the user
+      const isLiked = await Like.findOne({
+        where: { userId: tokenUserId, articleId: targetArticle.articleId },
+      });
+
+      // Check if the article is bookmarked by the user
+      const isBookmarked = await Bookmark.findOne({
+        where: { userId: tokenUserId, articleId: targetArticle.articleId },
+      });
+
+      // Get the number of likes for the article
+      const likes = await getLikesForArticleHandler(targetArticle.articleId);
+
       return h
         .response({
           status: "success",
@@ -390,6 +460,9 @@ const getArticleBySlugHandler = async (request, h) => {
               content: targetArticle.content,
               createdAt: targetArticle.createdAt,
               updatedAt: targetArticle.updatedAt,
+              isLiked: Boolean(isLiked),
+              isBookmarked: Boolean(isBookmarked),
+              likes: likes ? likes.data.likes : [],
             },
           },
         })

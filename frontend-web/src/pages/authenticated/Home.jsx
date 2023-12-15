@@ -93,7 +93,7 @@ const Home = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>{`Home | Page ${currentPage} | Pen & Paper`}</title>
+          <title>{`Page ${currentPage} | Home | Pen & Paper`}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -128,12 +128,7 @@ const Home = () => {
               Might for you
             </h2>
             {articles?.map((article, index) => (
-              <Card
-                key={index}
-                token={token}
-                authenticatedUserId={user.userId}
-                {...article}
-              />
+              <Card key={index} token={token} {...article} />
             ))}
             {!isLastPage && (
               <PrimaryButton className="m-auto" onClick={handleLoadMore}>

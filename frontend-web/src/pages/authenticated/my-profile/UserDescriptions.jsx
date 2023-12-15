@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../provider/AuthContext";
 import Loading from "../../../components/Loading";
-import SecondaryButton from "../../../components/SecondaryButton";
 import Icon from "../../../components/Icon";
 import ProfileHeader from "../../../components/ProfileHeader";
+import Divider from "../../../components/Divider";
 
 const UserDescriptions = () => {
   const { token, user } = useAuth();
@@ -48,10 +48,34 @@ const UserDescriptions = () => {
     <>
       <ProfileHeader {...userData} />
 
-      <div className="mt-8">
-        <SecondaryButton onClick={() => navigate("edit")}>
-          Manage Profile<Icon>manage_accounts</Icon>
-        </SecondaryButton>
+      <div className="flex flex-col mt-8">
+        <div className="self-end dropdown dropdown-end">
+          <label tabIndex={0}>
+            <Icon className="text-4xl cursor-pointer">more_horiz</Icon>
+          </label>
+          <ul
+            tabIndex={0}
+            className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max list-none"
+          >
+            <li className="mx-5 mb-2 cursor-pointer hover:text-primary">
+              <button
+                onClick={() => navigate("edit")}
+                className="flex justify-between gap-2 w-full"
+              >
+                Manage Profile<Icon>manage_accounts</Icon>
+              </button>
+            </li>
+            <Divider />
+            <li className="mx-5 mt-2 cursor-pointer hover:text-primary">
+              <button
+                onClick={() => navigate("/dashboard/bookmarks")}
+                className="flex justify-between gap-2 w-full"
+              >
+                Bookmarks<Icon>bookmarks</Icon>
+              </button>
+            </li>
+          </ul>
+        </div>
 
         <p className="md:text-xl font-semibold mt-8">
           {userData.descriptions

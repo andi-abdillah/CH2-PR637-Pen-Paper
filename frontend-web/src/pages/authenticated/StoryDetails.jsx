@@ -29,7 +29,9 @@ const StoryDetails = () => {
 
   const [totalLikes, setTotalLikes] = useState(0);
 
-  const [isLiked, setIsLiked] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
+
+  const [hasBookmarked, setHasBookmarked] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +48,12 @@ const StoryDetails = () => {
         }
 
         setArticle(foundArticle);
+
+        setHasLiked(foundArticle.isLiked);
+
+        setHasBookmarked(foundArticle.isBookmarked);
+
+        setTotalLikes(foundArticle.likes);
 
         const username = foundArticle.username;
 
@@ -66,31 +74,6 @@ const StoryDetails = () => {
     fetchData();
   }, [slug, token, user.userId, user]);
 
-  useEffect(() => {
-    if (article) {
-      const fetchLikes = async () => {
-        try {
-          const result = await axios.get(
-            `http://localhost:9000/article/${article.articleId}/likes`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          );
-
-          const foundLikes = result.data.data.likes;
-
-          setTotalLikes(foundLikes.length);
-
-          const userHasLiked = foundLikes.some(
-            (like) => like.userId === user.userId
-          );
-          setIsLiked(userHasLiked);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchLikes();
-    }
-  }, [article, token, user.userId]);
-
   const likeArticle = async () => {
     try {
       await axios.post(
@@ -99,7 +82,7 @@ const StoryDetails = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTotalLikes((prevLikes) => prevLikes + 1);
-      setIsLiked(true);
+      setHasLiked(true);
     } catch (error) {
       console.error("Error liking article:", error);
     }
@@ -112,9 +95,36 @@ const StoryDetails = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTotalLikes((prevLikes) => prevLikes - 1);
-      setIsLiked(false);
+      setHasLiked(false);
     } catch (error) {
       console.error("Error unliking article:", error);
+    }
+  };
+
+  const addBookmark = async () => {
+    try {
+      await axios.post(
+        `http://localhost:9000/bookmarks`,
+        { articleId: article.articleId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setHasBookmarked(true);
+    } catch (error) {
+      console.error("Error adding bookmark:", error);
+    }
+  };
+
+  const removeBookmark = async () => {
+    try {
+      await axios.delete(`http://localhost:9000/bookmarks`, {
+        data: { articleId: article.articleId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setHasBookmarked(false);
+    } catch (error) {
+      console.error("Error removing bookmark:", error);
     }
   };
 
@@ -166,10 +176,10 @@ const StoryDetails = () => {
 
         <div className="flex justify-between items-center my-5">
           <div className="flex gap-2 items-center md:ml-4">
-            <button onClick={isLiked ? unlikeArticle : likeArticle}>
+            <button onClick={hasLiked ? unlikeArticle : likeArticle}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill={isLiked ? "oklch(var(--s))" : "transparent"}
+                fill={hasLiked ? "oklch(var(--s))" : "transparent"}
                 viewBox="0 0 24 24"
                 className="inline-block w-8 h-8 stroke-current text-secondary"
               >
@@ -184,27 +194,47 @@ const StoryDetails = () => {
             <div className="text-2xl font-semibold">{totalLikes}</div>
           </div>
 
-          {isMyArticle && (
-            <div className="dropdown dropdown-end">
-              <label tabIndex={0}>
-                <Icon className="text-4xl cursor-pointer">more_horiz</Icon>
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max list-none"
-              >
-                <li className="mx-5 mb-2 cursor-pointer">
-                  <Link to={`/dashboard/your-stories/${slug}/edit`}>
-                    Edit story
-                  </Link>
-                </li>
-                <Divider />
-                <li className="mx-5 mt-2 text-red-500 cursor-pointer">
-                  <span onClick={openAlert}>Delete story</span>
-                </li>
-              </ul>
-            </div>
-          )}
+          <div className="dropdown dropdown-end">
+            <label tabIndex={0}>
+              <Icon className="text-4xl cursor-pointer">more_horiz</Icon>
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max list-none"
+            >
+              {isMyArticle ? (
+                <>
+                  <li className="mx-5 mb-2 cursor-pointer">
+                    <Link to={`/dashboard/your-stories/${slug}/edit`}>
+                      Edit story
+                    </Link>
+                  </li>
+                  <Divider />
+                  <li className="mx-5 mt-2 text-red-500 cursor-pointer">
+                    <span onClick={openAlert}>Delete story</span>
+                  </li>
+                </>
+              ) : (
+                <div className="px-4">
+                  {hasBookmarked ? (
+                    <button
+                      onClick={() => removeBookmark()}
+                      className="text-red-500"
+                    >
+                      Remove from bookmark
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => addBookmark()}
+                      className="text-primary"
+                    >
+                      Add to bookmark
+                    </button>
+                  )}
+                </div>
+              )}
+            </ul>
+          </div>
         </div>
         <Divider />
 
