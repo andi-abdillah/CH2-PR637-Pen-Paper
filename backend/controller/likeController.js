@@ -167,21 +167,26 @@ const getLikedArticlesForUserHandler = async (request, h) => {
         where: { articleId: article.articleId },
       });
 
-      return {
-        articleId: article.articleId,
-        userId: article.userId,
-        username: article.user.username,
-        title: article.title,
-        slug: article.slug,
-        descriptions: article.descriptions,
-        content: article.content,
-        createdAt: article.createdAt,
-        updatedAt: article.updatedAt,
-        isBookmarked: Boolean(isBookmarked),
-        bookmarks: bookmarks || 0,
-        isLiked: Boolean(isLiked),
-        likes: likesCount || 0,
-      };
+      // Add a condition to exclude articles with the same userId as tokenUserId
+      if (article.userId !== tokenUserId) {
+        return {
+          articleId: article.articleId,
+          userId: article.userId,
+          username: article.user.username,
+          title: article.title,
+          slug: article.slug,
+          descriptions: article.descriptions,
+          content: article.content,
+          createdAt: article.createdAt,
+          updatedAt: article.updatedAt,
+          isBookmarked: Boolean(isBookmarked),
+          bookmarks: bookmarks || 0,
+          isLiked: Boolean(isLiked),
+          likes: likesCount || 0,
+        };
+      }
+
+      return null; // Return null for articles with the same userId
     });
 
     // Wait for all promises to resolve
