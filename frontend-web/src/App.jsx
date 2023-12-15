@@ -17,6 +17,7 @@ import MyProfile from "./pages/authenticated/my-profile/MyProfile";
 import UserDescriptions from "./pages/authenticated/my-profile/UserDescriptions";
 import EditUserProfileLayout from "./pages/authenticated/my-profile/EditUserProfileLayout";
 import Bookmarks from "./pages/authenticated/my-profile/Bookmarks";
+import LikedArticles from "./pages/authenticated/my-profile/LikedArticles";
 import YourStories from "./pages/authenticated/your-stories/YourStories";
 import UserStories from "./pages/authenticated/your-stories/UserStories";
 import CreateStory from "./pages/authenticated/your-stories/CreateStory";
@@ -37,6 +38,7 @@ function App() {
               <Route path="edit" element={<EditUserProfileLayout />} />
             </Route>
             <Route path="bookmarks" element={<Bookmarks />} />
+            <Route path="liked-articles" element={<LikedArticles />} />
 
             <Route path="your-stories" element={<YourStories />}>
               <Route index element={<UserStories />} />

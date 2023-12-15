@@ -66,12 +66,21 @@ const UserDescriptions = () => {
               </button>
             </li>
             <Divider />
-            <li className="mx-5 mt-2 cursor-pointer hover:text-primary">
+            <li className="mx-5 my-2 cursor-pointer hover:text-primary">
               <button
                 onClick={() => navigate("/dashboard/bookmarks")}
                 className="flex justify-between gap-2 w-full"
               >
                 Bookmarks<Icon>bookmarks</Icon>
+              </button>
+            </li>
+            <Divider />
+            <li className="mx-5 mt-2 cursor-pointer hover:text-primary">
+              <button
+                onClick={() => navigate("/dashboard/liked-articles")}
+                className="flex justify-between gap-2 w-full"
+              >
+                Liked Articles<Icon>favorite</Icon>
               </button>
             </li>
           </ul>

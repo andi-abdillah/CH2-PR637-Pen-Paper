@@ -157,6 +157,16 @@ const getLikedArticlesForUserHandler = async (request, h) => {
         where: { articleId: article.articleId },
       });
 
+      // Check if the article is liked by the user
+      const isLiked = await Like.findOne({
+        where: { userId: tokenUserId, articleId: article.articleId },
+      });
+
+      // Get the number of likes for the article
+      const likesCount = await Like.count({
+        where: { articleId: article.articleId },
+      });
+
       return {
         articleId: article.articleId,
         userId: article.userId,
@@ -169,6 +179,8 @@ const getLikedArticlesForUserHandler = async (request, h) => {
         updatedAt: article.updatedAt,
         isBookmarked: Boolean(isBookmarked),
         bookmarks: bookmarks || 0,
+        isLiked: Boolean(isLiked),
+        likes: likesCount || 0,
       };
     });
 
