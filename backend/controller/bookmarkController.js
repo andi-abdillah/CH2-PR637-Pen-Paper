@@ -1,4 +1,11 @@
-const { Bookmark, User, Article, Like, sequelize } = require("../models");
+const {
+  Bookmark,
+  User,
+  Article,
+  Like,
+  Comment,
+  sequelize,
+} = require("../models");
 const formattedDate = require("./utils/formattedDate");
 
 const addBookmarkHandler = async (request, h) => {
@@ -129,7 +136,12 @@ const getBookmarksForUserHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likes = await Like.count({
+      const likesCount = await Like.count({
+        where: { articleId: article.articleId },
+      });
+
+      // Get the number of comments for the article
+      const commentsCount = await Comment.count({
         where: { articleId: article.articleId },
       });
 
@@ -144,7 +156,8 @@ const getBookmarksForUserHandler = async (request, h) => {
         createdAt: article.createdAt,
         updatedAt: article.updatedAt,
         isLiked: Boolean(isLiked),
-        likes: likes || 0,
+        likesTotal: likesCount || 0,
+        commentsTotal: commentsCount || 0,
       };
     });
 

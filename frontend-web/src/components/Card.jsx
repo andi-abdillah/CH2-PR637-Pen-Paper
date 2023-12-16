@@ -110,7 +110,7 @@ const Card = ({
               </svg>
 
               <span className="text-lg sm:text-xl">
-                {formatNumber(commentsTotal)}
+                {commentsTotal ? formatNumber(commentsTotal) : "0"}
               </span>
             </div>
 
@@ -131,7 +131,9 @@ const Card = ({
                 ></path>
               </svg>
             </button>
-            <div className="text-lg sm:text-xl">{formatNumber(totalLikes)}</div>
+            <div className="text-lg sm:text-xl">
+              {totalLikes ? formatNumber(totalLikes) : "0"}
+            </div>
           </div>
         </div>
       </div>
