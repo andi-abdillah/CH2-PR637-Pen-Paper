@@ -262,7 +262,9 @@ const StoryDetails = () => {
         />
 
         <div className="flex flex-col gap-6 max-w-3xl xs:mx-8 mt-8 text-lg">
-          {!isMyArticle && (
+          {isMyArticle ? (
+            <h2 className="text-grey-600 text-2xl w-max font-semibold">You</h2>
+          ) : (
             <Link
               to={`/dashboard/profile/@${author.username}`}
               className="text-grey-600 text-2xl w-max font-semibold"
