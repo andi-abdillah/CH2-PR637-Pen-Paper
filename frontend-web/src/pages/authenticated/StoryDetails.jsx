@@ -9,6 +9,7 @@ import Icon from "../../components/Icon";
 import StoryDeleteAlert from "../../components/StoryDeleteAlert";
 import Loading from "../../components/Loading";
 import { dateFormater } from "../../utils/dateFormater";
+import { formatNumber } from "../../utils/formatNumber";
 import CommentSection from "./comments/CommentSection";
 import axios from "axios";
 
@@ -57,7 +58,7 @@ const StoryDetails = () => {
 
         setHasBookmarked(foundArticle.isBookmarked);
 
-        setTotalLikes(foundArticle.likes);
+        setTotalLikes(foundArticle.likesTotal);
 
         const username = foundArticle.username;
 
@@ -193,17 +194,19 @@ const StoryDetails = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill={hasLiked ? "oklch(var(--s))" : "transparent"}
                 viewBox="0 0 24 24"
-                className="inline-block w-8 h-8 stroke-current text-secondary"
+                className={`inline-block w-8 h-8 stroke-current ${
+                  hasLiked ? "text-secondary" : ""
+                }`}
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="3"
+                  strokeWidth="1"
                   d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 ></path>
               </svg>
             </button>
-            <div className="text-2xl font-semibold">{totalLikes}</div>
+            <div className="text-2xl">{formatNumber(totalLikes)}</div>
           </div>
 
           <div className="dropdown dropdown-end">

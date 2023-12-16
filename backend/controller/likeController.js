@@ -1,4 +1,11 @@
-const { Article, Like, User, Bookmark, sequelize } = require("../models");
+const {
+  Article,
+  Like,
+  User,
+  Bookmark,
+  Comment,
+  sequelize,
+} = require("../models");
 const formattedDate = require("./utils/formattedDate");
 
 const addLikeHandler = async (request, h) => {
@@ -76,33 +83,6 @@ const addLikeHandler = async (request, h) => {
   }
 };
 
-const getLikesForArticleHandler = async (articleId) => {
-  try {
-    const isArticleExists = async (articleId) => {
-      const article = await Article.findOne({ where: { articleId } });
-      return article !== null;
-    };
-
-    // Check if the article exists
-    const articleExists = await isArticleExists(articleId);
-
-    if (!articleExists) {
-      return null;
-    }
-
-    const likes = await Like.findAll({
-      where: { articleId: articleId },
-    });
-
-    return {
-      data: { likes: likes.length },
-    };
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-
 const getLikedArticlesForUserHandler = async (request, h) => {
   const { userId: tokenUserId } = request.auth.credentials;
 
@@ -167,6 +147,10 @@ const getLikedArticlesForUserHandler = async (request, h) => {
         where: { articleId: article.articleId },
       });
 
+      const commentsCount = await Comment.count({
+        where: { articleId: article.articleId }, // Filter comments based on the articleId
+      });
+
       // Add a condition to exclude articles with the same userId as tokenUserId
       if (article.userId !== tokenUserId) {
         return {
@@ -182,7 +166,8 @@ const getLikedArticlesForUserHandler = async (request, h) => {
           isBookmarked: Boolean(isBookmarked),
           bookmarks: bookmarks || 0,
           isLiked: Boolean(isLiked),
-          likes: likesCount || 0,
+          likesTotal: likesCount || 0,
+          commentsTotal: commentsCount || 0,
         };
       }
 
@@ -274,7 +259,6 @@ const removeLikeHandler = async (request, h) => {
 
 module.exports = {
   addLikeHandler,
-  getLikesForArticleHandler,
   getLikedArticlesForUserHandler,
   removeLikeHandler,
 };

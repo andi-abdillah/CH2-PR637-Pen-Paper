@@ -10,7 +10,6 @@ const {
 } = require("../models");
 const formattedDate = require("./utils/formattedDate");
 const slugify = require("slugify");
-const { getLikesForArticleHandler } = require("./likeController");
 
 // Function to generate a unique article ID
 const generateId = () => `article-${nanoid(20)}`;
@@ -199,7 +198,14 @@ const getAllArticlesHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likes = await getLikesForArticleHandler(article.articleId);
+      const likesCount = await Like.count({
+        where: { articleId: article.articleId },
+      });
+
+      // Get the number of comments for the article
+      const commentsCount = await Comment.count({
+        where: { articleId: article.articleId },
+      });
 
       return {
         articleId: article.articleId,
@@ -213,7 +219,8 @@ const getAllArticlesHandler = async (request, h) => {
         updatedAt: article.updatedAt,
         isLiked: Boolean(isLiked),
         isBookmarked: Boolean(isBookmarked),
-        likes: likes ? likes.data.likes : [],
+        likesTotal: likesCount,
+        commentsTotal: commentsCount,
       };
     });
 
@@ -302,7 +309,14 @@ const searchArticlesHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likes = await getLikesForArticleHandler(article.articleId);
+      const likesCount = await Like.count({
+        where: { articleId: article.articleId },
+      });
+
+      // Get the number of comments for the article
+      const commentsCount = await Comment.count({
+        where: { articleId: article.articleId },
+      });
 
       return {
         articleId: article.articleId,
@@ -316,7 +330,8 @@ const searchArticlesHandler = async (request, h) => {
         updatedAt: article.updatedAt,
         isLiked: Boolean(isLiked),
         isBookmarked: Boolean(isBookmarked),
-        likes: likes ? likes.data.likes : [],
+        likesTotal: likesCount,
+        commentsTotal: commentsCount,
       };
     });
 
@@ -382,7 +397,14 @@ const getArticlesByUserIdHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likes = await getLikesForArticleHandler(article.articleId);
+      const likesCount = await Like.count({
+        where: { articleId: article.articleId },
+      });
+
+      // Get the number of comments for the article
+      const commentsCount = await Comment.count({
+        where: { articleId: article.articleId },
+      });
 
       return {
         articleId: article.articleId,
@@ -396,7 +418,8 @@ const getArticlesByUserIdHandler = async (request, h) => {
         updatedAt: article.updatedAt,
         isLiked: Boolean(isLiked),
         isBookmarked: Boolean(isBookmarked),
-        likes: likes ? likes.data.likes : [],
+        likesTotal: likesCount,
+        commentsTotal: commentsCount,
       };
     });
 
@@ -451,7 +474,14 @@ const getArticleBySlugHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likes = await getLikesForArticleHandler(targetArticle.articleId);
+      const likesCount = await Like.count({
+        where: { articleId: targetArticle.articleId },
+      });
+
+      // Get the number of comments for the article
+      const commentsCount = await Comment.count({
+        where: { articleId: targetArticle.articleId },
+      });
 
       return h
         .response({
@@ -469,7 +499,8 @@ const getArticleBySlugHandler = async (request, h) => {
               updatedAt: targetArticle.updatedAt,
               isLiked: Boolean(isLiked),
               isBookmarked: Boolean(isBookmarked),
-              likes: likes ? likes.data.likes : [],
+              likesTotal: likesCount,
+              commentsTotal: commentsCount,
             },
           },
         })

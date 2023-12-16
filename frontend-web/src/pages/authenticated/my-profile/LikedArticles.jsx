@@ -45,12 +45,12 @@ const LikedArticles = () => {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>My Liked Articles – Pen & Paper</title>
+          <title>Liked Articles – Pen & Paper</title>
         </Helmet>
       </HelmetProvider>
 
       <div>
-        <h1 className="text-3xl xs:text-5xl mb-8">My Liked Articles</h1>
+        <h1 className="text-3xl xs:text-5xl mb-8">Liked Articles</h1>
 
         <Divider />
 
