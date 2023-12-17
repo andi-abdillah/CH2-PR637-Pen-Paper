@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { dateFormater } from "../utils/dateFormater";
 import { formatNumber } from "../utils/formatNumber";
+import { API_URL } from "../api/api";
 import axios from "axios";
 
 const Card = ({
@@ -31,7 +32,7 @@ const Card = ({
   const likeArticle = async () => {
     try {
       await axios.post(
-        `http://localhost:9000/article/likes`,
+        `${API_URL}/article/likes`,
         { articleId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -44,7 +45,7 @@ const Card = ({
 
   const unlikeArticle = async () => {
     try {
-      await axios.delete(`http://localhost:9000/article/likes`, {
+      await axios.delete(`${API_URL}/article/likes`, {
         data: { articleId },
         headers: { Authorization: `Bearer ${token}` },
       });

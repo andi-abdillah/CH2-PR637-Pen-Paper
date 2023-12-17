@@ -1,11 +1,5 @@
 [
   {
-    "fullName": "Amin Abdillah",
-    "username": "amin_abdillah",
-    "email": "andiabdillah255@gmail.com",
-    "descriptions": ""
-  },
-  {
     "fullName": "Adi Wijaya",
     "username": "adiwijaya",
     "email": "adi.wijaya@gmail.com",
@@ -142,5 +136,125 @@
     "username": "budikurniawan",
     "email": "budi.kurniawan@gmail.com",
     "descriptions": "Pengemudi ojek online yang ramah dan santai. Menyukai obrolan ringan dengan penumpang sambil menemani perjalanan."
+  },
+  {
+    "fullName": "Rina Indah",
+    "username": "rinaindah",
+    "email": "rina.indah@gmail.com",
+    "descriptions": "Pecinta alam dan fotografi. Sering berpetualang ke tempat-tempat eksotis untuk menangkap keindahan alam."
+  },
+  {
+    "fullName": "Denny Setiawan",
+    "username": "dennysetiawan",
+    "email": "denny.setiawan@gmail.com",
+    "descriptions": "Penggemar film horor yang suka menulis skenario cerita misteri. Hobinya adalah meneliti kejadian aneh dan supernatural."
+  },
+  {
+    "fullName": "Siska Rahayu",
+    "username": "siskarahayu",
+    "email": "siska.rahayu@gmail.com",
+    "descriptions": "Penyuka seni tari tradisional. Mengikuti kursus tari setiap minggunya dan sering tampil di acara seni budaya lokal."
+  },
+  {
+    "fullName": "Farhan Rizki",
+    "username": "farhanrizki",
+    "email": "farhan.rizki@gmail.com",
+    "descriptions": "Pecinta teknologi terkini dan gamer berat. Selalu up-to-date dengan perkembangan gadget terbaru."
+  },
+  {
+    "fullName": "Rina Sari",
+    "username": "rinasari",
+    "email": "rina.sari@gmail.com",
+    "descriptions": "Pecinta binatang eksotis. Sering mengikuti seminar tentang konservasi hewan langka dan berpartisipasi dalam kampanye pelestarian lingkungan."
+  },
+  {
+    "fullName": "Faisal Abdullah",
+    "username": "faisalabdullah",
+    "email": "faisal.abdullah@gmail.com",
+    "descriptions": "Penggemar musik indie lokal. Selalu hadir di konser-konser kecil untuk mendukung scene musik independen."
+  },
+  {
+    "fullName": "Maya Fitri",
+    "username": "mayafitri",
+    "email": "maya.fitri@gmail.com",
+    "descriptions": "Mahasiswi kedokteran yang suka membaca buku medis di waktu luang. Selalu antusias belajar tentang ilmu kesehatan."
+  },
+  {
+    "fullName": "Ricky Prasetyo",
+    "username": "rickyprasetyo",
+    "email": "ricky.prasetyo@gmail.com",
+    "descriptions": "Pecinta fotografi street. Senang mengabadikan momen-momen unik di jalanan kota dan mengunggahnya ke media sosial."
+  },
+  {
+    "fullName": "Anisa Wulandari",
+    "username": "anisawulandari",
+    "email": "anisa.wulandari@gmail.com",
+    "descriptions": "Pecinta kopi dan penulis cerita romantis. Sering menghabiskan waktu di kafe sambil menulis novel percintaan."
+  },
+  {
+    "fullName": "Robby Saputra",
+    "username": "robbysaputra",
+    "email": "robby.saputra@gmail.com",
+    "descriptions": "Pecinta sejarah dan kolektor barang antik. Selalu mencari artefak bersejarah untuk ditambahkan ke koleksinya."
+  },
+  {
+    "fullName": "Lia Purnama",
+    "username": "liapurnama",
+    "email": "lia.purnama@gmail.com",
+    "descriptions": "Penggemar seni rupa abstrak. Sering menghadiri pameran seni untuk mendapatkan inspirasi."
+  },
+  {
+    "fullName": "Eko Prasetyo",
+    "username": "ekoprasetyo",
+    "email": "eko.prasetyo@gmail.com",
+    "descriptions": "Pecinta otomotif dan mekanik handal. Hobinya adalah merawat dan memodifikasi mobil."
+  },
+  {
+    "fullName": "Rina Wulandari",
+    "username": "rinawulandari",
+    "email": "rina.wulandari@gmail.com",
+    "descriptions": "Penulis blog traveling. Selalu berbagi pengalaman seru dari setiap perjalanannya."
+  },
+  {
+    "fullName": "Yoga Setiawan",
+    "username": "yogasetiawan",
+    "email": "yoga.setiawan@gmail.com",
+    "descriptions": "Pecinta film dokumenter. Selalu mencari cerita inspiratif dari berbagai sudut pandang."
+  },
+  {
+    "fullName": "Nia Aulia",
+    "username": "niaaulia",
+    "email": "nia.aulia@gmail.com",
+    "descriptions": "Mahasiswi desain grafis yang kreatif. Senang menciptakan karya-karya visual yang unik dan menarik."
+  },
+  {
+    "fullName": "Fajar Pratama",
+    "username": "fajarpratama",
+    "email": "fajar.pratama@gmail.com",
+    "descriptions": "Pecinta sepak bola dan olahraga outdoor. Selalu bersemangat untuk bergabung dalam pertandingan dan kegiatan kebugaran."
+  },
+  {
+    "fullName": "Nina Rachmawati",
+    "username": "ninarachmawati",
+    "email": "nina.rachmawati@gmail.com",
+    "descriptions": "Penggemar komedi stand-up. Suka mengikuti open mic untuk mencoba materi lucu yang baru."
+  },
+  {
+    "fullName": "Dodi Nugroho",
+    "username": "dodinugroho",
+    "email": "dodi.nugroho@gmail.com",
+    "descriptions": "Pecinta teknologi dan game online. Bergabung dalam turnamen e-sports setiap akhir pekan."
+  },
+  {
+    "fullName": "Siti Aisyah",
+    "username": "sitiaisyah",
+    "email": "siti.aisyah@gmail.com",
+    "descriptions": "Pecinta fashion vintage. Mengoleksi pakaian dan aksesori klasik dari era 80-an dan 90-an."
+  },
+  {
+    "fullName": "Rizal Ibrahim",
+    "username": "rizalibrahim",
+    "email": "rizal.ibrahim@gmail.com",
+    "descriptions": "Penggemar fotografi arsitektur. Suka mengabadikan keindahan dan detail bangunan-bangunan ikonik."
   }
 ]

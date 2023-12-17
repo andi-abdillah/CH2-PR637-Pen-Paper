@@ -5,6 +5,7 @@ import Card from "../../../components/Card";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import Loading from "../../../components/Loading";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const ExploreTopics = () => {
@@ -29,7 +30,7 @@ const ExploreTopics = () => {
       const fetchData = async () => {
         try {
           const result = await axios.get(
-            `http://localhost:9000/articles/search?query=${searchQuery}`,
+            `${API_URL}/articles/search?query=${searchQuery}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

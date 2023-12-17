@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAlert } from "../../provider/AlertProvider";
 import PrimaryButton from "../../components/PrimaryButton";
 import Icon from "../../components/Icon";
+import { API_URL } from "../../api/api";
 import axios from "axios";
 
 const ForgotPassword = () => {
@@ -30,7 +31,7 @@ const ForgotPassword = () => {
 
     try {
       const result = await axios.post(
-        "http://localhost:9000/reset-password",
+        `${API_URL}/reset-password`,
         formData
       );
 

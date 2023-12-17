@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../../provider/AuthContext";
 import Divider from "../../../components/Divider";
 import ProfileHeader from "../../../components/ProfileHeader";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const YourStories = () => {
@@ -15,7 +16,7 @@ const YourStories = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:9000/users/id/${userData.userId}`,
+          `${API_URL}/users/id/${userData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

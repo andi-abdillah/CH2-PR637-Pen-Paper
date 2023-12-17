@@ -1,6 +1,7 @@
 import { useAlert } from "../provider/AlertProvider";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
+import { API_URL } from "../api/api";
 import axios from "axios";
 
 const StoryDeleteAlert = ({ token, isOpen, onClose, navigate, slug }) => {
@@ -13,7 +14,7 @@ const StoryDeleteAlert = ({ token, isOpen, onClose, navigate, slug }) => {
   const handleConfirmDelete = async () => {
     try {
       const result = await axios.delete(
-        `http://localhost:9000/articles/${slug}`,
+        `${API_URL}/articles/${slug}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

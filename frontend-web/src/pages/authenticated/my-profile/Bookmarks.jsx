@@ -4,8 +4,9 @@ import { useAuth } from "../../../provider/AuthContext";
 import Card from "../../../components/Card";
 import Loading from "../../../components/Loading";
 import BackButton from "../../../components/BackButton";
-import axios from "axios";
 import Divider from "../../../components/Divider";
+import { API_URL } from "../../../api/api";
+import axios from "axios";
 
 const Bookmarks = () => {
   const { token } = useAuth();
@@ -17,7 +18,7 @@ const Bookmarks = () => {
   useEffect(() => {
     const fetchBookmarks = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/bookmarks", {
+        const response = await axios.get(`${API_URL}/bookmarks`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

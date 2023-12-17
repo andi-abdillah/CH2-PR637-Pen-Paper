@@ -4,6 +4,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import DangerButton from "../../../components/DangerButton";
 import Icon from "../../../components/Icon";
 import TextArea from "../../../components/TextArea";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const EditComment = ({ comment, showAlert, onClose }) => {
@@ -31,7 +32,7 @@ const EditComment = ({ comment, showAlert, onClose }) => {
 
     try {
       const result = await axios.put(
-        `http://localhost:9000/comments/${comment.commentId}`,
+        `${API_URL}/comments/${comment.commentId}`,
         formData,
         {
           headers: {

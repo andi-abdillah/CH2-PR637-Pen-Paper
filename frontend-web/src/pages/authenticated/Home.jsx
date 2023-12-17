@@ -7,6 +7,7 @@ import Icon from "../../components/Icon";
 import PrimaryButton from "../../components/PrimaryButton";
 import Banner from "../../assets/banner.jpeg";
 import Loading from "../../components/Loading";
+import { API_URL } from "../../api/api";
 import axios from "axios";
 
 const Home = () => {
@@ -44,7 +45,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:9000/articles", {
+        const response = await axios.get(`${API_URL}/articles`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

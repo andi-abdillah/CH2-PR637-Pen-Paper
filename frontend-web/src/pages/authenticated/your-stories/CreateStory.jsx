@@ -9,6 +9,7 @@ import Editor from "../../../components/Editor";
 import Divider from "../../../components/Divider";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const CreateStory = () => {
@@ -43,7 +44,7 @@ const CreateStory = () => {
 
     try {
       const result = await axios.post(
-        "http://localhost:9000/articles",
+        `${API_URL}/articles`,
         formData,
         {
           headers: {

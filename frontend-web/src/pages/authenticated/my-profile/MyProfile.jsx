@@ -3,6 +3,7 @@ import { useAuth } from "../../../provider/AuthContext";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Divider from "../../../components/Divider";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const MyProfile = () => {
@@ -14,7 +15,7 @@ const MyProfile = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:9000/users/id/${user.userId}`,
+          `${API_URL}/users/id/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -3,6 +3,7 @@ import { useAlert } from "../provider/AlertProvider";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 import TextInput from "./TextInput";
+import { API_URL } from "../api/api";
 import axios from "axios";
 
 const DeleteAccountAlert = ({
@@ -26,7 +27,7 @@ const DeleteAccountAlert = ({
     e.preventDefault();
     try {
       const result = await axios.delete(
-        `http://localhost:9000/users/${userId}`,
+        `${API_URL}/users/${userId}`,
         {
           data: formData,
           headers: {

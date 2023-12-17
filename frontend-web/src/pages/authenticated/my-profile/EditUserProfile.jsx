@@ -3,6 +3,7 @@ import InputLabel from "../../../components/InputLabel";
 import TextInput from "../../../components/TextInput";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const EditUserProfile = ({
@@ -43,7 +44,7 @@ const EditUserProfile = ({
 
     try {
       const result = await axios.put(
-        `http://localhost:9000/users/${userId}/profile`,
+        `${API_URL}/users/${userId}/profile`,
         formData,
         {
           headers: {

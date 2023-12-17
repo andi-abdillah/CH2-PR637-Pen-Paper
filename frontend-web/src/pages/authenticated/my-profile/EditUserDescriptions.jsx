@@ -3,6 +3,7 @@ import InputLabel from "../../../components/InputLabel";
 import TextArea from "../../../components/TextArea";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const EditUserDescriptions = ({
@@ -35,7 +36,7 @@ const EditUserDescriptions = ({
 
     try {
       const result = await axios.put(
-        `http://localhost:9000/users/${userId}/descriptions`,
+        `${API_URL}/users/${userId}/descriptions`,
         formData,
         {
           headers: {

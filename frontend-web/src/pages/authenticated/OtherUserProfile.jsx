@@ -7,6 +7,7 @@ import Divider from "../../components/Divider";
 import BackButton from "../../components/BackButton";
 import Card from "../../components/Card";
 import Loading from "../../components/Loading";
+import { API_URL } from "../../api/api";
 import axios from "axios";
 
 const OtherUserProfile = () => {
@@ -28,7 +29,7 @@ const OtherUserProfile = () => {
     const fetchData = async () => {
       try {
         const foundUser = await axios.get(
-          `http://localhost:9000/users/username/${cleanedUsername}`,
+          `${API_URL}/users/username/${cleanedUsername}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -38,7 +39,7 @@ const OtherUserProfile = () => {
         const userData = foundUser.data.data.user;
 
         const foundArticles = await axios.get(
-          `http://localhost:9000/articles/user/${userData.userId}`,
+          `${API_URL}/articles/user/${userData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

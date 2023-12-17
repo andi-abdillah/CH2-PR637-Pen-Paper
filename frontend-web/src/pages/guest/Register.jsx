@@ -4,6 +4,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useState } from "react";
 import { useAlert } from "../../provider/AlertProvider";
 import GoogleRegisterButton from "../../components/GoogleRegisterButton";
+import { API_URL } from "../../api/api";
 import axios from "axios";
 
 const Register = () => {
@@ -31,10 +32,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const result = await axios.post(
-        "http://localhost:9000/register",
-        formData
-      );
+      const result = await axios.post(`${API_URL}/register`, formData);
       const { message, status } = result?.data;
 
       showAlert(message, status);

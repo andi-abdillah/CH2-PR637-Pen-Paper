@@ -18,7 +18,7 @@ module.exports = {
     const articles = JSON.parse(rawdata);
 
     const usersResult = await queryInterface.sequelize.query(
-      `SELECT userId from users;`
+      `SELECT userId from Users;`
     );
 
     const users = usersResult[0].map((user) => user.userId);

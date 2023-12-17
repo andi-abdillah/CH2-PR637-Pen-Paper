@@ -7,6 +7,7 @@ import AddComment from "./AddComment";
 import EditComment from "./EditComment";
 import Icon from "../../../components/Icon";
 import Divider from "../../../components/Divider";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const CommentSection = ({ articleId }) => {
@@ -24,7 +25,7 @@ const CommentSection = ({ articleId }) => {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/${articleId}/comments`,
+          `${API_URL}/${articleId}/comments`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -41,7 +42,7 @@ const CommentSection = ({ articleId }) => {
   const handleDelete = async (commentId) => {
     try {
       const result = await axios.delete(
-        `http://localhost:9000/comments/${commentId}`,
+        `${API_URL}/comments/${commentId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

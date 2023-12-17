@@ -9,6 +9,7 @@ import EditUserProfile from "./EditUserProfile";
 import DeleteUser from "./DeleteUser";
 import ProfileHeader from "../../../components/ProfileHeader";
 import Loading from "../../../components/Loading";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const EditUserProfileLayout = () => {
@@ -24,7 +25,7 @@ const EditUserProfileLayout = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:9000/users/id/${user.userId}`,
+          `${API_URL}/users/id/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

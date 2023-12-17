@@ -5,6 +5,7 @@ import Card from "../../../components/Card";
 import Loading from "../../../components/Loading";
 import BackButton from "../../../components/BackButton";
 import Divider from "../../../components/Divider";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const LikedArticles = () => {
@@ -18,7 +19,7 @@ const LikedArticles = () => {
     const fetchLikedArticles = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:9000/user/liked-articles",
+          `${API_URL}/user/liked-articles`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

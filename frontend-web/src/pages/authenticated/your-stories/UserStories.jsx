@@ -5,6 +5,7 @@ import Loading from "../../../components/Loading";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import Card from "../../../components/Card";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const UserStories = () => {
@@ -22,7 +23,7 @@ const UserStories = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:9000/articles/user/${user.userId}`,
+          `${API_URL}/articles/user/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

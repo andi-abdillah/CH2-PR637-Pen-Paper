@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../../provider/AuthContext";
 import Loading from "../../../components/Loading";
 import Icon from "../../../components/Icon";
 import ProfileHeader from "../../../components/ProfileHeader";
 import Divider from "../../../components/Divider";
+import { API_URL } from "../../../api/api";
+import axios from "axios";
 
 const UserDescriptions = () => {
   const { token, user } = useAuth();
@@ -20,7 +21,7 @@ const UserDescriptions = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/users/id/${user.userId}`,
+          `${API_URL}/users/id/${user.userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -11,6 +11,7 @@ import Loading from "../../components/Loading";
 import { dateFormater } from "../../utils/dateFormater";
 import { formatNumber } from "../../utils/formatNumber";
 import CommentSection from "./comments/CommentSection";
+import { API_URL } from "../../api/api";
 import axios from "axios";
 
 const StoryDetails = () => {
@@ -42,7 +43,7 @@ const StoryDetails = () => {
     const fetchData = async () => {
       try {
         const articleResult = await axios.get(
-          `http://localhost:9000/articles/${slug}`,
+          `${API_URL}/articles/${slug}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -63,7 +64,7 @@ const StoryDetails = () => {
         const username = foundArticle.username;
 
         const userResult = await axios.get(
-          `http://localhost:9000/users/username/${username}`,
+          `${API_URL}/users/username/${username}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const foundUser = userResult.data.data.user;
@@ -82,7 +83,7 @@ const StoryDetails = () => {
   const likeArticle = async () => {
     try {
       await axios.post(
-        `http://localhost:9000/article/likes`,
+        `${API_URL}/article/likes`,
         { articleId: article.articleId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -95,7 +96,7 @@ const StoryDetails = () => {
 
   const unlikeArticle = async () => {
     try {
-      await axios.delete(`http://localhost:9000/article/likes`, {
+      await axios.delete(`${API_URL}/article/likes`, {
         data: { articleId: article.articleId },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -109,7 +110,7 @@ const StoryDetails = () => {
   const addBookmark = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:9000/bookmarks`,
+        `${API_URL}/bookmarks`,
         { articleId: article.articleId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -126,7 +127,7 @@ const StoryDetails = () => {
 
   const removeBookmark = async () => {
     try {
-      const response = await axios.delete(`http://localhost:9000/bookmarks`, {
+      const response = await axios.delete(`${API_URL}/bookmarks`, {
         data: { articleId: article.articleId },
         headers: { Authorization: `Bearer ${token}` },
       });

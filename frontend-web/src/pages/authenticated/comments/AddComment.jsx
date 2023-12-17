@@ -1,9 +1,10 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { useAuth } from "../../../provider/AuthContext";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import TextArea from "../../../components/TextArea";
+import { API_URL } from "../../../api/api";
+import axios from "axios";
 
 const AddComment = ({ articleId, setComments, showAlert }) => {
   const { token, user } = useAuth();
@@ -32,7 +33,7 @@ const AddComment = ({ articleId, setComments, showAlert }) => {
 
     try {
       const result = await axios.post(
-        "http://localhost:9000/comments",
+        `${API_URL}/comments`,
         formData,
         {
           headers: {

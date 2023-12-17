@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAuth } from "../../provider/AuthContext";
 import GoogleSignInButton from "../../components/GoogleSignInButton";
 import { useAlert } from "../../provider/AlertProvider";
+import { API_URL } from "../../api/api";
 import axios from "axios";
 
 const Login = () => {
@@ -34,7 +35,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const result = await axios.post("http://localhost:9000/login", formData);
+      const result = await axios.post(`${API_URL}/login`, formData);
       const { message, status, token } = result.data;
 
       login(token);

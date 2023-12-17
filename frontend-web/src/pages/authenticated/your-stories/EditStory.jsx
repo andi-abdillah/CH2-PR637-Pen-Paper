@@ -10,6 +10,7 @@ import Divider from "../../../components/Divider";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import Loading from "../../../components/Loading";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const EditStory = () => {
@@ -44,7 +45,7 @@ const EditStory = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/articles/${slug}`,
+          `${API_URL}/articles/${slug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -79,7 +80,7 @@ const EditStory = () => {
 
     try {
       const result = await axios.put(
-        `http://localhost:9000/articles/${slug}`,
+        `${API_URL}/articles/${slug}`,
         formData,
         {
           headers: {

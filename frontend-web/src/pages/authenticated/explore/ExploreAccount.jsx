@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../../../provider/AuthContext";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Loading from "../../../components/Loading";
+import { API_URL } from "../../../api/api";
 import axios from "axios";
 
 const ExploreAccount = () => {
@@ -22,7 +23,7 @@ const ExploreAccount = () => {
       const fetchData = async () => {
         try {
           const foundUsers = await axios.get(
-            `http://localhost:9000/users/search?query=${searchQuery}`,
+            `${API_URL}/users/search?query=${searchQuery}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
