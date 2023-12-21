@@ -19,6 +19,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "articleId",
         as: "likes",
       });
+      this.belongsToMany(models.Topic, {
+        through: "ArticleTopic",
+        foreignKey: "articleId",
+        as: "topics",
+      });
+      this.hasMany(models.ArticleTopic, {
+        foreignKey: "articleId",
+        as: "articleTopics",
+      });
     }
   }
   Article.init(

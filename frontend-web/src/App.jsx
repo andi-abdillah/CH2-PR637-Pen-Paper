@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./provider/AuthContext";
 import { AlertProvider } from "./provider/AlertProvider";
 import AuthenticatedLayout from "./layouts/AuthenticatedLayout";
@@ -23,8 +23,7 @@ import UserStories from "./pages/authenticated/your-stories/UserStories";
 import CreateStory from "./pages/authenticated/your-stories/CreateStory";
 import EditStory from "./pages/authenticated/your-stories/EditStory";
 import Explore from "./pages/authenticated/explore/Explore";
-import ExploreTopics from "./pages/authenticated/explore/ExploreTopics";
-import ExploreAccount from "./pages/authenticated/explore/ExploreAccount";
+import StoriesByTopic from "./pages/authenticated/topics/StoriesByTopic";
 
 function App() {
   return (
@@ -33,11 +32,14 @@ function App() {
         <Routes>
           <Route path="/dashboard" element={<AuthenticatedLayout />}>
             <Route index element={<Home />} />
+
             <Route path="my-profile" element={<MyProfile />}>
               <Route index element={<UserDescriptions />} />
               <Route path="edit" element={<EditUserProfileLayout />} />
             </Route>
+
             <Route path="bookmarks" element={<Bookmarks />} />
+
             <Route path="liked-articles" element={<LikedArticles />} />
 
             <Route path="your-stories" element={<YourStories />}>
@@ -46,19 +48,21 @@ function App() {
               <Route path=":slug/edit" element={<EditStory />} />
             </Route>
 
-            <Route path="explore" element={<Explore />}>
-              <Route index element={<Navigate to="topics" />} />
-              <Route path="topics" element={<ExploreTopics />} />
-              <Route path="account" element={<ExploreAccount />} />
-            </Route>
+            <Route path="explore" element={<Explore />} />
+
+            <Route path="topic/:name" element={<StoriesByTopic />} />
 
             <Route path="story-details/:slug" element={<StoryDetails />} />
+
             <Route path="profile/:username" element={<OtherUserProfile />} />
           </Route>
           <Route path="/" element={<GuestLayout />}>
             <Route index element={<WelcomePage />} />
+
             <Route path="sign-in" element={<Login />} />
+
             <Route path="register" element={<Register />} />
+
             <Route path="forgot-password" element={<ForgotPassword />} />
           </Route>
           <Route path="*" element={<PageNotFound />} />

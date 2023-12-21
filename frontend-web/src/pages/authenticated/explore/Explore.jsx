@@ -1,55 +1,55 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../../provider/AuthContext";
 import { debounce } from "lodash";
 import Divider from "../../../components/Divider";
 import TextInput from "../../../components/TextInput";
 import PrimaryButton from "../../../components/PrimaryButton";
+import ExploreTopics from "./ExploreTopics";
+import ExploreStories from "./ExploreStories";
+import ExploreAccount from "./ExploreAccount";
 
 const Explore = () => {
+  const { token } = useAuth();
+
   const [searchParams] = useSearchParams();
+
   const [searchQuery, setSearchQuery] = useState(searchParams.get("query"));
 
-  const location = useLocation();
-  const pathArray = location.pathname.split("/");
-  const selectedTab = pathArray.includes("account") ? "Account" : "Topics";
+  const [selectedTab, setSelectedTab] = useState("topics");
 
   const navigate = useNavigate();
 
   const debouncedSearch = debounce((value) => setSearchQuery(value), 1500);
 
   const handleChange = (e) => {
-    const value = e.target.value.trim();
+    const value = e.target.value;
     debouncedSearch(value);
 
     if (!value) {
-      const tabPath = `/dashboard/explore/${selectedTab}`;
-      navigate(`${tabPath}`);
+      const path = "/dashboard/explore";
+      navigate(`${path}`);
     }
   };
 
   const handleTabChange = (tab) => {
-    const tabPath = `/dashboard/explore/${tab}`;
-    navigate(tabPath);
+    setSelectedTab(tab);
   };
 
   useEffect(() => {
     if (searchQuery) {
-      const tabPath = `/dashboard/explore/${selectedTab}`;
-      navigate(`${tabPath.toLowerCase()}?query=${searchQuery}`);
+      navigate(`?query=${searchQuery}`);
     }
-  }, [searchQuery, selectedTab, navigate]);
+  }, [searchQuery, navigate]);
 
   return (
     <>
       <HelmetProvider>
         <Helmet>
-          <title>{`Explore ${selectedTab} – Pen & Paper`}</title>
+          <title>{`Explore ${
+            selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)
+          } – Pen & Paper`}</title>
         </Helmet>
       </HelmetProvider>
 
@@ -81,7 +81,7 @@ const Explore = () => {
             type="text"
             defaultValue={searchQuery}
             className="pl-12"
-            placeholder={`Search ${selectedTab}`}
+            placeholder="Search"
             onChange={handleChange}
           />
         </div>
@@ -89,20 +89,34 @@ const Explore = () => {
         <div className="flex gap-3">
           <PrimaryButton
             onClick={() => handleTabChange("topics")}
-            disabled={selectedTab === "Topics"}
+            disabled={selectedTab === "topics"}
           >
             Topics
           </PrimaryButton>
           <PrimaryButton
+            onClick={() => handleTabChange("stories")}
+            disabled={selectedTab === "stories"}
+          >
+            Stories
+          </PrimaryButton>
+          <PrimaryButton
             onClick={() => handleTabChange("account")}
-            disabled={selectedTab === "Account"}
+            disabled={selectedTab === "account"}
           >
             Account
           </PrimaryButton>
         </div>
 
         <div className="mt-6">
-          <Outlet />
+          {selectedTab === "topics" && (
+            <ExploreTopics token={token} searchQuery={searchQuery} />
+          )}
+          {selectedTab === "stories" && (
+            <ExploreStories token={token} searchQuery={searchQuery} />
+          )}
+          {selectedTab === "account" && (
+            <ExploreAccount token={token} searchQuery={searchQuery} />
+          )}
         </div>
       </div>
     </>

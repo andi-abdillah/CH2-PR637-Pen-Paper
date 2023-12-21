@@ -1,3 +1,3 @@
-const API_URL = "https://pen-and-paper-app.et.r.appspot.com/";
+const API_URL = "http://localhost:9000";
 
 export { API_URL };

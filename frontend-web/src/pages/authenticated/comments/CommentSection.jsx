@@ -24,10 +24,9 @@ const CommentSection = ({ articleId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/${articleId}/comments`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const response = await axios.get(`${API_URL}/${articleId}/comments`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         const foundComments = response.data.data.comments;
         setComments(foundComments);
@@ -41,14 +40,11 @@ const CommentSection = ({ articleId }) => {
 
   const handleDelete = async (commentId) => {
     try {
-      const result = await axios.delete(
-        `${API_URL}/comments/${commentId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const result = await axios.delete(`${API_URL}/comments/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const { message, status } = result.data;
 
@@ -75,27 +71,28 @@ const CommentSection = ({ articleId }) => {
         {`Responses (${comments?.length})`}
       </h2>
       <div className="mt-4">
-        {comments.map((comment) => (
+        {comments.map((comment, index) => (
           <div key={comment.commentId} className="my-4">
-            <div className="flex">
-              <div className="w-full">
-                <p>
-                  By:{" "}
+            {index > 0 && <Divider className="my-6" />}
+            <div className="flex text-sm">
+              <div className="flex gap-2 items-center w-full">
+                <h3 className="font-semibold">
+                  @
                   <Link
                     to={`/dashboard/profile/@${comment.username}`}
                     className="hover:underline"
                   >
                     {comment.username}
                   </Link>
-                </p>
-                <p>
-                  {comment.createdAt ? dateFormater(comment.createdAt) : null}
-                </p>
+                </h3>
+                <span className="text-gray-600">
+                  · {comment.createdAt ? dateFormater(comment.createdAt) : null}
+                </span>
               </div>
               {comment.userId === user.userId && (
                 <div className="dropdown dropdown-end">
                   <label tabIndex={0}>
-                    <Icon className="text-4xl cursor-pointer">more_horiz</Icon>
+                    <Icon className="text-xl cursor-pointer">more_vert</Icon>
                   </label>
                   <ul
                     tabIndex={0}
@@ -122,7 +119,7 @@ const CommentSection = ({ articleId }) => {
                 </div>
               )}
             </div>
-            <div className="">
+            <div className="mt-2">
               <p>{comment.comment}</p>
             </div>
           </div>
@@ -135,12 +132,13 @@ const CommentSection = ({ articleId }) => {
           onClose={handleClose}
         />
       )}
-
-      <AddComment
-        articleId={articleId}
-        setComments={setComments}
-        showAlert={showAlert}
-      />
+      <div className="mt-8">
+        <AddComment
+          articleId={articleId}
+          setComments={setComments}
+          showAlert={showAlert}
+        />
+      </div>
     </div>
   );
 };

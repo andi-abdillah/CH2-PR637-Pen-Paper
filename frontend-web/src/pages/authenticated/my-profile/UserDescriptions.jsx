@@ -20,14 +20,11 @@ const UserDescriptions = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/users/id/${user.userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL}/users/id/${user.userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const foundUser = response.data.data.user;
 
@@ -56,9 +53,9 @@ const UserDescriptions = () => {
           </label>
           <ul
             tabIndex={0}
-            className="dropdown-content z-[1] py-4 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max list-none"
+            className="dropdown-content z-[1] p-5 text-center font-semibold drop-shadow-card bg-base-100 rounded-box w-max list-none"
           >
-            <li className="mx-5 mb-2 cursor-pointer hover:text-primary">
+            <li className="mb-2 cursor-pointer hover:text-primary">
               <button
                 onClick={() => navigate("edit")}
                 className="flex justify-between gap-2 w-full"
@@ -67,7 +64,7 @@ const UserDescriptions = () => {
               </button>
             </li>
             <Divider />
-            <li className="mx-5 my-2 cursor-pointer hover:text-primary">
+            <li className="my-2 cursor-pointer hover:text-primary">
               <button
                 onClick={() => navigate("/dashboard/bookmarks")}
                 className="flex justify-between gap-2 w-full"
@@ -76,7 +73,7 @@ const UserDescriptions = () => {
               </button>
             </li>
             <Divider />
-            <li className="mx-5 mt-2 cursor-pointer hover:text-primary">
+            <li className="mt-2 cursor-pointer hover:text-primary">
               <button
                 onClick={() => navigate("/dashboard/liked-articles")}
                 className="flex justify-between gap-2 w-full"

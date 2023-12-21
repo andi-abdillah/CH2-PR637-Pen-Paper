@@ -22,7 +22,7 @@ const WelcomePage = () => {
           digital literacy for everyone
         </h2>
         <button
-          className="lg:hidden mt-8 px-8 py-3 text-xs text-white m-auto w-max font-semibold bg-primary rounded-lg"
+          className="lg:hidden mt-8 px-8 py-3 text-lg text-white m-auto w-max font-semibold bg-primary rounded-lg"
           onClick={() => navigate("sign-in")}
         >
           Join the community

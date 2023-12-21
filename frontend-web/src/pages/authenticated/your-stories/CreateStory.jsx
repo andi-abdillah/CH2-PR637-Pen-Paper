@@ -11,6 +11,7 @@ import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import { API_URL } from "../../../api/api";
 import axios from "axios";
+import TopicsInput from "./TopicsInput";
 
 const CreateStory = () => {
   const { token, user } = useAuth();
@@ -27,6 +28,8 @@ const CreateStory = () => {
     descriptions: "",
     content: "",
   });
+
+  const [topics, setTopics] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +48,7 @@ const CreateStory = () => {
     try {
       const result = await axios.post(
         `${API_URL}/articles`,
-        formData,
+        { ...formData, topics },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -111,6 +114,10 @@ const CreateStory = () => {
             onChange={handleInputChange}
             required
           />
+
+          <Divider />
+
+          <TopicsInput token={token} topics={topics} setTopics={setTopics} />
 
           <Divider />
 

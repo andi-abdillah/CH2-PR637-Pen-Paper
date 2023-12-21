@@ -64,7 +64,7 @@ const getAllUsersHandler = async (request, h) => {
 
 // Handler to search users based on a query string
 const searchUsersHandler = async (request, h) => {
-  const { username: tokenUsername } = request.auth.credentials;
+  const { userId: tokenUserId } = request.auth.credentials;
 
   try {
     const { query } = request.query;
@@ -72,10 +72,10 @@ const searchUsersHandler = async (request, h) => {
     // Define search condition based on the query string
     const searchCondition = query
       ? {
-          username: { [Op.ne]: tokenUsername },
+          userId: { [Op.ne]: tokenUserId },
           username: { [Op.like]: `%${query}%` },
         }
-      : { username: { [Op.ne]: tokenUsername } };
+      : { userId: { [Op.ne]: tokenUserId } };
 
     // Find users matching the search condition
     const users = await User.findAll({

@@ -42,10 +42,9 @@ const StoryDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const articleResult = await axios.get(
-          `${API_URL}/articles/${slug}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const articleResult = await axios.get(`${API_URL}/articles/${slug}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         const foundArticle = articleResult.data.data.article;
 
@@ -193,10 +192,10 @@ const StoryDetails = () => {
             <button onClick={hasLiked ? unlikeArticle : likeArticle}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill={hasLiked ? "oklch(var(--s))" : "transparent"}
+                fill={hasLiked ? "rgb(255,0,0)" : "transparent"}
                 viewBox="0 0 24 24"
                 className={`inline-block w-8 h-8 stroke-current ${
-                  hasLiked ? "text-secondary" : ""
+                  hasLiked ? "text-[rgb(255,0,0)]" : ""
                 }`}
               >
                 <path
@@ -266,11 +265,11 @@ const StoryDetails = () => {
 
         <div className="flex flex-col gap-6 max-w-3xl xs:mx-8 mt-8 text-lg">
           {isMyArticle ? (
-            <h2 className="text-grey-600 text-2xl w-max font-semibold">You</h2>
+            <h2 className="text-grey-600 text-xl w-max font-semibold">You</h2>
           ) : (
             <Link
               to={`/dashboard/profile/@${author.username}`}
-              className="text-grey-600 text-2xl w-max font-semibold"
+              className="text-grey-600 text-xl w-max font-semibold"
             >
               @{author.username}
             </Link>

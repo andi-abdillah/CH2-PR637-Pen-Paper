@@ -10,6 +10,7 @@ import Divider from "../../../components/Divider";
 import PrimaryButton from "../../../components/PrimaryButton";
 import Icon from "../../../components/Icon";
 import Loading from "../../../components/Loading";
+import TopicsInput from "./TopicsInput";
 import { API_URL } from "../../../api/api";
 import axios from "axios";
 
@@ -32,6 +33,8 @@ const EditStory = () => {
     content: "",
   });
 
+  const [topics, setTopics] = useState([]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -44,14 +47,11 @@ const EditStory = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/articles/${slug}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL}/articles/${slug}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const foundArticle = response.data.data.article;
 
@@ -63,6 +63,9 @@ const EditStory = () => {
           descriptions: foundArticle.descriptions,
           content: foundArticle.content,
         });
+
+        // Fetch topics associated with the article and set them to the state
+        setTopics(foundArticle.topics);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -81,7 +84,7 @@ const EditStory = () => {
     try {
       const result = await axios.put(
         `${API_URL}/articles/${slug}`,
-        formData,
+        { ...formData, topics },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -150,6 +153,10 @@ const EditStory = () => {
             onChange={handleInputChange}
             required
           />
+
+          <Divider />
+
+          <TopicsInput token={token} topics={topics} setTopics={setTopics} />
 
           <Divider />
 

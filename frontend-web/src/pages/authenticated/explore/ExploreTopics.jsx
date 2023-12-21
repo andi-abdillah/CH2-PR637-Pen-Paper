@@ -1,90 +1,80 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useAuth } from "../../../provider/AuthContext";
-import Card from "../../../components/Card";
-import PrimaryButton from "../../../components/PrimaryButton";
-import Icon from "../../../components/Icon";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
 import Loading from "../../../components/Loading";
 import { API_URL } from "../../../api/api";
 import axios from "axios";
 
-const ExploreTopics = () => {
-  const { token, user } = useAuth();
-
-  const [searchParams] = useSearchParams();
-
-  const [searchQuery, setSearchQuery] = useState(null);
-
-  const [articles, setArticles] = useState([]);
-
-  const [visibleArticles, setVisibleArticles] = useState(4);
+const ExploreTopics = ({ token, searchQuery }) => {
+  const [topics, setTopics] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
-  const handleLoadMore = () => {
-    setVisibleArticles((prevVisibleArticles) => prevVisibleArticles + 4);
-  };
-
   useEffect(() => {
-    if (searchQuery) {
-      const fetchData = async () => {
-        try {
-          const result = await axios.get(
-            `${API_URL}/articles/search?query=${searchQuery}`,
+    const fetchData = async () => {
+      try {
+        let foundTopics = [];
+        if (searchQuery) {
+          const response = await axios.get(
+            `${API_URL}/topics/search-by-name?query=${searchQuery}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-
-          const foundArticles = result.data.data.articles;
-
-          setArticles(foundArticles);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        } finally {
-          setLoading(false);
+          foundTopics = response.data.data.topics;
+        } else {
+          const response = await axios.get(`${API_URL}/topics`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          foundTopics = response.data.data.topics;
         }
-      };
 
-      fetchData();
-    } else {
-      setArticles([]);
-    }
-  }, [token, searchQuery, user.userId]);
-
-  useEffect(() => {
-    setSearchQuery(searchParams.get("query"));
-  }, [searchParams]);
+        setTopics(foundTopics);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [token, searchQuery]);
 
   if (loading && searchQuery) {
     return <Loading />;
   }
 
-  if (articles?.length === 0 && searchQuery) {
+  if (topics?.length === 0 && searchQuery) {
     return (
       <p>
-        No articles found matching "<b>{searchQuery}</b>". Try a different
-        search term or check for typos.
+        We couldn't find any topics matching "<b>{searchQuery}</b>".
       </p>
     );
   }
 
   return (
-    <div className="flex flex-wrap justify-between">
-      {articles.slice(0, visibleArticles).map((item, index) => (
-        <Card
+    <div className="flex flex-wrap gap-4 max-w-3xl">
+      {topics?.map((topic, index) => (
+        <Link
+          to={`/dashboard/topic/${topic.name}`}
           key={index}
-          token={token}
-          {...item}
-        />
+          className="mb-2 px-4 py-2 w-max bg-neutral-50 rounded-3xl font-semibold drop-shadow capitalize"
+        >
+          {topic.name}
+          <span className="text-gray-400">
+            {` `}(
+            {` with ${
+              topic?.totalArticles > 1
+                ? topic.totalArticles + " articles"
+                : topic.totalArticles + " article"
+            }`}
+            )
+          </span>
+        </Link>
       ))}
-      {visibleArticles < articles.length && (
-        <PrimaryButton className="m-auto" onClick={handleLoadMore}>
-          Load More<Icon>arrow_circle_down</Icon>
-        </PrimaryButton>
-      )}
     </div>
   );
 };

@@ -32,15 +32,11 @@ const AddComment = ({ articleId, setComments, showAlert }) => {
     setIsProcessing(true);
 
     try {
-      const result = await axios.post(
-        `${API_URL}/comments`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const result = await axios.post(`${API_URL}/comments`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const { message, status, data } = result.data;
 
@@ -77,7 +73,7 @@ const AddComment = ({ articleId, setComments, showAlert }) => {
           value={formData?.comment || ""}
           onChange={handleInputChange}
           cols="30"
-          rows="3"
+          rows="6"
         ></TextArea>
 
         <PrimaryButton

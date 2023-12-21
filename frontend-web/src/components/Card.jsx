@@ -118,10 +118,10 @@ const Card = ({
             <button onClick={hasLiked ? unlikeArticle : likeArticle}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill={hasLiked ? "oklch(var(--s))" : "transparent"}
+                fill={hasLiked ? "rgb(255,0,0)" : "transparent"}
                 viewBox="0 0 24 24"
                 className={`inline-block w-6 sm:w-8 h-6 sm:h-8 stroke-current ${
-                  hasLiked ? "text-secondary" : ""
+                  hasLiked ? "text-[rgb(255,0,0)]" : ""
                 }`}
               >
                 <path

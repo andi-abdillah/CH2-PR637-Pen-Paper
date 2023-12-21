@@ -46,6 +46,13 @@ const {
   deleteCommentHandler,
 } = require("./../controller/commentController");
 
+const {
+  searchTopicsHandler,
+  getAllTopicsHandler,
+  getAllArticlesByTopicHandler,
+  searchTopicByNameHandler,
+} = require("../controller/topicsController");
+
 const routes = [
   {
     method: "GET",
@@ -105,11 +112,6 @@ const routes = [
   },
   {
     method: "GET",
-    path: "/articles/user/{userId}",
-    handler: getArticlesByUserIdHandler,
-  },
-  {
-    method: "GET",
     path: "/users/id/{userId}",
     handler: getUserByIdHandler,
   },
@@ -158,6 +160,11 @@ const routes = [
   },
   {
     method: "GET",
+    path: "/articles/user/{userId}",
+    handler: getArticlesByUserIdHandler,
+  },
+  {
+    method: "GET",
     path: "/articles/{slug}",
     handler: getArticleBySlugHandler,
   },
@@ -172,6 +179,30 @@ const routes = [
     handler: deleteArticleBySlugHandler,
   },
   // End of Articles Routes
+
+  // Start of Topics Routes
+  {
+    method: "GET",
+    path: "/topics",
+    handler: getAllTopicsHandler,
+  },
+  {
+    method: "GET",
+    path: "/topics/search",
+    handler: searchTopicsHandler,
+  },
+  {
+    method: "GET",
+    path: "/topics/search-by-name",
+    handler: searchTopicByNameHandler,
+  },
+  {
+    method: "GET",
+    path: "/topic/articles",
+    handler: getAllArticlesByTopicHandler,
+  },
+
+  // End of Topics Routes
 
   // Start of Like Routes
   {

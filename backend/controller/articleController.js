@@ -6,13 +6,18 @@ const {
   Like,
   Bookmark,
   Comment,
+  Topic,
+  ArticleTopic,
   sequelize,
 } = require("../models");
 const formattedDate = require("./utils/formattedDate");
 const slugify = require("slugify");
 
 // Function to generate a unique article ID
-const generateId = () => `article-${nanoid(20)}`;
+const generateArticleId = () => `article-${nanoid(20)}`;
+
+// Function to generate a unique topic ID
+const generateTopicId = () => `topic-${nanoid(20)}`;
 
 // Function to generate a unique slug based on the title
 const generateSlug = (title) => {
@@ -23,26 +28,27 @@ const generateSlug = (title) => {
 
 // Handler to add a new article
 const addArticleHandler = async (request, h) => {
-  const id = generateId();
+  const articleId = generateArticleId();
   const {
-    articleId = id,
     userId,
     title,
     descriptions,
     content,
     createdAt = formattedDate(),
     updatedAt = formattedDate(),
+    topics = [],
   } = request.payload;
 
   const t = await sequelize.transaction();
 
   try {
     // Payload validation
-    if (!title || !descriptions || !content) {
+    if (!title || !descriptions || !content || topics.length === 0) {
       return h
         .response({
           status: "fail",
-          message: "Title, descriptions, and content are required fields.",
+          message:
+            "Title, descriptions, content, and at least one topic are required fields.",
         })
         .code(400);
     }
@@ -50,7 +56,7 @@ const addArticleHandler = async (request, h) => {
     // Additional validation for title and descriptions length
     if (
       title.length > 100 ||
-      title.length < 10 ||
+      title.length < 5 ||
       descriptions.length > 250 ||
       descriptions.length < 10
     ) {
@@ -58,7 +64,7 @@ const addArticleHandler = async (request, h) => {
         .response({
           status: "fail",
           message:
-            "Title must be between 10 and 100 characters, and descriptions must be between 10 and 250 characters.",
+            "Title must be between 5 and 100 characters, and descriptions must be between 10 and 250 characters.",
         })
         .code(400);
     }
@@ -66,7 +72,8 @@ const addArticleHandler = async (request, h) => {
     // Create a new article with a generated slug
     const slug = generateSlug(title);
 
-    await Article.create(
+    // Create the article
+    const createdArticle = await Article.create(
       {
         articleId,
         userId,
@@ -80,13 +87,42 @@ const addArticleHandler = async (request, h) => {
       { transaction: t }
     );
 
-    // Fetch the created article with associated user
-    const createdArticle = await Article.findByPk(articleId, {
+    // Associate topics with the article
+    const topicPromises = topics.map(async (topicName) => {
+      // Find or create the topic by name
+      const [topic, created] = await Topic.findOrCreate({
+        where: { name: topicName },
+        defaults: { topicId: generateTopicId() },
+        transaction: t,
+      });
+
+      // Associate the topic with the article
+      await ArticleTopic.create(
+        {
+          articleId: createdArticle.articleId,
+          topicId: topic.topicId,
+          createdAt: formattedDate(),
+        },
+        { transaction: t }
+      );
+    });
+
+    // Wait for all topic associations to complete
+    await Promise.all(topicPromises);
+
+    // Fetch the created article with associated user and topics
+    const fullArticle = await Article.findByPk(createdArticle.articleId, {
       include: [
         {
           model: User,
           as: "user",
           attributes: ["username"],
+        },
+        {
+          model: Topic,
+          as: "topics",
+          attributes: ["name"],
+          through: { attributes: [] },
         },
       ],
       transaction: t,
@@ -96,20 +132,21 @@ const addArticleHandler = async (request, h) => {
     await t.commit();
 
     // Respond with success if the article is created
-    if (createdArticle) {
+    if (fullArticle) {
       return h
         .response({
           status: "success",
           message: "Article successfully added.",
           data: {
-            articleId: createdArticle.articleId,
-            userId: createdArticle.userId,
-            username: createdArticle.user.username,
-            title: createdArticle.title,
-            descriptions: createdArticle.descriptions,
-            content: createdArticle.content,
-            createdAt: createdArticle.createdAt,
-            updatedAt: createdArticle.updatedAt,
+            articleId: fullArticle.articleId,
+            userId: fullArticle.userId,
+            username: fullArticle.user.username,
+            title: fullArticle.title,
+            descriptions: fullArticle.descriptions,
+            content: fullArticle.content,
+            createdAt: fullArticle.createdAt,
+            updatedAt: fullArticle.updatedAt,
+            topics: fullArticle.topics.map((topic) => topic.name),
           },
         })
         .code(201);
@@ -224,17 +261,20 @@ const getAllArticlesHandler = async (request, h) => {
       };
     });
 
-    // Calculate total pages
+    // Wait for all article mappings to complete
+    const fullArticles = await Promise.all(listArticles);
+
+    // Calculate total pages based on total articles and pageSize
     const totalPages = Math.ceil(count / pageSize);
 
-    // Respond with success and the list of articles, along with pagination details
+    // Respond with the list of articles, total articles, total pages, and current page
     return h
       .response({
         status: "success",
         data: {
-          articles: await Promise.all(listArticles), // Await for all promises to resolve
+          articles: fullArticles,
           totalArticles: count,
-          totalPages: totalPages,
+          totalPages,
           currentPage: page,
         },
       })
@@ -372,6 +412,7 @@ const getArticlesByUserIdHandler = async (request, h) => {
           attributes: ["username"],
         },
       ],
+      order: [["createdAt", "DESC"]],
     });
 
     // If no articles, return an empty array
@@ -449,7 +490,7 @@ const getArticleBySlugHandler = async (request, h) => {
   const { userId: tokenUserId } = request.auth.credentials;
 
   try {
-    // Find the article by its slug with the associated user
+    // Find the article by its slug with the associated user and topics
     const targetArticle = await Article.findOne({
       where: { slug },
       include: [
@@ -457,6 +498,12 @@ const getArticleBySlugHandler = async (request, h) => {
           model: User,
           as: "user",
           attributes: ["username"],
+        },
+        {
+          model: Topic,
+          as: "topics",
+          attributes: ["name"],
+          through: { attributes: [] }, // Exclude unnecessary attributes from the join table
         },
       ],
     });
@@ -493,6 +540,7 @@ const getArticleBySlugHandler = async (request, h) => {
               username: targetArticle.user.username,
               title: targetArticle.title,
               slug: targetArticle.slug,
+              topics: targetArticle.topics.map((topic) => topic.name),
               descriptions: targetArticle.descriptions,
               content: targetArticle.content,
               createdAt: targetArticle.createdAt,
@@ -530,18 +578,20 @@ const getArticleBySlugHandler = async (request, h) => {
 // Handler to edit an article by its slug
 const editArticleBySlugHandler = async (request, h) => {
   const { slug } = request.params;
-  const { title, descriptions, content } = request.payload;
-  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
+  const { title, descriptions, content, topics } = request.payload;
+  const { userId: tokenUserId } = request.auth.credentials;
 
   const t = await sequelize.transaction();
 
   try {
     // Payload validation
-    if (!title || !descriptions || !content) {
+    if (!title || !descriptions || !content || topics.length === 0) {
+      await t.rollback();
       return h
         .response({
           status: "fail",
-          message: "Title, descriptions, and content are required fields.",
+          message:
+            "Title, descriptions, content, and at least one topic are required fields.",
         })
         .code(400);
     }
@@ -549,15 +599,16 @@ const editArticleBySlugHandler = async (request, h) => {
     // Additional validation for title and descriptions length
     if (
       title.length > 100 ||
-      title.length < 10 ||
+      title.length < 5 ||
       descriptions.length > 250 ||
       descriptions.length < 10
     ) {
+      await t.rollback();
       return h
         .response({
           status: "fail",
           message:
-            "Title must be between 10 and 100 characters, and descriptions must be between 10 and 250 characters.",
+            "Title must be between 5 and 100 characters, and descriptions must be between 10 and 250 characters.",
         })
         .code(400);
     }
@@ -565,6 +616,7 @@ const editArticleBySlugHandler = async (request, h) => {
     // Find the article by its slug
     const targetArticle = await Article.findOne({
       where: { slug },
+      include: [{ model: Topic, as: "topics", attributes: ["topicId"] }],
     });
 
     // Check if the article is found
@@ -600,6 +652,55 @@ const editArticleBySlugHandler = async (request, h) => {
       },
       { where: { slug }, returning: true, transaction: t }
     );
+
+    // Collect existing topicIds
+    const existingTopicIds = targetArticle.topics.map((topic) => topic.topicId);
+
+    // Find new topicIds (those not in existingTopicIds)
+    const newTopicIds = topics
+      .map((topicName) => {
+        const existingTopic = targetArticle.topics.find(
+          (topic) => topic.name === topicName
+        );
+        return existingTopic ? existingTopic.topicId : null;
+      })
+      .filter((topicId) => topicId !== null);
+
+    // Find topicIds to be removed (those in existingTopicIds but not in newTopicIds)
+    const topicsToRemove = existingTopicIds.filter(
+      (topicId) => !newTopicIds.includes(topicId)
+    );
+
+    // Remove topics from ArticleTopic
+    await ArticleTopic.destroy({
+      where: { articleId: targetArticle.articleId, topicId: topicsToRemove },
+      transaction: t,
+    });
+
+    // Add new topics to ArticleTopic
+    const topicPromises = topics.map(async (topicName) => {
+      // Find or create the topic by name
+      const [topic, created] = await Topic.findOrCreate({
+        where: { name: topicName },
+        defaults: { topicId: generateTopicId() },
+        transaction: t,
+      });
+
+      // Associate the topic with the article
+      await ArticleTopic.findOrCreate({
+        where: {
+          articleId: targetArticle.articleId,
+          topicId: topic.topicId,
+        },
+        defaults: {
+          createdAt: formattedDate(),
+        },
+        transaction: t,
+      });
+    });
+
+    // Wait for all topic associations to complete
+    await Promise.all(topicPromises);
 
     // Commit the transaction
     await t.commit();
@@ -640,7 +741,7 @@ const editArticleBySlugHandler = async (request, h) => {
 // Handler to delete an article by its slug
 const deleteArticleBySlugHandler = async (request, h) => {
   const { slug } = request.params;
-  const { userId: tokenUserId } = request.auth.credentials; // Extract userId from the token
+  const { userId: tokenUserId } = request.auth.credentials;
 
   const t = await sequelize.transaction();
 
@@ -693,6 +794,12 @@ const deleteArticleBySlugHandler = async (request, h) => {
     // Delete the article by its slug and fetch the number of deleted rows
     const deletedRowCount = await Article.destroy({
       where: { slug },
+      transaction: t,
+    });
+
+    // Delete associated ArticleTopics
+    await ArticleTopic.destroy({
+      where: { articleId: targetArticle.articleId },
       transaction: t,
     });
 

@@ -15,13 +15,6 @@ const Home = () => {
 
   const navigate = useNavigate();
 
-  const topics = [
-    "Programming",
-    "Self Improvement",
-    "Relationship",
-    "Politics",
-  ];
-
   const params = new URLSearchParams(window.location.search);
 
   const page = parseInt(params.get("page")) || 1;
@@ -35,6 +28,8 @@ const Home = () => {
   const [articles, setArticles] = useState([]);
 
   const [isLastPage, setIsLastPage] = useState(false);
+
+  const [topics, setTopics] = useState([]);
 
   const handleLoadMore = () => {
     if (!isLastPage) {
@@ -76,6 +71,14 @@ const Home = () => {
 
           return combinedArticles;
         });
+
+        const result = await axios.get(`${API_URL}/topics`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setTopics(result.data.data.topics);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -87,8 +90,10 @@ const Home = () => {
   }, [token, user.userId, currentPage]);
 
   useEffect(() => {
-    navigate(`/dashboard?page=${currentPage}`);
-  }, [page, currentPage, navigate]);
+    if (currentPage > 1) {
+      navigate(`/dashboard?page=${currentPage}`);
+    }
+  }, [currentPage, navigate]);
 
   return (
     <>
@@ -131,7 +136,7 @@ const Home = () => {
             {articles?.map((article, index) => (
               <Card key={index} token={token} {...article} />
             ))}
-            {!isLastPage && (
+            {articles?.length > 0 && !isLastPage && (
               <PrimaryButton className="m-auto" onClick={handleLoadMore}>
                 Load More<Icon>arrow_circle_down</Icon>
               </PrimaryButton>
@@ -155,9 +160,11 @@ const Home = () => {
               {topics?.map((topic, index) => (
                 <li
                   key={index}
-                  className="mb-2 px-4 py-2 bg-neutral-50 rounded-3xl drop-shadow"
+                  className="mb-2 px-4 py-2 bg-neutral-50 rounded-3xl drop-shadow capitalize"
                 >
-                  <Link to={`/dashboard?topic=${topic}`}>{topic}</Link>
+                  <Link to={`/dashboard/topic/${topic.name}`}>
+                    {topic.name}
+                  </Link>
                 </li>
               ))}
               <Link
@@ -190,16 +197,17 @@ const Home = () => {
             </h2>
             <div className="grid grid-cols-2 gap-3">
               {topics?.map((topic, index) => (
-                <div
+                <Link
+                  to={`/dashboard/topic/${topic.name}`}
                   key={index}
                   className="card w-60 h-14 mb-2 bg-neutral-50 rounded-3xl drop-shadow-card"
                 >
                   <div className="card-body p-0">
-                    <h4 className="font-semibold m-auto text-lg text-gray-400">
-                      {topic}
+                    <h4 className="font-semibold m-auto text-lg text-gray-400 capitalize">
+                      {topic.name}
                     </h4>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
             <Link
