@@ -4,7 +4,7 @@ const {
   Article,
   ArticleTopic,
   User,
-  Like,
+  ArticleLike,
   Bookmark,
   Comment,
 } = require("../models");
@@ -54,13 +54,15 @@ const searchTopicsHandler = async (request, h) => {
         .code(200);
     }
 
-    // Map topics to a simplified format
-    const listTopics = topics.map((topic) => ({
-      topicId: topic.topicId,
-      name: topic.name,
-      totalArticles: topic.get("articleCount"),
-      createdAt: topic.createdAt,
-    }));
+    // Map topics to a simplified format, filtering out topics with empty totalArticles
+    const listTopics = topics
+      .filter((topic) => topic.get("articleCount") > 0) // Filter out topics with empty totalArticles
+      .map((topic) => ({
+        topicId: topic.topicId,
+        name: topic.name,
+        totalArticles: topic.get("articleCount"),
+        createdAt: topic.createdAt,
+      }));
 
     return h
       .response({
@@ -114,13 +116,15 @@ const getAllTopicsHandler = async (request, h) => {
         .code(200);
     }
 
-    // Map topics to a simplified format
-    const listTopics = topics.map((topic) => ({
-      topicId: topic.topicId,
-      name: topic.name,
-      totalArticles: topic.get("articleCount"),
-      createdAt: topic.createdAt,
-    }));
+    // Map topics to a simplified format, filtering out topics with empty totalArticles
+    const listTopics = topics
+      .filter((topic) => topic.get("articleCount") > 0) // Filter out topics with empty totalArticles
+      .map((topic) => ({
+        topicId: topic.topicId,
+        name: topic.name,
+        totalArticles: topic.get("articleCount"),
+        createdAt: topic.createdAt,
+      }));
 
     return h
       .response({
@@ -205,7 +209,7 @@ const getAllArticlesByTopicHandler = async (request, h) => {
     // Map articles to a simplified format
     const listArticles = articles.map(async (article) => {
       // Check if the article is liked by the user
-      const isLiked = await Like.findOne({
+      const isLiked = await ArticleLike.findOne({
         where: { userId: tokenUserId, articleId: article.articleId },
       });
 
@@ -215,7 +219,7 @@ const getAllArticlesByTopicHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likesCount = await Like.count({
+      const likesCount = await ArticleLike.count({
         where: { articleId: article.articleId },
       });
 

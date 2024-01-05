@@ -1,5 +1,6 @@
 const { nanoid } = require("nanoid");
 const { Comment, User, Article, sequelize } = require("../models");
+const { Op } = require("sequelize");
 const formattedDate = require("./utils/formattedDate");
 
 const generateId = () => `comment-${nanoid(20)}`;
@@ -10,6 +11,8 @@ const addCommentHandler = async (request, h) => {
     userId,
     articleId,
     comment,
+    parentId,
+    mentionedUserId,
     createdAt = formattedDate(),
     updatedAt = formattedDate(),
   } = request.payload;
@@ -23,14 +26,23 @@ const addCommentHandler = async (request, h) => {
       return h
         .response({
           status: "fail",
-          message: "UserId, ArticleId, and Comment are required fields.",
+          message: "Comment is required.",
         })
         .code(400);
     }
 
     // Create a new comment
     const newComment = await Comment.create(
-      { commentId, userId, articleId, comment, createdAt, updatedAt },
+      {
+        commentId,
+        userId,
+        articleId,
+        comment,
+        parentId,
+        mentionedUserId,
+        createdAt,
+        updatedAt,
+      },
       { transaction: t }
     );
 
@@ -59,6 +71,8 @@ const addCommentHandler = async (request, h) => {
             articleId: createdComment.articleId,
             articleTitle: createdComment.article.title,
             comment: createdComment.comment,
+            parentId: createdComment.parentId,
+            mentionedUserId: createdComment.mentionedUserId,
             createdAt: createdComment.createdAt,
             updatedAt: createdComment.updatedAt,
           },
@@ -94,7 +108,16 @@ const getAllArticleCommentsHandler = async (request, h) => {
     const { articleId } = request.params; // Assuming you have the articleId in the request params
     const comments = await Comment.findAll({
       where: { articleId }, // Filter comments based on the articleId
-      include: [{ model: User, as: "user", attributes: ["username"] }],
+      include: [
+        { model: User, as: "user", attributes: ["username"] },
+        {
+          model: User,
+          as: "mentionedUser",
+          attributes: ["username"],
+          required: false,
+        },
+      ],
+      order: [["createdAt", "ASC"]],
     });
 
     return h
@@ -107,6 +130,11 @@ const getAllArticleCommentsHandler = async (request, h) => {
             username: comment.user.username,
             articleId: comment.articleId,
             comment: comment.comment,
+            parentId: comment.parentId,
+            mentionedUserId: comment.mentionedUserId,
+            mentionedUsername: comment.mentionedUser
+              ? comment.mentionedUser.username
+              : null,
             createdAt: comment.createdAt,
             updatedAt: comment.updatedAt,
           })),
@@ -136,7 +164,7 @@ const editCommentHandler = async (request, h) => {
     if (!comment) {
       await t.rollback();
       return h
-        .response({ status: "fail", message: "Comment is a required field." })
+        .response({ status: "fail", message: "Comment is required." })
         .code(400);
     }
 
@@ -218,7 +246,7 @@ const deleteCommentHandler = async (request, h) => {
 
     // Delete the comment by its commentId and fetch the number of deleted rows
     const deletedRowCount = await Comment.destroy({
-      where: { commentId },
+      where: { [Op.or]: [{ commentId }, { parentId: commentId }] },
       transaction: t,
     });
 

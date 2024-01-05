@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 const {
   User,
   Article,
-  Like,
+  ArticleLike,
   Bookmark,
   Comment,
   sequelize,
@@ -635,7 +635,7 @@ const deleteUserByIdHandler = async (request, h) => {
     });
 
     // Delete likes associated with the user
-    await Like.destroy({
+    await ArticleLike.destroy({
       where: { userId: paramUserId },
       transaction: t,
     });

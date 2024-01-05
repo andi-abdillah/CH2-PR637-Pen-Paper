@@ -1,6 +1,6 @@
 const {
   Article,
-  Like,
+  ArticleLike,
   User,
   Bookmark,
   Comment,
@@ -8,7 +8,7 @@ const {
 } = require("../models");
 const formattedDate = require("./utils/formattedDate");
 
-const addLikeHandler = async (request, h) => {
+const addArticleLikeHandler = async (request, h) => {
   const { userId } = request.auth.credentials;
   const { articleId } = request.payload;
 
@@ -29,7 +29,7 @@ const addLikeHandler = async (request, h) => {
     }
 
     // Check if the like already exists
-    const existingLike = await Like.findOne({
+    const existingLike = await ArticleLike.findOne({
       where: { articleId, userId },
     });
 
@@ -44,7 +44,7 @@ const addLikeHandler = async (request, h) => {
     }
 
     // Add Like to the database
-    const createdLike = await Like.create(
+    const createdLike = await ArticleLike.create(
       {
         userId,
         articleId,
@@ -88,7 +88,7 @@ const getLikedArticlesForUserHandler = async (request, h) => {
 
   try {
     // Find all likes for the user
-    const likes = await Like.findAll({
+    const likes = await ArticleLike.findAll({
       where: {
         userId: tokenUserId,
       },
@@ -138,12 +138,12 @@ const getLikedArticlesForUserHandler = async (request, h) => {
       });
 
       // Check if the article is liked by the user
-      const isLiked = await Like.findOne({
+      const isLiked = await ArticleLike.findOne({
         where: { userId: tokenUserId, articleId: article.articleId },
       });
 
       // Get the number of likes for the article
-      const likesCount = await Like.count({
+      const likesCount = await ArticleLike.count({
         where: { articleId: article.articleId },
       });
 
@@ -205,7 +205,7 @@ const getLikedArticlesForUserHandler = async (request, h) => {
   }
 };
 
-const removeLikeHandler = async (request, h) => {
+const removeArticleLikeHandler = async (request, h) => {
   const { userId } = request.auth.credentials;
   const { articleId } = request.payload;
 
@@ -224,7 +224,7 @@ const removeLikeHandler = async (request, h) => {
     }
 
     // Remove Like from the database
-    const deletedRows = await Like.destroy({
+    const deletedRows = await ArticleLike.destroy({
       where: { userId, articleId },
       transaction: t,
     });
@@ -258,7 +258,7 @@ const removeLikeHandler = async (request, h) => {
 };
 
 module.exports = {
-  addLikeHandler,
+  addArticleLikeHandler,
   getLikedArticlesForUserHandler,
-  removeLikeHandler,
+  removeArticleLikeHandler,
 };

@@ -2,7 +2,7 @@ const {
   Bookmark,
   User,
   Article,
-  Like,
+  ArticleLike,
   Comment,
   sequelize,
 } = require("../models");
@@ -131,12 +131,12 @@ const getBookmarksForUserHandler = async (request, h) => {
       }
 
       // Check if the article is liked by the user
-      const isLiked = await Like.findOne({
+      const isLiked = await ArticleLike.findOne({
         where: { userId: tokenUserId, articleId: article.articleId },
       });
 
       // Get the number of likes for the article
-      const likesCount = await Like.count({
+      const likesCount = await ArticleLike.count({
         where: { articleId: article.articleId },
       });
 

@@ -58,15 +58,19 @@ const StoriesByTopic = () => {
       <HelmetProvider>
         <Helmet>
           <title>
-            Stories In {name?.charAt(0).toUpperCase() + name.slice(1)} – Pen &
-            Paper
+            Stories In{" "}
+            {name
+              ?.split(" ")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ")}{" "}
+            – Pen & Paper
           </title>
         </Helmet>
       </HelmetProvider>
- 
+
       <div>
-        <h1 className="text-3xl xs:text-5xl mb-8">
-          Stories In {name?.charAt(0).toUpperCase() + name.slice(1)}
+        <h1 className="text-3xl xs:text-5xl mb-8 capitalize">
+          Stories In {name}
         </h1>
 
         <Divider />

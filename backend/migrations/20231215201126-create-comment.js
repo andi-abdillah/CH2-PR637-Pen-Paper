@@ -1,7 +1,7 @@
 "use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Comments", {
       commentId: {
         type: Sequelize.STRING,
@@ -13,6 +13,24 @@ module.exports = {
       },
       articleId: {
         type: Sequelize.STRING,
+      },
+      parentId: {
+        type: Sequelize.STRING,
+        references: {
+          model: "Comments",
+          key: "commentId",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      mentionedUserId: {
+        type: Sequelize.STRING,
+        references: {
+          model: "Users",
+          key: "userId",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       comment: {
         type: Sequelize.TEXT,
@@ -27,7 +45,7 @@ module.exports = {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
+  down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("Comments");
   },
 };

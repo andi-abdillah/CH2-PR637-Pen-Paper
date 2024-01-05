@@ -78,7 +78,9 @@ const Home = () => {
           },
         });
 
-        setTopics(result.data.data.topics);
+        const limitedTopics = result.data.data.topics.slice(0, 4);
+
+        setTopics(limitedTopics);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -143,7 +145,7 @@ const Home = () => {
             )}
           </div>
 
-          <div className="fixed bottom-3 right-3 text-center dropdown dropdown-top dropdown-end z-[1] md:hidden">
+          <div className="fixed bottom-3 right-3 text-center dropdown dropdown-top dropdown-end z-[1] lg:hidden">
             <PrimaryButton
               tabIndex={0}
               className="bg-white focus:bg-primary focus:text-white btn-circle m-2 drop-shadow"
@@ -169,7 +171,7 @@ const Home = () => {
               ))}
               <Link
                 to="explore"
-                className="flex justify-center items-center mt-8 text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
+                className="flex justify-center items-center w-max mt-8 text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
               >
                 Browse more topics
                 <svg
@@ -191,7 +193,7 @@ const Home = () => {
             </ul>
           </div>
 
-          <div className="w-max hidden md:block">
+          <div className="w-max hidden lg:block">
             <h2 className="mb-6 text-xl text-primary font-semibold">
               Discover by topics
             </h2>
@@ -212,7 +214,7 @@ const Home = () => {
             </div>
             <Link
               to="explore"
-              className="flex items-center mt-3 text-xl text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
+              className="flex items-center w-max mt-3 text-xl text-primary font-semibold transition duration-300 ease-in-out hover:scale-[1.025]"
             >
               Browse more topics
               <svg

@@ -3,7 +3,7 @@ const { Op } = require("sequelize");
 const {
   Article,
   User,
-  Like,
+  ArticleLike,
   Bookmark,
   Comment,
   Topic,
@@ -225,7 +225,7 @@ const getAllArticlesHandler = async (request, h) => {
     // Map articles to a simplified format with like and bookmark information
     const listArticles = rows.map(async (article) => {
       // Check if the article is liked by the user
-      const isLiked = await Like.findOne({
+      const isLiked = await ArticleLike.findOne({
         where: { userId: tokenUserId, articleId: article.articleId },
       });
 
@@ -235,7 +235,7 @@ const getAllArticlesHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likesCount = await Like.count({
+      const likesCount = await ArticleLike.count({
         where: { articleId: article.articleId },
       });
 
@@ -339,7 +339,7 @@ const searchArticlesHandler = async (request, h) => {
     // Map articles to a simplified format with like and bookmark information
     const listArticles = articles.map(async (article) => {
       // Check if the article is liked by the user
-      const isLiked = await Like.findOne({
+      const isLiked = await ArticleLike.findOne({
         where: { userId: tokenUserId, articleId: article.articleId },
       });
 
@@ -349,7 +349,7 @@ const searchArticlesHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likesCount = await Like.count({
+      const likesCount = await ArticleLike.count({
         where: { articleId: article.articleId },
       });
 
@@ -428,7 +428,7 @@ const getArticlesByUserIdHandler = async (request, h) => {
     // Map articles to a simplified format with like and bookmark information
     const listArticles = articles.map(async (article) => {
       // Check if the article is liked by the user
-      const isLiked = await Like.findOne({
+      const isLiked = await ArticleLike.findOne({
         where: { userId: tokenUserId, articleId: article.articleId },
       });
 
@@ -438,7 +438,7 @@ const getArticlesByUserIdHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likesCount = await Like.count({
+      const likesCount = await ArticleLike.count({
         where: { articleId: article.articleId },
       });
 
@@ -511,7 +511,7 @@ const getArticleBySlugHandler = async (request, h) => {
     // If the article is found, respond with success and the article details
     if (targetArticle) {
       // Check if the article is liked by the user
-      const isLiked = await Like.findOne({
+      const isLiked = await ArticleLike.findOne({
         where: { userId: tokenUserId, articleId: targetArticle.articleId },
       });
 
@@ -521,7 +521,7 @@ const getArticleBySlugHandler = async (request, h) => {
       });
 
       // Get the number of likes for the article
-      const likesCount = await Like.count({
+      const likesCount = await ArticleLike.count({
         where: { articleId: targetArticle.articleId },
       });
 
@@ -774,7 +774,7 @@ const deleteArticleBySlugHandler = async (request, h) => {
     }
 
     // Delete likes associated with the article
-    await Like.destroy({
+    await ArticleLike.destroy({
       where: { articleId: targetArticle.articleId },
       transaction: t,
     });

@@ -20,19 +20,17 @@ const TopicsInput = ({ token, topics, setTopics }) => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+          },  
         }
       );
 
-      const slicedTopics = result.data.data.topics.slice(0, 5);
+      const slicedTopics = result.data.data.topics.slice(0, 3);
 
       const filteredSuggestedTopics = slicedTopics.filter(
         (slicedTopic) => !topics.includes(slicedTopic.name)
       );
 
       setSuggestedTopics(filteredSuggestedTopics);
-
-      // Handle the result as needed
     } catch (error) {
       console.error("Error while searching for topics:", error);
     }
@@ -43,9 +41,9 @@ const TopicsInput = ({ token, topics, setTopics }) => {
 
     setTopicInput(inputValue);
 
-    searchTopicsDebounced(inputValue);
-
-    if (!inputValue) {
+    if (inputValue.length > 2) {
+      searchTopicsDebounced(inputValue);
+    } else {
       setSuggestedTopics([]);
     }
   };
@@ -130,7 +128,11 @@ const TopicsInput = ({ token, topics, setTopics }) => {
       )}
       <div id="topics" className="flex flex-wrap gap-2 my-3">
         {topics.map((topic) => (
-          <PrimaryButton key={topic} className="capitalize">
+          <PrimaryButton
+            key={topic}
+            className="capitalize"
+            onClick={(e) => e.preventDefault()}
+          >
             <span>{topic}</span>
             <Icon id="remove" onClick={() => removeTopic(topic)}>
               close

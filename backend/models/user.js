@@ -12,9 +12,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userId",
         as: "articles",
       });
-      this.hasMany(models.Like, {
+      this.hasMany(models.ArticleLike, {
         foreignKey: "userId",
         as: "likes",
+      });
+      this.hasMany(models.Comment, {
+        foreignKey: "userId",
+        as: "comments",
+      });
+      this.hasMany(models.Comment, {
+        foreignKey: "mentionedUserId",
+        as: "mentionedComments",
       });
     }
   }

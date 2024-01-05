@@ -28,10 +28,10 @@ const loginWithOauth = require("./../controller/OauthController");
 const sendResetPasswordMail = require("./../controller/sendResetPasswordMail");
 
 const {
-  addLikeHandler,
+  addArticleLikeHandler,
   getLikedArticlesForUserHandler,
-  removeLikeHandler,
-} = require("./../controller/likeController");
+  removeArticleLikeHandler,
+} = require("./../controller/articleLikeController");
 
 const {
   addBookmarkHandler,
@@ -208,7 +208,7 @@ const routes = [
   {
     method: "POST",
     path: "/article/likes",
-    handler: addLikeHandler,
+    handler: addArticleLikeHandler,
   },
   {
     method: "GET",
@@ -218,7 +218,7 @@ const routes = [
   {
     method: "DELETE",
     path: "/article/likes",
-    handler: removeLikeHandler,
+    handler: removeArticleLikeHandler,
   },
 
   // Start of Bookmark Routes

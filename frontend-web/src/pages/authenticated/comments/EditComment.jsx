@@ -7,10 +7,14 @@ import TextArea from "../../../components/TextArea";
 import { API_URL } from "../../../api/api";
 import axios from "axios";
 
-const EditComment = ({ comment, showAlert, onClose }) => {
+const EditComment = ({
+  comment,
+  showAlert,
+  onClose,
+  isProcessing,
+  setIsProcessing,
+}) => {
   const { token } = useAuth();
-
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
     comment: comment.comment,
@@ -75,6 +79,7 @@ const EditComment = ({ comment, showAlert, onClose }) => {
             onChange={handleInputChange}
             cols="30"
             rows="5"
+            required
           ></TextArea>
           <div className="flex justify-end gap-3 mt-4">
             <DangerButton type="button" className="self-end" onClick={onClose}>

@@ -1,20 +1,32 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../../provider/AuthContext";
 import PrimaryButton from "../../../components/PrimaryButton";
+import DangerButton from "../../../components/DangerButton";
 import Icon from "../../../components/Icon";
 import TextArea from "../../../components/TextArea";
 import { API_URL } from "../../../api/api";
 import axios from "axios";
 
-const AddComment = ({ articleId, setComments, showAlert }) => {
+const AddComment = ({
+  articleId,
+  parentId = null,
+  mentionedUserId = null,
+  mentionedUsername,
+  isReplying,
+  setIsReplying,
+  setComments,
+  showAlert,
+  isProcessing,
+  setIsProcessing,
+}) => {
   const { token, user } = useAuth();
-
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const [formData, setFormData] = useState({
     userId: user.userId,
     articleId,
     comment: "",
+    parentId,
+    mentionedUserId,
   });
 
   const handleInputChange = (e) => {
@@ -24,6 +36,16 @@ const AddComment = ({ articleId, setComments, showAlert }) => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleCancel = () => {
+    setIsReplying(false);
+    setFormData({
+      ...formData,
+      comment: "",
+      parentId: null,
+      mentionedUserId: null,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -42,11 +64,12 @@ const AddComment = ({ articleId, setComments, showAlert }) => {
 
       setComments((prevComments) => [...prevComments, data.comment]);
 
-      setFormData({
-        userId: user.userId,
-        articleId,
+      setFormData((prevData) => ({
+        ...prevData,
         comment: "",
-      });
+      }));
+
+      setIsReplying(false);
 
       showAlert(message, status);
     } catch (error) {
@@ -58,8 +81,18 @@ const AddComment = ({ articleId, setComments, showAlert }) => {
     }
   };
 
+  useEffect(() => {
+    setFormData((prevData) => ({
+      ...prevData,
+      parentId,
+      mentionedUserId,
+    }));
+  }, [parentId, mentionedUserId, mentionedUsername]);
+
+  console.log(formData);
+
   return (
-    <div>
+    <div id="addcomment">
       <form
         action=""
         onSubmit={handleSubmit}
@@ -68,31 +101,42 @@ const AddComment = ({ articleId, setComments, showAlert }) => {
         <TextArea
           id="comment"
           name="comment"
-          placeholder="Insert comment here"
+          placeholder={
+            isReplying
+              ? `Replying to ${
+                  mentionedUsername === user.username
+                    ? "your comment"
+                    : mentionedUsername
+                }`
+              : `Insert comment here`
+          }
           className="border-0"
-          value={formData?.comment || ""}
+          value={formData.comment}
           onChange={handleInputChange}
           cols="30"
           rows="6"
-        ></TextArea>
-
-        <PrimaryButton
-          type="submit"
-          className="self-end my-4"
-          disabled={isProcessing}
-        >
-          {isProcessing ? (
-            <>
-              Sending
-              <Icon className="animate-spin">progress_activity</Icon>
-            </>
-          ) : (
-            <>
-              Send
-              <Icon>task_alt</Icon>
-            </>
+          required
+        />
+        <div className="flex justify-end gap-2 my-4">
+          {(formData.comment || isReplying) && (
+            <DangerButton type="button" onClick={handleCancel}>
+              Cancel <Icon>cancel</Icon>
+            </DangerButton>
           )}
-        </PrimaryButton>
+          <PrimaryButton type="submit" disabled={isProcessing}>
+            {isProcessing && formData.comment ? (
+              <>
+                Sending
+                <Icon className="animate-spin">progress_activity</Icon>
+              </>
+            ) : (
+              <>
+                Send
+                <Icon>task_alt</Icon>
+              </>
+            )}
+          </PrimaryButton>
+        </div>
       </form>
     </div>
   );
