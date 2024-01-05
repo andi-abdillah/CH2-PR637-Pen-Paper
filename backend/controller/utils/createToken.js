@@ -9,7 +9,6 @@ const createToken = (user) =>
   jwt.sign(
     {
       userId: user.userId,
-      username: user.username,
     },
     secretKey,
     { algorithm: "HS256" }
